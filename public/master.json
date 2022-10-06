@@ -1,0 +1,98 @@
+[
+    {
+        "ID": "1",
+        "Menu": "1",
+        "No_Urut": "1",
+        "Nama_Menu": "Home",
+        "Icon": "fa-ellipsis-v",
+        "Link": "utama\/home",
+        "ID_Grup": "1",
+        "Urut_Grup": "1",
+        "Nm_Grup": "Utama",
+        "IconGrup": "fa-user-secret"
+    },
+    {
+      "ID": "2",
+      "Menu": "2",
+      "No_Urut": "2",
+      "Nama_Menu": "Ubah Sandi",
+      "Icon": "fa-ellipsis-v",
+      "Link": "utama\/sandi",
+      "ID_Grup": "1",
+      "Urut_Grup": "1",
+      "Nm_Grup": "Utama",
+      "IconGrup": "fa-user-secret"
+    },
+    {
+        "ID": "3",
+        "Menu": "3",
+        "No_Urut": "3",
+        "Nama_Menu": "Backup Data Setup",
+        "Icon": "fa-ellipsis-v",
+        "Link": "utama\/backup",
+        "ID_Grup": "1",
+        "Urut_Grup": "1",
+        "Nm_Grup": "Utama",
+        "IconGrup": "fa-user-secret"
+    },
+    {
+        "ID": "4",
+        "Menu": "4",
+        "No_Urut": "4",
+        "Nama_Menu": "Kirim Data Master",
+        "Icon": "fa-user",
+        "Link": "utama\/kirim",
+        "ID_Grup": "1",
+        "Urut_Grup": "1",
+        "Nm_Grup": "Utama",
+        "IconGrup": "fa-user-secret"
+    },
+    {
+        "ID": "5",
+        "Menu": "5",
+        "No_Urut": "5",
+        "Nama_Menu": "Terima Data Master",
+        "Icon": "fa-users",
+        "Link": "utama\/terima",
+        "ID_Grup": "1",
+        "Urut_Grup": "1",
+        "Nm_Grup": "Utama",
+        "IconGrup": "fa-user-secret"
+    },
+    {
+        "ID": "6",
+        "Menu": "6",
+        "No_Urut": "6",
+        "Nama_Menu": "Tarik Data PPAS",
+        "Icon": "fa-users",
+        "Link": "utama\/tarikppas",
+        "ID_Grup": "1",
+        "Urut_Grup": "1",
+        "Nm_Grup": "Utama",
+        "IconGrup": "fa-user-secret"
+    },
+    {
+        "ID": "7",
+        "Menu": "7",
+        "No_Urut": "7",
+        "Nama_Menu": "Terima Saldo Awal",
+        "Icon": "fa-users",
+        "Link": "utama\/saldoawal",
+        "ID_Grup": "1",
+        "Urut_Grup": "1",
+        "Nm_Grup": "Utama",
+        "IconGrup": "fa-user-secret"
+    },
+    {
+        "ID": "8",
+        "Menu": "8",
+        "No_Urut": "1",
+        "Nama_Menu": "Fungsi",
+        "Icon": "fa-users",
+        "Link": "daftar\/fungsi",
+        "ID_Grup": "2",
+        "Urut_Grup": "2",
+        "Nm_Grup": "Daftar",
+        "IconGrup": "fa-user-secret"
+    }
+]

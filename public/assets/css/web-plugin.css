@@ -1,0 +1,250 @@
+@charset "utf-8";
+/* CSS Document */
+
+.web-tab{
+	background:#FFF;
+	width:90%;
+	margin:30px auto;
+	padding-bottom:20px;
+	-webkit-box-shadow: 0 0 5px 0px #666;
+	box-shadow: 0 0 5px 0px #666;
+}
+
+ul.web-tab-header{
+	list-style:none;
+	padding:0;margin:0;
+	height:49px;margin-bottom:20px;
+	margin-top:-47px;padding-left:5px;
+	margin-left:0px;
+	margin-right:0px;
+	padding-top:8px;
+	background: #bdbdbd;
+}
+
+.web-tab-header li{
+	float:left;
+	height:41px;
+	line-height:41px;
+	margin-left:2px;
+}
+.web-tab-header li a{
+	height:41px;
+	line-height:41px;
+	display:block;
+	padding:0px 10px;
+	text-decoration:none !important;
+	background:#eeeeee;
+	font-size:12px;
+}
+.web-tab-header li a::after {
+	position:absolute;
+	right:0px;
+	top:0px;
+	content: '';
+	width: 0; 
+	height: 0; 
+	border-top: 10px solid #bdbdbd;
+	border-left: 10px solid transparent;
+
+	/*
+	height:21px;
+    left: 100%;
+    border-top: 10px solid #212121;
+    border-left: 10px solid #616161;
+    border-bottom: 10px solid #616161;
+		*/
+}
+
+.web-tab-header li a.active-tab-header{
+	color:#333;
+}
+
+.web-tab-container{
+	display:none;
+	margin:10px;
+	min-height:300px;
+}
+
+.hw{
+	float:left;left:50%;min-height:50px;position:relative;display:inline-block;margin-bottom:1px;
+}
+
+.jspContainer
+{
+	overflow: hidden;
+	position: relative;
+}
+
+.jspPane
+{
+	position: absolute;
+}
+
+.jspVerticalBar
+{
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 16px;
+	height: 100%;
+	background: red;
+}
+
+.jspHorizontalBar
+{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 16px;
+	background: red;
+}
+
+.jspCap
+{
+	display: none;
+}
+
+.jspHorizontalBar .jspCap
+{
+	float: left;
+}
+
+.jspTrack
+{
+	background: #81C784;
+	position: relative;
+}
+
+.jspDrag
+{
+	background: #1B5E20;
+	position: relative;
+	top: 0;
+	left: 0;
+	cursor: pointer;
+}
+
+.jspHorizontalBar .jspTrack,
+.jspHorizontalBar .jspDrag
+{
+	float: left;
+	height: 100%;
+}
+
+.jspArrow
+{
+	background: #50506d;
+	text-indent: -20000px;
+	display: block;
+	cursor: pointer;
+	padding: 0;
+	margin: 0;
+}
+
+.jspArrow.jspDisabled
+{
+	cursor: default;
+	background: #80808d;
+}
+
+.jspVerticalBar .jspArrow
+{
+	height: 16px;
+}
+
+.jspHorizontalBar .jspArrow
+{
+	width: 16px;
+	float: left;
+	height: 100%;
+}
+
+.jspVerticalBar .jspArrow:focus
+{
+	outline: none;
+}
+
+.jspCorner
+{
+	background: #eeeef4;
+	float: left;
+	height: 100%;
+}
+
+/* Yuk! CSS Hack for IE6 3 pixel bug :( */
+* html .jspCorner
+{
+	margin: 0 -3px 0 0;
+}
+
+.bubble{
+position: relative;
+width: 290px;
+height: 55px;
+padding: 0px;
+background: #FFFFFF;
+-webkit-border-radius: 4px;
+-moz-border-radius: 4px;
+border-radius: 4px;
+display:none;
+z-index:10000;
+}
+
+.bubble:after{
+content: '';
+position: absolute;
+border-style: solid;
+border-width: 21px 15px 0;
+border-color: #FFFFFF transparent;
+display: block;
+width: 0;
+z-index: 1;
+margin-left: -15px;
+bottom: -21px;
+left: 50%;
+}
+
+.web-content{
+	padding: 12px;
+	min-height:200px;
+	background:#FFFFFF;
+}
+
+.web-judul{
+	padding: 8px;
+	text-align: left;
+	font-weight: 500;
+	background:#438EB9;
+	color:#FFF;
+	font-size: 14px;
+	position: relative;
+	padding-left:12px;
+}
+.web-judul-isi{
+	padding-left:30px;
+}
+.web-judul-isi::before{
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+
+	content: "\f0fb";
+	position: absolute;
+	width: 30px;
+	height: 30px;
+	left: 10px;
+	top:10px;
+	color:#FFFFFF;
+}
+
+.web-judul-utama{
+	padding: 8px;
+	text-align: left;
+	color:#333333;
+	font-weight: 500;
+	font-size: 20px;
+	margin-bottom:20px;
+}
