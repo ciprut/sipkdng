@@ -339,7 +339,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', end
 }
 
 .datepicker.datepicker-dropdown.dropdown-menu.datepicker-orient-left.datepicker-orient-top{
-  z-index = 999;
+  z-index : 999;
 }
 .datepicker td, .datepicker th {
   width: 35px;
@@ -694,7 +694,7 @@ a.e404 {
 	font-size: 20px;
 	text-decoration: underline;
 	margin-top:10px;
-	display:inline-block
+	display:inline-block;
 }
 
 .navbar-fixed-top + .main-container > .responsive {
@@ -844,4 +844,7 @@ a.e404 {
 tbody tr.dark1:hover td, tbody tr.dark2:hover td, tbody tr.dark3:hover td, tbody tr.dark4:hover td{
   background-color: unset !important;
   color: unset !important;
+}
+#sidebar {
+  bottom: -43px !important;
 }

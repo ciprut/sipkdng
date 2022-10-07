@@ -31,13 +31,13 @@ class Database extends \CodeIgniter\Database\Config
 	 */
 	public $default = [
 		'DSN'      => '',
-		'hostname' => 'localhost',
-		'username' => '',
-		'password' => '',
-		'database' => '',
-		'DBDriver' => 'MySQLi',
+		'hostname' => 'e-Budgeting',
+		'username' => 'sa',
+		'password' => '12345678',
+		'database' => 'V@LID49V6_2021',
+		'DBDriver' => 'msqli',
 		'DBPrefix' => '',
-		'pConnect' => false,
+		'pConnect' => true,
 		'DBDebug'  => (ENVIRONMENT !== 'production'),
 		'cacheOn'  => false,
 		'cacheDir' => '',
@@ -52,7 +52,7 @@ class Database extends \CodeIgniter\Database\Config
 	];
 	
 	public $simda = [
-		'DSN'      => 'sqlsrv:Server=localhost;Database=simda2021',
+		'DSN'      => '',
 		'hostname' => 'localhost',
 		'username' => 'sa',
 		'password' => '12345678',

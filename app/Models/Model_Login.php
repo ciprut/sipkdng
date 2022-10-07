@@ -1,23 +1,23 @@
 <?php namespace App\Models;
 
 use CodeIgniter\Model;
-//use modelUntukSIPKD;
+use Mssql;
 
 class Model_Login extends Model{
-  //private $simda;
+  private $mssql;
 
 	public function __construct()
 	{
-    $this->db = \Config\Database::connect();
+    //$this->db = \Config\Database::connect();
     $this->session=session();
-    //$this->simda = new modelUntukSIPKD();
+    $this->mssql = new Mssql();
   }
 	
 	public function login($post){
     $q = "SELECT a.* FROM def_operator a 
     WHERE username = ? AND password = ?";
-    $data = $this->db->query($q,[$post["username"],MD5($post["password"])])->getRow();
-
+    //$data = $this->db->query($q,[$post["username"],MD5($post["password"])])->getRow();
+    $data = ["data"=>"test"];
     return $data;
   }
 
@@ -36,7 +36,7 @@ class Model_Login extends Model{
                     LEFT JOIN def_menu_grup c ON (c.ID_Grup = b.ID_Grup)
           WHERE a.ID = ?
           ORDER BY c.ID_Grup,b.No_Urut";
-    $rs = $this->db->query($q,[$this->session->level])->getResult();
+    //$rs = $this->db->query($q,[$this->session->level])->getResult();
 
     return $rs;
   }

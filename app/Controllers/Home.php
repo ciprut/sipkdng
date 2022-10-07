@@ -26,7 +26,6 @@ class Home extends BaseController
 	public function dashboard(){
 		$session=session();
 		$data["title"] = "Main - Dashboard";
-		$data["sidebar"] = $this->model->menu();
 		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
 
 		return view('templates/dashboard',$data);
