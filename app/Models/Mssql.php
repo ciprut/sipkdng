@@ -83,7 +83,7 @@
 		public function getResult($q){
 			$this->stmt = $this->dbh->prepare($q);
   		$this->stmt->execute();
-			$resulset = $this->stmt->fetchAll(PDO::FETCH_BOTH);
+			$resulset = $this->stmt->fetchAll(PDO::FETCH_ASSOC);
 			return $resulset;
 		}
 
