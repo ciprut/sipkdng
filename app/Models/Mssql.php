@@ -1,10 +1,10 @@
-<?
+<?php
 	class Mssql {
 	
 		private $host = "e-Budgeting";
 		private $user = "sa";
 		private $pass = "12345678";
-		private $db_name = "V@LID49V6_"; //prefix db name
+		private $db_name = "batu"; //prefix db name V@LID49V6_2021
 /*SERVER
 */
 		//SERVER LOKAL : LAPTOP-JDHRKNQP
@@ -28,7 +28,7 @@
 				$this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
 			} 
 			catch(PDOException $e) {
-				echo $e;
+				echo "Error for ".$dsn."<br>".$e;
 				die($e->getMessage());
 			}
 		}

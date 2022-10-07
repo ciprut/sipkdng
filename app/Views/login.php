@@ -1,8 +1,9 @@
 <html>
   <head>
     <title>.::SIPD Importer Tools::.</title>
-    <?
+    <?php
       echo "<link rel='stylesheet' href='".base_url("public/assets/css/bootstrap.min.css?t=".time())."'>";
+      session()->set('tahun','2021');
     ?>
     <style>
     body {
@@ -47,7 +48,7 @@
   <?php
     if(session()->getFlashdata('message')){ ?>
       <div class="alert alert-danger" style="text-align:center">
-        <?= session()->getFlashdata('message') ?>
+        <?php echo session()->getFlashdata('message') ?>
       </div>
   <?php } ?>
   <div id="login">
