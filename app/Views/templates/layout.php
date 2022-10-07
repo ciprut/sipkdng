@@ -1,4 +1,4 @@
-<?
+<?php
   header('Expires: Sun, 01 Jan 2014 00:00:00 GMT');
   header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
   header("Cache-Control: post-check=0, pre-check=0", false);
@@ -14,7 +14,7 @@
 
       <!-- CSS -->
 
-      <?          
+      <?php         
         echo "<link rel='stylesheet' href='".base_url("public/assets/css/bootstrap.min.css?t=".time())."'>";
         echo "<link rel='stylesheet' href='".base_url("public/assets/font-awesome/4.5.0/css/font-awesome.min.css?t=".time())."'>";
         echo "<link rel='stylesheet' href='".base_url("public/assets/css/fonts.googleapis.com.css?t=".time())."'>";
@@ -35,15 +35,15 @@
 
       <!-- Favicon and touch icons
 -->
-      <script src="<?= base_url("public/assets/js/jquery-2.1.4.min.js"); ?>"></script>
-      <script src="<?= base_url("public/assets/js/ace-extra.min.js"); ?>"></script>
-      <script src="<?= base_url("public/assets/js/script.js"); ?>"></script>
+      <script src="<?php echo base_url("public/assets/js/jquery-2.1.4.min.js"); ?>"></script>
+      <script src="<?php echo base_url("public/assets/js/ace-extra.min.js"); ?>"></script>
+      <script src="<?php echo base_url("public/assets/js/script.js"); ?>"></script>
 
-      <script src="<?= base_url("public/assets/js/datatables.js"); ?>" type="text/javascript"></script> 
+      <script src="<?php echo base_url("public/assets/js/datatables.js"); ?>" type="text/javascript"></script> 
 
-      <script src="<?= base_url("public/assets/js/jquery.myplugin.js"); ?>"></script>
-      <script src="<?= base_url("public/assets/js/jquery-ui.min.js"); ?>"></script>
-      <script src="<?= base_url("public/assets/js/chart.js"); ?>"></script>
+      <script src="<?php echo base_url("public/assets/js/jquery.myplugin.js"); ?>"></script>
+      <script src="<?php echo base_url("public/assets/js/jquery-ui.min.js"); ?>"></script>
+      <script src="<?php echo base_url("public/assets/js/chart.js"); ?>"></script>
       <style>
         #modal-judul-process {
           cursor: move;
@@ -79,7 +79,7 @@
     <body class="no-skin">
     <button id="myScrollBtn" title="Go to top">Top</button> 
 
-    <?
+    <?php
       echo "<div id='modalContent'></div>";
       echo "<div style='display:none'>";
       echo "</div>";
@@ -98,7 +98,7 @@
       try{ace.settings.loadState('sidebar')}catch(e){}
     </script>
    
-    <?
+    <?php
       echo $this->include('templates/sidebar');
     ?>
     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
@@ -110,22 +110,22 @@
   <div class="main-content">
     <div class="main-content-inner">
       <!-- breadcumb -->
-      <?
+      <?php
         $uri = current_url(true);
       ?>
       <div class="breadcrumbs ace-save-state" id="breadcrumbs">
         <ul class="breadcrumb">
           
           <li>
-              <a href="<?="../".$uri->getSegment(2);?>"><?=ucfirst($uri->getSegment(2));?></a>
+              <a href="<?php echo "../".$uri->getSegment(2);?>"><?php echo ucfirst($uri->getSegment(2));?></a>
           </li>
-          <li class="active"><?=ucfirst($uri->getSegment(3));?></li>
+          <li class="active"><?php echo ucfirst($uri->getSegment(3));?></li>
         </ul><!-- /.breadcrumb -->
       </div>
 
       <div class="page-content">
         <div class="page-header">
-          <?
+          <?php
           if($web != ''){
             echo "<h1>".$web."</h1>";
           }else{
@@ -135,22 +135,22 @@
             Dashboard
             <small>
               <i class="ace-icon fa fa-angle-double-right"></i>
-              overview &amp; stats
+              <?php echo $header; ?>
             </small>
           </h1>
-          <?}?>
+          <?php }?>
         </div><!-- /.page-header -->
 
         <div class="web-tab">
           <ul class="web-tab-header">
-            <li><a href="#tab-0"> <?= $title; ?> </a></li>
+            <li><a href="#tab-0"> <?php echo $title; ?> </a></li>
             <li><a href="#tab-1">#</a></li>
             <li><a href="#tab-2">#</a></li>
             <li><a href="#tab-3">#</a></li>
             <li><a href="#tab-4">#</a></li>
           </ul>
           <div id="tab-0">
-            <? 
+            <?php
               echo $this->renderSection('content'); 
             ?>
             <div class='clear'></div>
@@ -164,7 +164,7 @@
       </div><!-- /.page-content -->
     </div> <!-- /.main-content-inner -->
 
-    <? 
+    <?php
       echo $this->include('templates/footer'); 
     ?>
     <a href="#" id="btn-scroll-up" class="btn-scroll-up btn btn-sm btn-inverse">

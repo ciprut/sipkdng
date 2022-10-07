@@ -1,0 +1,29 @@
+<?php namespace App\Controllers;
+
+use App\Libraries\Client;
+use App\Models\Tools_Model;
+use App\Models\Model_Login;
+
+class Daftar extends BaseController
+{
+	public function __construct(){
+		$this->client = new Client;
+		$this->sidebar = new Model_Login;
+		$this->session = session();
+	}
+	public function index()
+	{
+		return redirect()->to(site_url('menu'));
+	}
+
+	public function fungsi(){
+		$data["header"] = "Fungsi";
+		$data["title"] = "Daftar - Fungsi";
+//		$data["sidebar"] = $this->sidebar->menu();
+//		$data['opd'] = $this->sidebar->listSatkerUser();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+		return view('daftar/fungsi',$data);
+	}
+
+
+}
