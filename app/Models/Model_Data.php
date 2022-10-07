@@ -26,5 +26,10 @@
       $rs = $this->mssql->getResult($q);
       return $rs;
 		}
+    public function listSetweb(){
+			$q = "SELECT a.* FROM WEBSET a ORDER BY a.VALDESC";
+      $rs = $this->mssql->getResult($q);
+      return $rs;
+		}
 	}
 ?>

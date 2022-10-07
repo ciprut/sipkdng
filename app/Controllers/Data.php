@@ -51,4 +51,15 @@ class Data extends BaseController
 		return view('data/listTriwulan',$data);
 	}
 
+  public function setweb(){
+		$data["title"] = "Data - Set Web";
+//		$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+		return view('data/setweb',$data);
+	}
+  public function listSetweb(){
+    $data["setweb"] = $this->data->listSetweb();
+		return view('data/listSetweb',$data);
+	}
+
 }
