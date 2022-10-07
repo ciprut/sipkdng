@@ -1,7 +1,7 @@
 <?php namespace App\Controllers;
 
 use App\Libraries\Client;
-use App\Models\Tools_Model;
+use App\Models\Model_Daftar;
 use App\Models\Model_Login;
 
 class Daftar extends BaseController
@@ -9,7 +9,9 @@ class Daftar extends BaseController
 	public function __construct(){
 		$this->client = new Client;
 		$this->sidebar = new Model_Login;
-		$this->session = session();
+		$this->daftar = new Model_Daftar;
+
+    $this->session = session();
 	}
 	public function index()
 	{
@@ -20,9 +22,12 @@ class Daftar extends BaseController
 		$data["header"] = "Fungsi";
 		$data["title"] = "Daftar - Fungsi";
 //		$data["sidebar"] = $this->sidebar->menu();
-//		$data['opd'] = $this->sidebar->listSatkerUser();
 		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
 		return view('daftar/fungsi',$data);
+	}
+  public function listFungsi(){
+    $data["fungsi"] = $this->daftar->listFungsi();
+		return view('daftar/listFungsi',$data);
 	}
 
 

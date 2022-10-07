@@ -80,9 +80,9 @@
 			}
 		}
 		
-		public function view($q){
+		public function getResult($q){
 			$this->stmt = $this->dbh->prepare($q);
-  			$this->stmt->execute();
+  		$this->stmt->execute();
 			$resulset = $this->stmt->fetchAll(PDO::FETCH_BOTH);
 			return $resulset;
 		}
@@ -94,7 +94,7 @@
 			return $resulset;
 		}
 		
-		public function viewSingle($q){
+		public function getRow($q){
 			$this->stmt = $this->dbh->prepare($q);
   			$this->stmt->execute();
 			$resulset = $this->stmt->fetch(PDO::FETCH_BOTH);
