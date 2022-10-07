@@ -49,7 +49,12 @@ class Form_render{
 				$label = (isset($dats["label"])) ? $dats["label"] : "";
 				$option = (isset($dats["option"])) ? $dats["option"] : "";
 				$selected = (isset($dats["default"])) ? $dats["default"] : "";
-				$readonly = (isset($dats["readonly"])) ? "readonly='".$dats["readonly"]."'" : "";				
+				
+				$ro = (isset($dats["readonly"])) ? $dats["readonly"] : "";	
+				$readonly = "";
+				if($ro == "1" || $ro == "true" || $ro == "readonly"){
+					$readonly = "readonly='readonly'";
+				}	
 				$mask = (isset($dats["mask"])) ? " input-mask-".$dats["mask"]."" : "";				
 				$min_date = (isset($dats["min"])) ? "min='".$dats["min"]."'" : "";
 				$max_date = (isset($dats["max"])) ? "max='".$dats["max"]."'" : "";
@@ -74,7 +79,6 @@ class Form_render{
 					$default = (isset($dats["default"])) ? $dats["default"] : "";
 					$color = (isset($dats["color"])) ? $dats["color"] : "primary";
 					$html .= "<div class='col-auto btn-group' style='padding-top:22px'>";
-//					$html = "<div class='btn-group btn-group' data-toggle='buttons'>";
 					for($i=0;$i<sizeof($options);$i++){
 						$dat = explode("|",$options[$i]);
 						$c = $a = "";
@@ -95,6 +99,24 @@ class Form_render{
 					$html .= "<input type='".$type."' ".$min_date." ".$max_date." class='form-control date-picker' id='".$id."' name='".$id."' placeholder='".$placeholder."' value='".$value."' ".$readonly.">";
 					$html .= "<span class='input-group-addon-date'><i class='glyphicon glyphicon-th'></i></span>";
 					$html .= "</div>";
+				}else
+				if($type == "selectToken"){
+					$html .= "<div class='form-group col-md-".$width."'>";
+					$html .= "<label for='".$id."'>".$label."</label>";
+					if($type == "select"){
+						$html .= "<select id='".$id."' name='".$id."' class='form-control' data-live-search='true'>";
+						for($n=0;$n<sizeof($option);$n++){
+							$opt = explode("__",$option[$n]);
+							$sel = ($opt[0] == $selected) ? "selected" : "";
+							$html .= "<option ".$sel." value='".$opt[0]."' data-tokens='".$opt[2]."'>".$opt[1]."</option>";
+						}
+						$html .= "</select>";
+					}else if($type == "textarea"){
+						$html .= "<textarea class='form-control' id='".$id."' name='".$id."' placeholder='".$placeholder."' rows='2' ".$readonly.">".$value."</textarea>";
+					}else{
+						$html .= "<input type='".$type."' class='form-control ".$mask."' id='".$id."' name='".$id."' placeholder='".$placeholder."' value='".$value."' ".$readonly.">";
+					}
+					$html .= "</div>";
 				}
 				
 				else{
@@ -105,7 +127,11 @@ class Form_render{
 						for($n=0;$n<sizeof($option);$n++){
 							$opt = explode("__",$option[$n]);
 							$sel = ($opt[0] == $selected) ? "selected" : "";
-							$html .= "<option ".$sel." value='".$opt[0]."'>".$opt[1]."</option>";
+							if($opt[2] != ''){
+								$html .= "<option ".$sel." value='".$opt[0]."' data-tokens='".$opt[2]."'>".$opt[1]."</option>";
+							}else{
+								$html .= "<option ".$sel." value='".$opt[0]."'>".$opt[1]."</option>";
+							}
 						}
 						$html .= "</select>";
 					}else if($type == "textarea"){
@@ -188,6 +214,19 @@ class Form_render{
 			return;
 		}
 
+		//$data = array("id"=>"btnCetakRekap","elm"=>"print","default"=>"1","class"=>"kelas")
+		function addCheckbox($data){
+			$name = $data["id"];
+			$elm = $data["elm"];
+			$cek = (isset($data["default"])) ? "checked" : "";
+			$class = (isset($data["class"])) ? $data["class"] : $data["id"];
+			$html = "";
+			$html .= "<input type='checkbox' class='".$class."' data-elm='".$elm."' id='".$name."' name='".$name."' $cek>";
+			echo $html;
+			return;
+		}
+
+		//$data = array("id"=>"btnCetakRekap","icon"=>"print","title"=>"Cetak Rekap","color"=>"success")
 		function addRadio($data){
 			$name = $data["id"];
 			$options = $data["options"];
@@ -217,13 +256,14 @@ class Form_render{
 			$title = $data["title"];
 			$icon = (isset($data["icon"])) ? $data["icon"] : "";
 			if($icon != ""){
-				$html = "<div type='button' class='btn btn-labeled btn-".$color."' id='".$id."'><span class='btn-label'><i class='glyphicon glyphicon-".$icon."' aria-hidden='true'></i></span>".$title."</div>";
+				$html = "<div type='button' class='btn btn-labeled btn-".$color."' id='".$id."'><span class='btn-label'><i class='glyphicon glyphicon-".$icon."' aria-hidden='true'></i></span><span class='btn-text'>".$title."</span></div>";
 			}else{
-				$html = "<div type='button' class='btn btn-".$color."' id='".$id."'>".$title."</div>";
+				$html = "<div type='button' class='btn btn-".$color."' id='".$id."'><span class='btn-text'>".$title."</span></div>";
 			}
-			if($level != null && $_SESSION['level'] != $level){
-				$html = '*';
+			if($level != null && $level != '1'){
+				$html = '';
 			}
+			
 			echo $html;
 			return;
 		}
@@ -238,7 +278,7 @@ class Form_render{
 				$placeholder = (isset($data[$i]["placeholder"])) ? $data[$i]["placeholder"] : "";
 				$title = (isset($data[$i]["title"])) ? $data[$i]["title"] : "";
 				$color = (isset($data[$i]["color"])) ? $data[$i]["color"] : "primary";
-				$html .= "<button class='btn btn-xs ".$id." btn-".$color."' type='button' 
+				$content = "<button class='btn btn-xs ".$id." btn-".$color."' type='button' 
 				data-toggle='tooltip' 
 				title='".$title."'
 				data-elm='".$elm."' 
@@ -246,10 +286,16 @@ class Form_render{
 				style='margin-right:0px;margin-left:0px;font-size:9px;position:static !important'>
 				<span class='glyphicon glyphicon-".$icon."'></span>
 				</button>";
+				$akses = (isset($data[$i]["akses"])) ? $data[$i]["akses"] : "1";
+				if($akses == '0'){
+					$html .= '';
+				}else{
+					$html .= $content;
+				}
 			}
 			$html .= "</div>";
-			if($level != null && $_SESSION['level'] != $level){
-				$html = '*';
+			if($level != null && $level != '1'){
+				$html = '';
 			}
 			echo $html;
 			return;
@@ -286,14 +332,20 @@ class Form_render{
 						$glyp = "<i class='glyphicon glyphicon-".$icon."' aria-hidden='true'></i>";
 					}
 					if($separator == "separator"){
-						$html .= "<li role='separator' class='divider' style='border-bottom:1px solid #cccccc;margin:2px'></li>";
+						$content = "<li role='separator' class='divider' style='border-bottom:1px solid #cccccc;margin:2px'></li>";
 					}else{
-						$html .= "<li style='padding:0px;margin-bottom:2px'><a href='#' class='dropdown-link' id='".$class."' data-elm='".$elm."'>".$glyp." ".$title."</a></li>";
+						$content = "<li style='padding:0px;margin-bottom:2px'><a href='#' class='dropdown-link' id='".$class."' data-elm='".$elm."'>".$glyp." ".$title."</a></li>";
+					}
+					$akses = (isset($data[$i]["akses"])) ? $data[$i]["akses"] : "1";
+					if($akses == '0'){
+						$html .= '';
+					}else{
+						$html .= $content;
 					}
 				}
 			$html .= "</ul></div>";
-			if($level != null && $_SESSION['level'] != $level){
-				$html = '*';
+			if($level != null && $level != '1'){
+				$html = '';
 			}
 			echo $html;
 			return;
@@ -325,15 +377,60 @@ class Form_render{
 						$glyp = "<i class='glyphicon glyphicon-".$icon."' aria-hidden='true'></i>";
 					}
 					if($separator == "separator"){
-						$html .= "<li role='separator' class='divider' style='border-bottom:1px solid #cccccc;margin:2px'></li>";
+						$content = "<li role='separator' class='divider' style='border-bottom:1px solid #cccccc;margin:2px'></li>";
 					}else{
-						$html .= "<li style='padding:0px;margin-bottom:2px'><a href='#' class='dropdown-link ".$class."' data-elm='".$elm."'>".$glyp." ".$title."</a></li>";
+						$content = "<li style='padding:0px;margin-bottom:2px'><a href='#' class='dropdown-link ".$class."' data-elm='".$elm."'>".$glyp." ".$title."</a></li>";
+					}
+					$akses = (isset($data[$i]["akses"])) ? $data[$i]["akses"] : "1";
+					if($akses == '0'){
+						$html .= '';
+					}else{
+						$html .= $content;
 					}
 				}
 			$html .= "</ul></div>";
 
-			if($level != null && $_SESSION['level'] != $level){
-				$html = '*';
+			if($level != null && $level != '1'){
+				$html = '';
+			}
+			echo $html;
+			return;
+		}
+		function addDropdown($data,$level=null){
+			$options = $data["options"];
+			$html = "<div class='btn-group' role='group' aria-label='Button group with nested dropdown'>";
+
+			$html .= "<div class='btn-group' role='group'>";
+			$html .= "<button id='btnGroupDrop1' type='button' class='btn btn-secondary dropdown-toggle' data-toggle='dropdown' 
+			aria-haspopup='true' aria-expanded='false' 
+			style='padding:4px 6px !important;font-size:11px;background-color:#428BCA !important;border:0px !important;color:#FFF;font-weight:100'>
+			<i class='glyphicon glyphicon-option-vertical' aria-hidden='true'></i></button>";
+			$html .= "<div class='dropdown-menu' aria-labelledby='btnGroupDrop1' style='width:100px;padding:0px'>";
+			$html .= "<div 
+				style='padding:0px;display:block;border-bottom:1px solid #CCC;font-size:11px;color:#333;font-weight:bold;text-align:center' 
+				class='dropdown-item'>
+				Menu</div>";
+			for($n=0;$n<sizeof($data);$n++){
+				$opt = $data[$n];
+				$elm = $opt["elm"];
+				$class = $opt["id"];
+				$title = $opt["title"];
+				$ph = (isset($opt["placeholder"])) ? $opt["placeholder"] : "";
+
+				$content = "<a style='padding:0px;padding-left:10px;margin:0px;display:block;border:0px solid #CCC;font-size:11px;color:#333' class='ddi dropdown-item ".$class."' data-elm='".$elm."' data-placeholder='".$ph."'>
+				".$title."</a>";
+
+				$akses = (isset($data[$i]["akses"])) ? $data[$i]["akses"] : "1";
+				if($akses == '0'){
+					$html .= '';
+				}else{
+					$html .= $content;
+				}
+			}
+			$html .= "</div></div></div>";
+
+			if($level != null && $level != '1'){
+				$html = '';
 			}
 			echo $html;
 			return;
@@ -355,17 +452,23 @@ class Form_render{
 						$icon = (isset($opt["icon"])) ? $opt["icon"] : "th-list";
 						$color = (isset($opt["color"])) ? $opt["color"] : "blue";
 					}
-					$html .= "<li>
+					$content = "<li>
 					<a href='#' class='tooltip-success ".$class." has-tooltip' data-toggle='tooltip' data-placement='left' data-rel='tooltip' title='".$title."' data-elm='".$elm."'>
 						<span class='".$color."'>
 							<i class='ace-icon fa fa-".$icon." bigger-110'></i>
 						</span>
 					</a></li>";
+					$akses = (isset($data[$i]["akses"])) ? $data[$i]["akses"] : "1";
+					if($akses == '0'){
+						$html .= '';
+					}else{
+						$html .= $content;
+					}
 				}
 			$html .= "</ul></div>";
 
-			if($level != null && $_SESSION['level'] != $level){
-				$html = '*';
+			if($level != null && $level != '1'){
+				$html = '';
 			}
 			echo $html;
 			return;
@@ -400,8 +503,8 @@ class Form_render{
 			return;
 		}
 
-		function addJudul($data){
-      $html = "<div class='web-judul' style='margin-top:10px'>".$data."</div>";
+		function addHeader($data){
+      $html = "<div class='sidebar-heading' style='margin-top:10px'>".$data."</div>";
       echo $html;
 			return;
 		}
@@ -478,7 +581,7 @@ class Form_render{
 				}
 			$html .= "</ul></div>";
 
-			if($level != null && $_SESSION['level'] != $level){
+			if($level != null && $level != '1'){
 				$html = '*';
 			}
 			echo $html;
@@ -528,8 +631,10 @@ class Form_render{
 			$number = (isset($data['number'])) ? "<span class='infobox-data-number'>".$data['number']."</span>" : "";
 			$text = (isset($data['text'])) ? "<span class='infobox-data-text'>".$data['text']."</span>" : "";
 			$content = (isset($data['content'])) ? $data['content'] : "";
+			$myid = (isset($data['id'])) ? $data['id'] : "noid";
+			$style = (isset($data['id'])) ? "pointer" : "default";
 
-			$html = "<div class='infobox infobox-".$color."' style='width:".$width.";min-width:210px'>";
+			$html = "<div id=".$myid." class='infobox infobox-".$color."' style='width:".$width.";min-width:210px;cursor:".$style."'>";
 			$html .= "<div class='infobox-icon'><i class='ace-icon fa fa-".$icon."'></i></div>";
 			$html .= "<div class='infobox-data'>".$number.$text."<div class='infobox-content'>".$content."</div></div>";
 			$html .= "</div>";

@@ -9,7 +9,16 @@
       <td align='left'><?php echo $h['NMPERIODE'] ?></td>
       <td align='center'><?php echo $h['AWAL'] ?></td>
       <td align='center'><?php echo $h['AKHIR'] ?></td>
-      <td align='center'></td>
+      <td align='center'>
+        <?php
+        $elm = $h['KDPERIODE'];
+        $act = array(
+          array("id"=>"hapus","elm"=>$elm,"color"=>"danger","title"=>"Hapus","placeholder"=>""),
+          array("id"=>"ubah","elm"=>$elm,"color"=>"primary","title"=>"Ubah","placeholder"=>"")
+        );
+        $form->addDropdown($act);
+        ?>
+      </td>
     </tr>
   <?php
   }
