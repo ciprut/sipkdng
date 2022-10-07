@@ -886,16 +886,15 @@ tbody tr.dipilih td{
 }
 
 #sidebar{
-  top: 65px;
+  top: 45px;
 }
 .no-skin .sidebar{
   background: ##cfd8dc;
 }
 .no-skin .nav-list{
-  margin-top: 5px;
+  margin-top: 0px;
 }
 .no-skin .nav-list>li{
-  background: #0E0E0E;
 }
 
 
@@ -1071,15 +1070,15 @@ input[type=checkbox], input[type=radio]{
  background-color:#CCC !important;
 }
 .navbar .navbar-brand{
-  min-width: 250px;
-  background: #cecece;
-  height: 65px;
+  min-width: 242px;
+  background: #636363;
+  height: 45px;
   margin-top: 0px !important;
   font-size: 16px;
   text-align: center;
 }
 .navbar-brand{
-  line-height: 65px;
+  line-height: 45px;
   padding: 0px !important;
   font-weight: bold;
   }
