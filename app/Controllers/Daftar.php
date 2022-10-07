@@ -19,7 +19,6 @@ class Daftar extends BaseController
 	}
 
 	public function fungsi(){
-		$data["header"] = "Fungsi";
 		$data["title"] = "Daftar - Fungsi";
 //		$data["sidebar"] = $this->sidebar->menu();
 		$data["menu"] = file_get_contents("./public/".session()->modul.".json");

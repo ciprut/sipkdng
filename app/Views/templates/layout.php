@@ -112,6 +112,7 @@
       <!-- breadcumb -->
       <?php
         $uri = current_url(true);
+        $ttl = explode(" - ",$title);
       ?>
       <div class="breadcrumbs ace-save-state" id="breadcrumbs">
         <ul class="breadcrumb">
@@ -132,12 +133,13 @@
             ?>
 
           <h1>
-            Dashboard
+          <?php /* echo $ttl[0]; ?>
             <small>
               <i class="ace-icon fa fa-angle-double-right"></i>
-              <?php echo $header; ?>
+              <?php echo $ttl[1]; ?>
             </small>
           </h1>
+          <?php */?>
           <?php }?>
         </div><!-- /.page-header -->
 
