@@ -4,7 +4,12 @@
 		private $host = "e-Budgeting";
 		private $user = "sa";
 		private $pass = "12345678";
-		private $db_name = "batu"; //prefix db name V@LID49V6_2021
+		private $db_name = "V@LID49V6_"; //prefix db name V@LID49V6_2021
+
+		//private $host = "172.16.16.2";
+		//private $user = "govbudget";
+		//private $pass = "l1nt@ngp1tU";
+		//private $db_name = "batu";
 /*SERVER
 */
 		//SERVER LOKAL : LAPTOP-JDHRKNQP
