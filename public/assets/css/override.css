@@ -848,3 +848,11 @@ tbody tr.dark1:hover td, tbody tr.dark2:hover td, tbody tr.dark3:hover td, tbody
 #sidebar {
   bottom: -43px !important;
 }
+
+.nav-wrap{
+  bottom: -43px !important;
+  position:relative;
+  padding-bottom:43px;
+}
+.sidebar .sidebar-toggle {
+}
