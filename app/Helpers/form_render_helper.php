@@ -1,4 +1,4 @@
-<?
+<?php
 class Form_render{
 	function addForm($id,$enctype='',$metod='POST',$action='#',$width='100%'){
 			$style = "style=''";
