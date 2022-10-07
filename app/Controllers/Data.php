@@ -40,4 +40,15 @@ class Data extends BaseController
 		return view('data/listBulan',$data);
 	}
 
+  public function triwulan(){
+		$data["title"] = "Data - Periode";
+//		$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+		return view('data/triwulan',$data);
+	}
+  public function listTriwulan(){
+    $data["triwulan"] = $this->data->listTriwulan();
+		return view('data/listTriwulan',$data);
+	}
+
 }

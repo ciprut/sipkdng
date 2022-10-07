@@ -21,5 +21,10 @@
       $rs = $this->mssql->getResult($q);
       return $rs;
 		}
+		public function listTriwulan(){
+			$q = "SELECT a.* FROM PERIODE a ORDER BY cast(a.KDPERIODE as integer)";
+      $rs = $this->mssql->getResult($q);
+      return $rs;
+		}
 	}
 ?>
