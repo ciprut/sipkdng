@@ -71,7 +71,7 @@
     <script src="<?php echo base_url("public/assets/js/ace.min.js"); ?>"></script>
 </html>
 <script>
-  $(".web-tab").web_tab({"jenis":"form","judul":"SIPD Lokal Data"});
+  $(".web-tab").web_tab({"jenis":"form","judul":"SIPKD NeXt Gen"});
 
   $("#form-close").click(function(){
     hide_form();
