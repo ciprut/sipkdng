@@ -1,5 +1,5 @@
 <?php
-	class Mssql {
+		class Mssql {
 	
 		private $host = "e-Budgeting";
 		private $user = "sa";
@@ -33,7 +33,7 @@
 				$this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
 			} 
 			catch(PDOException $e) {
-				echo "Error for ".$dsn."<br>".$e;
+				echo "Error for tahun ".session()->tahun." DSN ".$dsn."<br>".$e;
 				die($e->getMessage());
 			}
 		}

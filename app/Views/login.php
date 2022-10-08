@@ -1,9 +1,12 @@
+<?php
+  session_destroy();
+  session()->set("tahun","2021");
+?>
 <html>
   <head>
     <title>.::SIPD Importer Tools::.</title>
     <?php
       echo "<link rel='stylesheet' href='".base_url("public/assets/css/bootstrap.min.css?t=".time())."'>";
-      session()->set('tahun','2021');
     ?>
     <style>
     body {
@@ -46,11 +49,12 @@
   </head>
   <body>
   <?php
+  /*
     if(session()->getFlashdata('message')){ ?>
       <div class="alert alert-danger" style="text-align:center">
         <?php echo session()->getFlashdata('message') ?>
       </div>
-  <?php } ?>
+  <?php } */?>
   <div id="login">
     <div class="container">
       <div id="login-row" class="row justify-content-center align-items-center">
@@ -60,7 +64,7 @@
             <div id='logo-login'></div>
             <hr>
             <h3 class="text-center text-white pt-5">SIPKD Next Generation</h3>
-            <form id="login-form" class="form" action="<?=base_url('login/verify')?>" method="post">
+            <form id="login-form" class="form" action="<?=base_url('home/verify')?>" method="post">
               <div class="form-group">
                 <label for="username" class="text-info">Username</label><br>
                 <input type="text" name="username" id="username" class="form-control" placeholder="Username">

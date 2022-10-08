@@ -1,5 +1,4 @@
 <?php namespace App\Models;
-
 use CodeIgniter\Model;
 use Mssql;
 
@@ -8,9 +7,9 @@ class Model_Login extends Model{
 
 	public function __construct()
 	{
-    //$this->db = \Config\Database::connect();
-    $this->session=session();
+    $this->db = \Config\Database::connect();
     $this->mssql = new Mssql();
+    $this->session=session();
   }
 	
 	public function login($post){

@@ -28,36 +28,15 @@ class Database extends \CodeIgniter\Database\Config
 	 * The default database connection.
 	 *
 	 * @var array
+	 * sqlsrv:Server=e-Budgeting ;Database=LID49V6_2021
 	 */
 	public $default = [
-		'DSN'      => '',
-		'hostname' => 'e-Budgeting',
+		'DSN'      => 'syssipkd',
+		'hostname' => 'syssipkd',
 		'username' => 'sa',
 		'password' => '12345678',
 		'database' => 'V@LID49V6_2021',
-		'DBDriver' => 'msqli',
-		'DBPrefix' => '',
-		'pConnect' => true,
-		'DBDebug'  => (ENVIRONMENT !== 'production'),
-		'cacheOn'  => false,
-		'cacheDir' => '',
-		'charset'  => 'utf8',
-		'DBCollat' => 'utf8_general_ci',
-		'swapPre'  => '',
-		'encrypt'  => false,
-		'compress' => false,
-		'strictOn' => false,
-		'failover' => [],
-		'port'     => 3306,
-	];
-	
-	public $simda = [
-		'DSN'      => '',
-		'hostname' => 'localhost',
-		'username' => 'sa',
-		'password' => '12345678',
-		'database' => 'simda2021',
-		'DBDriver' => 'pdo',
+		'DBDriver' => 'mysqli',
 		'DBPrefix' => '',
 		'pConnect' => false,
 		'DBDebug'  => (ENVIRONMENT !== 'production'),
@@ -69,15 +48,14 @@ class Database extends \CodeIgniter\Database\Config
 		'encrypt'  => false,
 		'compress' => false,
 		'strictOn' => false,
-		'failover' => [],
-		'port'     => 1433,
+		'failover' => []
 	];
-
+	
 	/**
 	 * This database connection is used when
 	 * running PHPUnit database tests.
 	 *
-	 * @var array
+	 * 
 	 */
 	 
 	public $tests = [

@@ -15,14 +15,15 @@ class login extends BaseController{
     }
 
     public function verify(){
+			session()->set('operator_name','admin sipkd ng');
+			return redirect()->to(site_url('/home/dashboard'));
+
 			$data = array(
             'username'  => $this->request->getPost('username'),
             'password' => $this->request->getPost('password'),
             'tahun' => $this->request->getPost('tahun'),
             'modul' => $this->request->getPost('modul'),
       );
-			session()->set('tahun',$this->request->getPost('tahun'));
-			session()->set('modul',$this->request->getPost('modul'));
 
 			if(empty($data["username"])){
 	    	session()->setFlashdata('message', 'Masukkan Username');
