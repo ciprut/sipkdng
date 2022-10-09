@@ -25,7 +25,7 @@ class Data extends BaseController
 		return view('data/tahap',$data);
 	}
   public function listTahap(){
-    $data["tahap"] = $this->data->listTahap();
+    $data["tahap"] = $this->data->listData("TAHAP");
 		return view('data/listTahap',$data);
 	}
 
@@ -36,7 +36,7 @@ class Data extends BaseController
 		return view('data/bulan',$data);
 	}
   public function listBulan(){
-    $data["bulan"] = $this->data->listBulan();
+    $data["bulan"] = $this->data->listData("BULAN");
 		return view('data/listBulan',$data);
 	}
 
@@ -47,7 +47,7 @@ class Data extends BaseController
 		return view('data/triwulan',$data);
 	}
   public function listTriwulan(){
-    $data["triwulan"] = $this->data->listTriwulan();
+    $data["triwulan"] = $this->data->listData("PERIODE");
 		return view('data/listTriwulan',$data);
 	}
 
@@ -58,8 +58,19 @@ class Data extends BaseController
 		return view('data/setweb',$data);
 	}
   public function listSetweb(){
-    $data["setweb"] = $this->data->listSetweb();
+    $data["setweb"] = $this->data->listData("WEBSET");
 		return view('data/listSetweb',$data);
+	}
+
+	public function kunci(){
+		$data["title"] = "Data - Set Web";
+//		$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+		return view('data/kunci',$data);
+	}
+  public function listKunci(){
+    $data["kunci"] = $this->data->listData("NEXTKEY");
+		return view('data/listKunci',$data);
 	}
 
 }

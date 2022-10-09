@@ -5,13 +5,13 @@
   $form->addTable($tabel);
   foreach($triwulan as $h){ ?>
     <tr class=''>
-      <td align='left'><?php echo $h['KDPERIODE'] ?></td>
-      <td align='left'><?php echo $h['NMPERIODE'] ?></td>
-      <td align='center'><?php echo $h['AWAL'] ?></td>
-      <td align='center'><?php echo $h['AKHIR'] ?></td>
+      <td align='left'><?php echo $h->KDPERIODE ?></td>
+      <td align='left'><?php echo $h->NMPERIODE ?></td>
+      <td align='center'><?php echo $h->AWAL ?></td>
+      <td align='center'><?php echo $h->AKHIR ?></td>
       <td align='center'>
         <?php
-        $elm = $h['KDPERIODE'];
+        $elm = $h->KDPERIODE;
         $act = array(
           array("id"=>"hapus","elm"=>$elm,"color"=>"danger","title"=>"Hapus","placeholder"=>""),
           array("id"=>"ubah","elm"=>$elm,"color"=>"primary","title"=>"Ubah","placeholder"=>"")

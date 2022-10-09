@@ -9,24 +9,28 @@
 			$this->db = \Config\Database::connect();
 		}
 
-		public function listTahap(){
-			$q = "SELECT a.* FROM TAHAP a ORDER BY cast(a.KDTAHAP as integer)";
+		public function listData($data){
+			switch ($data) {
+				case "TAHAP":
+					$q = "SELECT a.* FROM TAHAP a ORDER BY cast(a.KDTAHAP as integer)";
+					break;
+				case "BULAN":
+					$q = "SELECT a.* FROM BULAN a ORDER BY cast(a.KD_BULAN as integer)";
+					break;
+				case "PERIODE":
+					$q = "SELECT a.* FROM PERIODE a ORDER BY cast(a.KDPERIODE as integer)";
+					break;
+				case "WEBSET":
+					$q = "SELECT a.* FROM WEBSET a ORDER BY a.VALDESC";
+					break;
+				case "NEXTKEY":
+					$q = "SELECT a.* FROM NEXTKEY a ORDER BY a.TABLEID";
+					break;
+				default:
+					echo "error";
+					die();
+			}
 			$rs = $this->db->query($q)->getResult();
-      return $rs;
-		}
-		public function listBulan(){
-			$q = "SELECT a.* FROM BULAN a ORDER BY cast(a.KD_BULAN as integer)";
-      $rs = $this->db->query($q)->getResult();
-      return $rs;
-		}
-		public function listTriwulan(){
-			$q = "SELECT a.* FROM PERIODE a ORDER BY cast(a.KDPERIODE as integer)";
-      $rs = $this->db->query($q)->getResult();
-      return $rs;
-		}
-    public function listSetweb(){
-			$q = "SELECT a.* FROM WEBSET a ORDER BY a.VALDESC";
-      $rs = $this->db->query($q)->getResult();
       return $rs;
 		}
 	}

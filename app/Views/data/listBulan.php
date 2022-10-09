@@ -5,9 +5,9 @@
   $form->addTable($tabel);
   foreach($bulan as $h){ ?>
     <tr class=''>
-      <td align='left'><?php echo $h['KD_BULAN'] ?></td>
-      <td align='left'><?php echo $h['KDPERIODE'] ?></td>
-      <td align='left'><?php echo $h['KET_BULAN'] ?></td>
+      <td align='left'><?php echo $h->KD_BULAN ?></td>
+      <td align='left'><?php echo $h->KDPERIODE ?></td>
+      <td align='left'><?php echo $h->KET_BULAN ?></td>
       <td align='center'></td>
     </tr>
   <?php
