@@ -40,6 +40,42 @@ class Pengaturan extends BaseController
     $data["pegawai"] = $this->data->listPegawai();
 		return view('pengaturan/listPegawai',$data);
 	}
+  public function formPegawai(){
+    session()->set('nip','');
+    if($this->request->getPost('nip') != ''){
+			session()->set('nip',$this->request->getPost('nip'));
+		}
+    $data["pegawai"] = $this->data->getPegawai(session()->nip);
+    $data["golongan"] = $this->data->listGolongan();
+		return view('pengaturan/formPegawai',$data);
+	}
+  public function simpanPegawai(){
+    if($this->request->getPost('id') == ''){
+      $data = array(
+        "KDGOL"=>$this->request->getPost('txtGol'),
+        "NIP"=>$this->request->getPost('txtNIP'),
+        "NAMA"=>$this->request->getPost('txtNama'),
+        "ALAMAT"=>$this->request->getPost('txtAlamat'),
+        "UNITKEY"=>session()->kdUnit,
+        "JABATAN"=>$this->request->getPost('txtJabatan')
+      );
+      $this->data->simpanPegawai($data);
+    }else{
+      $data = array(
+        "KDGOL"=>$this->request->getPost('txtGol'),
+        "NAMA"=>$this->request->getPost('txtNama'),
+        "ALAMAT"=>$this->request->getPost('txtAlamat'),
+        "JABATAN"=>$this->request->getPost('txtJabatan')
+      );
+      $this->data->simpanPegawai($data);
+    }
+		return redirect()->to(site_url('/pengaturan/listPegawai'));
+	}
+  public function hapusPegawai(){
+    $nip = $this->request->getPost('nip');
+    $this->data->hapusPegawai($nip);
+		return redirect()->to(site_url('/pengaturan/listPegawai'));
+	}
 
   public function bendahara(){
 		$data["title"] = "Pengaturan - Bendahara";

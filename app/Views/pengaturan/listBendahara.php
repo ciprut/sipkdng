@@ -5,7 +5,7 @@
   $form->addTable($tabel);
   foreach($bendahara as $h){ ?>
     <tr class=''>
-      <td align='left'><?php echo $h->NIP ?></td>
+      <td align='left'><?php echo str_replace(' ','',$h->NIP) ?></td>
       <td align='left'><?php echo $h->NAMA ?></td>
       <td align='left'><?php echo $h->URAI_BEND ?></td>
       <td align='center'><?php echo $h->JAB_BEND ?></td>

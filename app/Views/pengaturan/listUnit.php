@@ -1,9 +1,9 @@
 <?php
 ?>
-  <option value="" selected>PILIH UNIT/SUB UNIT SATUAN KERJA</option>
+  <option value="" selected>Pilih Unit/Sub Unit Satuan Kerja</option>
   <?php
   foreach($unit as $h){ ?>
-    <option value="<?php echo $h->UNITKEY ?>"><?php echo $h->KDUNIT." ".$h->NMUNIT ?></option>
+    <option value="<?php echo $h->UNITKEY ?>"><?php echo $h->KDUNIT." ".$h->NMUNIT." [".$h->UNITKEY."]"; ?></option>
   <?php
   }
 ?>

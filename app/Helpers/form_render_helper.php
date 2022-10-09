@@ -178,6 +178,12 @@ class Form_render{
 			$selected = (isset($data["default"])) ? $data["default"] : "";
 			$icon = (isset($data["icon"])) ? $data["icon"] : "";
 
+			$ro = (isset($data["readonly"])) ? $data["readonly"] : "";	
+			$readonly = "";
+			if($ro == "1" || $ro == "true" || $ro == "readonly"){
+				$readonly = "readonly='readonly'";
+			}	
+
 			$kelas = "";
 			if($icon != ""){
 				$kelas = "input-icon";
@@ -205,7 +211,7 @@ class Form_render{
 				if($icon != ""){
 					$html .= "<span class='input-group-addon info'><i class='glyphicon glyphicon-".$icon."'></i></span>";
 				}
-				$html .= "<input type='".$type."' class='form-control ".$kelas."' id='".$id."' name='".$id."' placeholder='".$placeholder."' value='".$value."'>";
+				$html .= "<input type='".$type."' class='form-control ".$kelas."' id='".$id."' name='".$id."' placeholder='".$placeholder."' value='".$value."' ".$readonly.">";
 			}		
 			$html .= "</div></div>";
 			$html .= "<div style='height:1px;display:block;clear:both;float:none'></div>";

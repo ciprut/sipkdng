@@ -24,6 +24,13 @@
       $rs = $builder->get()->getResult();
 			return $rs;
 		}
+    public function listGolongan(){
+			$builder = $this->db->table('GOLONGAN');
+			$builder->select('*');
+
+      $rs = $builder->get()->getResult();
+			return $rs;
+		}
     public function listPegawai(){
 			$builder = $this->db->table('PEGAWAI a');
 			$builder->select('a.NIP,a.KDGOL,a.NAMA,b.NMGOL,b.PANGKAT,a.JABATAN')->where("a.UNITKEY",session()->kdUnit);
@@ -33,6 +40,31 @@
       $rs = $builder->get()->getResult();
 			return $rs;
 		}
+    public function getPegawai($nip){
+			$builder = $this->db->table('PEGAWAI a');
+			$builder->select('a.*')->where("a.UNITKEY",session()->kdUnit)->where("a.NIP",$nip);
+      $builder->join('GOLONGAN b','b.KDGOL = a.KDGOL','left');
+      $builder->orderBy('a.KDGOL','ASC');
+
+      $rs = $builder->get()->getRow();
+			return $rs;
+		}
+    public function simpanPegawai($post){
+      if(session()->nip == ""){
+        $builder = $this->db->table('PEGAWAI');
+        $builder->set($post);
+        $builder->insert($post);
+      }else{
+        $builder = $this->db->table('PEGAWAI');
+        $builder->where('NIP',session()->nip)->update($post);
+      }
+			return;
+		}
+    public function hapusPegawai($nip){
+      $builder = $this->db->table('PEGAWAI')->where("NIP",$nip)->delete();
+			return;
+		}
+
     public function listBendahara(){
 			$builder = $this->db->table('BEND a');
 			$builder->select('rtrim(a.KEYBEND) as KEYBEND,a.JNS_BEND, a.NIP, a.KDBANK, a.UNITKEY, a.JAB_BEND, a.REKBEND, a.SALDOBEND,a.SALDOBENDT, a.NPWPBEND, a.TGLSTOPBEND,');
