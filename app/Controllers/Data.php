@@ -63,7 +63,7 @@ class Data extends BaseController
 	}
 
 	public function kunci(){
-		$data["title"] = "Data - Set Web";
+		$data["title"] = "Data - NextKey";
 //		$data["sidebar"] = $this->sidebar->menu();
 		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
 		return view('data/kunci',$data);
@@ -71,6 +71,17 @@ class Data extends BaseController
   public function listKunci(){
     $data["kunci"] = $this->data->listData("NEXTKEY");
 		return view('data/listKunci',$data);
+	}
+
+	public function pemda(){
+		$data["title"] = "Data - Pemda";
+//		$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+		return view('data/pemda',$data);
+	}
+  public function listPemda(){
+    $data["pemda"] = $this->data->listData("PEMDA");
+		return view('data/listPemda',$data);
 	}
 
 }

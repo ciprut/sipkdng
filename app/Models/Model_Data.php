@@ -26,6 +26,9 @@
 				case "NEXTKEY":
 					$q = "SELECT a.* FROM NEXTKEY a ORDER BY a.TABLEID";
 					break;
+				case "PEMDA":
+					$q = "SELECT a.* FROM PEMDA a ORDER BY a.CONFIGID";
+					break;
 				default:
 					echo "error";
 					die();

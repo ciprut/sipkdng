@@ -22,7 +22,7 @@
 					
 					<a data-toggle="dropdown" href="#" class="dropdown-toggle">
 						<span class="user-info">
-							<?php echo $_SESSION['operator_name'] ?>
+							<?php echo $_SESSION['username_'] ?>
 						</span>
 
 						<i class="ace-icon fa fa-caret-down"></i>

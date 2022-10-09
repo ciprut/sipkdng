@@ -15,7 +15,8 @@ class login extends BaseController{
     }
 
     public function verify(){
-			session()->set('operator_name','admin sipkd ng');
+			session()->set('userid_',"admin.bud");//$login->id
+			session()->set('username_','Admin BUD');
 			return redirect()->to(site_url('/home/dashboard'));
 
 			$data = array(

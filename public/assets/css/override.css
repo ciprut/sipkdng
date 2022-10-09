@@ -523,8 +523,6 @@ table tfoot th, table tfoot td
 
 .user-info{
 	top:15px;
-  width:  100% !important;
-  max-width: 160px;
 }
 .sidebar.menu-min .nav-list > li > .submenu{
 	z-index: 99999 !important;
@@ -1057,7 +1055,6 @@ input[type=checkbox], input[type=radio]{
 }
 .ace-nav>li>a>.ace-icon{
   color: #b71c1c !important;
-  margin-top: 25px;
 }
 .sidebar-heading {
   font-size: 12px;
