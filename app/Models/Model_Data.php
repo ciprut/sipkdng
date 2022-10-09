@@ -8,12 +8,13 @@
 
 		public function __construct() {          
     	$this->session = session();
+			$this->db = \Config\Database::connect();
       $this->mssql = new Mssql();
 		}
 
 		public function listTahap(){
 			$q = "SELECT a.* FROM TAHAP a ORDER BY cast(a.KDTAHAP as integer)";
-      $rs = $this->mssql->getResult($q);
+			$rs = $this->db->query($q)->getResult();
       return $rs;
 		}
 		public function listBulan(){

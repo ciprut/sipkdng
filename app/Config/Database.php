@@ -31,12 +31,12 @@ class Database extends \CodeIgniter\Database\Config
 	 * sqlsrv:Server=e-Budgeting ;Database=LID49V6_2021
 	 */
 	public $default = [
-		'DSN'      => 'syssipkd',
+		'DSN'      => '',
 		'hostname' => 'syssipkd',
 		'username' => 'sa',
 		'password' => '12345678',
 		'database' => 'V@LID49V6_2021',
-		'DBDriver' => 'mysqli',
+		'DBDriver' => 'sqlsrv',
 		'DBPrefix' => '',
 		'pConnect' => false,
 		'DBDebug'  => (ENVIRONMENT !== 'production'),

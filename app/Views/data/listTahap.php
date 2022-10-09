@@ -5,8 +5,8 @@
   $form->addTable($tabel);
   foreach($tahap as $h){ ?>
     <tr class=''>
-      <td align='left'><?php echo $h['KDTAHAP'] ?></td>
-      <td align='left'><?php echo $h['URAIAN'] ?></td>
+      <td align='left'><?php echo $h->KDTAHAP ?></td>
+      <td align='left'><?php echo $h->URAIAN ?></td>
       <td align='center'></td>
     </tr>
   <?php
