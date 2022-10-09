@@ -19,7 +19,7 @@ class Pengaturan extends BaseController
 	}
 
 	public function pegawai(){
-		$data["title"] = "Data - Pegawai";
+		$data["title"] = "Pengaturan - Pegawai";
 //		$data["sidebar"] = $this->sidebar->menu();
 		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
 
@@ -39,6 +39,22 @@ class Pengaturan extends BaseController
 		}
     $data["pegawai"] = $this->data->listPegawai();
 		return view('pengaturan/listPegawai',$data);
+	}
+
+  public function bendahara(){
+		$data["title"] = "Pengaturan - Bendahara";
+//		$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+
+    $data["satker"] = $this->data->listBidang();
+    return view('pengaturan/bendahara',$data);
+	}
+  public function listBendahara(){
+    if($this->request->getPost('unitkey') != ''){
+			session()->set('kdUnit',$this->request->getPost('unitkey'));
+		}
+    $data["bendahara"] = $this->data->listBendahara();
+		return view('pengaturan/listBendahara',$data);
 	}
 
 }

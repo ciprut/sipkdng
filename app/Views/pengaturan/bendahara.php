@@ -16,17 +16,17 @@
   );
   $form->addRow($row);
 ?>
-<div id="listPegawai"></div>
+<div id="listBendahara"></div>
 <script>
   $("#kdBidang").change(function(){
     post_to_content("listUnit","listUnit","bidang="+$(this).val())
-    $("#listPegawai").html('');
+    $("#listBendahara").html('');
   })
 
   $("#listUnit").change(function(){
-    $("#listPegawai").html('');
+    $("#listBendahara").html('');
     if($(this).val() != ''){
-      post_to_content("listPegawai","listPegawai","unitkey="+$(this).val())
+      post_to_content("listBendahara","listBendahara","unitkey="+$(this).val())
     }
   })
 </script>

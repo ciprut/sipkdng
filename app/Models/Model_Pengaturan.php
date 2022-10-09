@@ -33,6 +33,19 @@
       $rs = $builder->get()->getResult();
 			return $rs;
 		}
+    public function listBendahara(){
+			$builder = $this->db->table('BEND a');
+			$builder->select('rtrim(a.KEYBEND) as KEYBEND,a.JNS_BEND, a.NIP, a.KDBANK, a.UNITKEY, a.JAB_BEND, a.REKBEND, a.SALDOBEND,a.SALDOBENDT, a.NPWPBEND, a.TGLSTOPBEND,');
+      $builder->select("rtrim(b.KDUNIT) as KDUNIT, rtrim(b.NMUNIT) as NMUNIT, c.NAMA,(rtrim(a.NIP)+' - '+ rtrim(c.NAMA)) as NIPNAMA, c.JABATAN,d.URAI_BEND");
+      $builder->join('DAFTUNIT b','b.UNITKEY = a.UNITKEY','left');
+      $builder->join('PEGAWAI c','c.NIP = a.NIP','left');
+      $builder->join('JBEND d','d.JNS_BEND = a.JNS_BEND','left');
+      $builder->where("a.UNITKEY",session()->kdUnit);
+      $builder->orderBy('a.JNS_BEND','ASC');
+//      echo $builder->getCompiledSelect();die();
+      $rs = $builder->get()->getResult();
+			return $rs;
+		}
 
 	}
 ?>
