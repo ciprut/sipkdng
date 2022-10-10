@@ -33,6 +33,10 @@ class Pengaturan extends BaseController
     $data["unit"] = $this->data->listUnit();
 		return view('pengaturan/listUnit',$data);
 	}
+  public function pegawaiList(){
+    $data["pegawai"] = $this->data->listPegawai();
+		return view('pengaturan/pegawaiList',$data);
+	}
   public function listPegawai(){
     if($this->request->getPost('unitkey') != ''){
 			session()->set('kdUnit',$this->request->getPost('unitkey'));
@@ -91,6 +95,48 @@ class Pengaturan extends BaseController
 		}
     $data["bendahara"] = $this->data->listBendahara();
 		return view('pengaturan/listBendahara',$data);
+	}
+  public function formBendahara(){
+    session()->set('nip','');
+    if($this->request->getPost('nip') != ''){
+			session()->set('nip',$this->request->getPost('nip'));
+		}
+    $data["pegawai"] = $this->data->getBendahara(session()->nip);
+    $data["jbend"] = $this->data->listJenisBendahara();
+    $data["bank"] = $this->data->listBank();
+		return view('pengaturan/formBendahara',$data);
+	}
+  public function simpanBendahara(){
+    if($this->request->getPost('id') == ''){
+      $data = array(
+        "KEYBEND"=>"CAST((CAST(SUBSTRING(CAST(rtrim(KEYBEND) AS varchar),1,(LEN(rtrim(KEYBEND))-1)) AS INT)+1 ) AS VARCHAR) + CAST('_' AS VARCHAR)",
+        "JNSBEND"=>$this->request->getPost('txtJBend'),
+        "NIP"=>session()->nip,
+        "KDBANK"=>$this->request->getPost('txtBank'),
+        "UNITKEY"=>session()->kdUnit,
+        "JAB_BEND"=>$this->request->getPost('txtBKU'),
+        "REKBEND"=>$this->request->getPost('txtRek'),
+        "SALDOBEND"=>$this->request->getPost('txtSBank'),
+        "NPWPBEND"=>$this->request->getPost('txtNPWP'),
+        "SALDOBENDT"=>$this->request->getPost('txtSTunai'),
+        "NOREK"=>$this->request->getPost('txtRek')
+      );
+      $this->data->simpanBendahara($data);
+    }else{
+      $data = array(
+        "KDGOL"=>$this->request->getPost('txtGol'),
+        "NAMA"=>$this->request->getPost('txtNama'),
+        "ALAMAT"=>$this->request->getPost('txtAlamat'),
+        "JABATAN"=>$this->request->getPost('txtJabatan')
+      );
+      $this->data->simpanBendahara($data);
+    }
+		return redirect()->to(site_url('/pengaturan/listBendahara'));
+	}
+  public function hapusBendahara(){
+    $kb = $this->request->getPost('keybend');
+    $this->data->hapusBendahara($kb);
+		return redirect()->to(site_url('/pengaturan/listBendahara'));
 	}
 
 }

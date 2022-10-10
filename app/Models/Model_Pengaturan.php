@@ -43,8 +43,6 @@
     public function getPegawai($nip){
 			$builder = $this->db->table('PEGAWAI a');
 			$builder->select('a.*')->where("a.UNITKEY",session()->kdUnit)->where("a.NIP",$nip);
-      $builder->join('GOLONGAN b','b.KDGOL = a.KDGOL','left');
-      $builder->orderBy('a.KDGOL','ASC');
 
       $rs = $builder->get()->getRow();
 			return $rs;
@@ -78,6 +76,64 @@
       $rs = $builder->get()->getResult();
 			return $rs;
 		}
+		public function listJenisBendahara(){
+			$builder = $this->db->table('JBEND a');
+			$builder->select('a.JNS_BEND,a.MTGKEY,a.URAI_BEND')->orderBy('a.JNS_BEND','ASC');
+
+      $rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function listBank(){
+			$builder = $this->db->table('DAFTBANK a');
+			$builder->select('a.KDBANK,a.NMBANK');
+      $builder->orderBy('a.KDBANK','ASC');
+
+      $rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function getBendahara($nip){
+			$builder = $this->db->table('BEND a');
+			$builder->select('a.*')->where("a.UNITKEY",session()->kdUnit)->where("a.NIP",$nip);
+
+      $rs = $builder->get()->getRow();
+			return $rs;
+		}
+		public function simpanBendahara($post){
+      if(session()->keybend == ""){
+				$q = "INSERT INTO BEND (KEYBEND,JNS_BEND,NIP,KDBANK,UNITKEY,JAB_BEND,REKBEND,SALDOBEND,NPWPBEND,SALDOBENDT,NOREK) 
+				VALUES 
+				(
+					(SELECT CAST((CAST(SUBSTRING(CAST(rtrim(MAX(KEYBEND)) AS varchar),1,(LEN(rtrim(MAX(KEYBEND)))-1)) AS INT)+1 ) AS VARCHAR) + CAST('_' AS VARCHAR)
+					FROM BEND
+					), 
+				'".$post['JNSBEND']."', 
+				'".session()->nip."', 
+				'".$post['KDBANK']."',
+				'".session()->kdUnit."',
+				'".$post['JAB_BEND']."',
+				'".$post['REKBEND']."',
+				'".$post['SALDOBEND']."',
+				'".$post['NPWPBEND']."',
+				'".$post['SALDOBENDT']."',
+				'".$post['NOREK']."'
+				)";
+				$this->db->query($q);
+        //$builder->insert($post);
+      }else{
+      }
+			return;
+		}
+		public function hapusBendahara($kb){
+      $builder = $this->db->table('BEND')->where("KEYBEND",$kb)->delete();
+			return;
+		}
+/*SELECT KEYBEND,
+CAST(
+	(CAST(SUBSTRING(CAST(rtrim(KEYBEND) AS varchar),1,(LEN(rtrim(KEYBEND))-1)) AS INT)+1 ) AS VARCHAR
+) + CAST('_' AS VARCHAR)
+AS BARU 
+FROM BEND WHERE NIP = '197405172000032004'
+*/
 
 	}
 ?>
