@@ -8,11 +8,21 @@
     	$this->session = session();
 		}
 
-		///-- Setting Data SIPD
 		public function getSetting(){
 			$builder = $this->db->table('def_setting_sipd');
 			$builder->select('*');
 			return $builder->get()->getRow();
+		}
+		public function simpanNSUP($post){
+      if(session()->edit == ""){
+        $builder = $this->db->table('PEGAWAI');
+        $builder->set($post);
+        $builder->insert($post);
+      }else{
+        $builder = $this->db->table('NSKUP');
+        $builder->where('UNITKEY',session()->edit)->update($post);
+      }
+			return;
 		}
 
 	}

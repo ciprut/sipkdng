@@ -52,8 +52,10 @@ class Form_render{
 				
 				$ro = (isset($dats["readonly"])) ? $dats["readonly"] : "";	
 				$readonly = "";
+				$readonlySelect = "";
 				if($ro == "1" || $ro == "true" || $ro == "readonly"){
 					$readonly = "readonly='readonly'";
+					$readonlySelect = "disabled='true'";
 				}	
 				$mask = (isset($dats["mask"])) ? " input-mask-".$dats["mask"]."" : "";				
 				$min_date = (isset($dats["min"])) ? "min='".$dats["min"]."'" : "";
@@ -104,7 +106,7 @@ class Form_render{
 					$html .= "<div class='form-group col-md-".$width."'>";
 					$html .= "<label for='".$id."'>".$label."</label>";
 					if($type == "select"){
-						$html .= "<select id='".$id."' name='".$id."' class='form-control' data-live-search='true'>";
+						$html .= "<select id='".$id."' name='".$id."' class='form-control' data-live-search='true' ".$readonlySelect.">";
 						for($n=0;$n<sizeof($option);$n++){
 							$opt = explode("__",$option[$n]);
 							$sel = ($opt[0] == $selected) ? "selected" : "";
@@ -123,7 +125,7 @@ class Form_render{
 					$html .= "<div class='form-group col-md-".$width."'>";
 					$html .= "<label for='".$id."'>".$label."</label>";
 					if($type == "select"){
-						$html .= "<select id='".$id."' name='".$id."' class='form-control' data-live-search='true'>";
+						$html .= "<select id='".$id."' name='".$id."' class='form-control' data-live-search='true' ".$readonlySelect.">";
 						for($n=0;$n<sizeof($option);$n++){
 							$opt = explode("__",$option[$n]);
 							$sel = ($opt[0] == $selected) ? "selected" : "";
@@ -204,7 +206,7 @@ class Form_render{
 				}
 				$html .= "</select>";
 			}else if($type == "textarea"){
-				$html .= "<textarea class='form-control' id='".$id."' name='".$id."' placeholder='".$placeholder."' rows='2'>".$value."</textarea>";
+				$html .= "<textarea class='form-control' id='".$id."' name='".$id."' placeholder='".$placeholder."' rows='2' ".$readonly.">".$value."</textarea>";
 			}else if($type == "datepicker"){
 				$html .= "<input type='text' class='datepicker form-control ".$kelas."' id='".$id."' name='".$id."' placeholder='".$placeholder."' value='".$value."'>";
 			}else{

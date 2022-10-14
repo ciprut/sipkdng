@@ -16,19 +16,17 @@
   );
   $form->addRow($row);
 ?>
-<div id="listPegawai"></div>
+<div id="listPA"></div>
 <script>
   $("#kdBidang").change(function(){
     post_to_content("listUnit","listUnit","bidang="+$(this).val())
-    $("#listPegawai").html('');
+    $("#listPA").html('');
   })
 
-  //$("#kdBidang").attr("data-live-search","true").extendSelect();//.selectpicker();
-
   $("#listUnit").change(function(){
-    $("#listPegawai").html('');
+    $("#listPA").html('');
     if($(this).val() != ''){
-      post_to_content("listPegawai","listPegawai","unitkey="+$(this).val())
+      post_to_content("listPA","listPA","unitkey="+$(this).val())
     }
   })
 </script>

@@ -10,7 +10,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-      <title><?= $title; ?></title>
+      <title><?php echo $title; ?></title>
 
       <!-- CSS -->
 
@@ -27,9 +27,10 @@
         echo "<link rel='stylesheet' href='".base_url("public/assets/css/style.css?t=".time())."'>";
         echo "<link rel='stylesheet' href='".base_url("public/assets/css/web-plugin.css?t=".time())."'>";
         //echo "<link rel='stylesheet' href='".base_url("public/assets/css/test.css?t=".time())."'>";
-        echo "<link rel='stylesheet' href='".base_url("public/assets/css/override.css?t=".time())."'>";
         echo "<link rel='stylesheet' href='".base_url("public/assets/css/jquery-ui.min.css?t=".time())."'>";
         echo "<link rel='stylesheet' href='".base_url("public/assets/css/chart.css?t=".time())."'>";
+        echo "<link rel='stylesheet' href='".base_url("public/assets/css/select.css?t=".time())."'>";
+        echo "<link rel='stylesheet' href='".base_url("public/assets/css/override.css?t=".time())."'>";
         
       ?>
 
@@ -44,6 +45,7 @@
       <script src="<?php echo base_url("public/assets/js/jquery.myplugin.js"); ?>"></script>
       <script src="<?php echo base_url("public/assets/js/jquery-ui.min.js"); ?>"></script>
       <script src="<?php echo base_url("public/assets/js/chart.js"); ?>"></script>
+      <script src="<?php echo base_url("public/assets/js/select.js"); ?>"></script>
       <style>
         #modal-judul-process {
           cursor: move;

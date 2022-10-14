@@ -11,11 +11,11 @@
         <?php
         $elm = $h->NIP;
         $act = array(
-          array("id"=>"ambil","elm"=>$elm,"color"=>"primary","title"=>"Ambil Data Pegawai","placeholder"=>"")
+          array("id"=>"ambil","elm"=>$elm,"color"=>"primary","title"=>"Ambil Data Pegawai","placeholder"=>$h->NAMA)
         );
        // $form->addDropdown($act);
         $btt = array(
-          array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Ambil Data Pegawai")
+          array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Ambil Data Pegawai","placeholder"=>$h->NAMA)
         );
         $form->addIconGroup($btt);
       ?>
@@ -41,8 +41,10 @@
 
   $('#tblPegawaiList').on("click",".ambil",function(){
     elm = $(this).data("elm");
+    $("#txtNIP").val(elm);
+    $("#txtNama").val($(this).data('placeholder'));
     closeModal();
-    post_form("formBendahara","nip="+elm,"Form Edit Pegawai");
+//    post_form("formBendahara","nip="+elm,"Form Edit Pegawai");
   });
 
 </script>

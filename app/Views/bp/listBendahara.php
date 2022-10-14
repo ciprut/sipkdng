@@ -1,8 +1,5 @@
 <?php
   $form = new Form_render;
-  $form->addClear("10");
-  $form->addButton(array("id"=>"btnTambahB","icon"=>"plus","title"=>"Tambah Bendahara","color"=>"primary"));
-
   $tabel = array("tblBendahara",array("NIP","NAMA","JENIS BEND","KODE BKU","REKENING",""));
   $form->addTable($tabel);
   foreach($bendahara as $h){ ?>
@@ -16,10 +13,13 @@
         <?php
         $elm = $h->KEYBEND;
         $act = array(
-          array("id"=>"hapus","elm"=>$elm,"color"=>"danger","title"=>"Hapus","placeholder"=>""),
-          array("id"=>"ubah","elm"=>$elm,"color"=>"primary","title"=>"Ubah","placeholder"=>"")
+          array("id"=>"ubah","elm"=>$elm,"color"=>"primary","title"=>"Pilih Bendahara","placeholder"=>"")
         );
-        $form->addDropdown($act);
+//        $form->addDropdown($act);
+        $btt = array(
+          array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Pilih Bendahara","placeholder"=>$h->NAMA." - ".$h->JAB_BEND)
+        );
+        $form->addIconGroup($btt);
         ?>
       </td>
     </tr>
@@ -41,23 +41,9 @@
     "fixedColumns": true
   });
 
-  $('#tblBendahara').on("click",".hapus",function(){
-    elm = $(this).data("elm");
-    modal = {
-      color:"danger",
-      icon:"minus-circle"
-    };
-    showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
-      post_to_content("listBendahara","hapusBendahara","keybend="+elm)
-    });
-  });
   $('#tblBendahara').on("click",".ubah",function(){
     elm = $(this).data("elm");
     post_form("formBendahara","keybend="+elm,"Form Edit Pegawai");
   });
 
-  $("#btnTambahB").click(function(){
-    post_form("formBendahara","keybend=","Form Bendahara");
-//    post_to_modal("pegawaiList","a=a","Daftar Pegawai");
-  });
 </script>

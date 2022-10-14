@@ -8,7 +8,6 @@
     	$this->session = session();
 		}
 
-		///-- Setting Data SIPD
 		public function listBidang(){
 			$builder = $this->db->table('DAFTUNIT');
 			$builder->select('*')->where('KDLEVEL','2')->orderBy('KDUNIT','ASC');
@@ -43,6 +42,7 @@
     public function getPegawai($nip){
 			$builder = $this->db->table('PEGAWAI a');
 			$builder->select('a.*')->where("a.UNITKEY",session()->kdUnit)->where("a.NIP",$nip);
+      $builder->join('GOLONGAN b','b.KDGOL = a.KDGOL','left');
 
       $rs = $builder->get()->getRow();
 			return $rs;
@@ -93,8 +93,8 @@
 		}
 		public function getBendahara($nip){
 			$builder = $this->db->table('BEND a');
-			$builder->select('a.*')->where("a.UNITKEY",session()->kdUnit)->where("a.NIP",$nip);
-
+			$builder->select('a.*, b.NAMA')->where("a.UNITKEY",session()->kdUnit)->where("a.KEYBEND",$nip);
+			$builder->join("PEGAWAI b","b.NIP = a.NIP","left");
       $rs = $builder->get()->getRow();
 			return $rs;
 		}
@@ -106,7 +106,7 @@
 					(SELECT CAST((CAST(SUBSTRING(CAST(rtrim(MAX(KEYBEND)) AS varchar),1,(LEN(rtrim(MAX(KEYBEND)))-1)) AS INT)+1 ) AS VARCHAR) + CAST('_' AS VARCHAR)
 					FROM BEND
 					), 
-				'".$post['JNSBEND']."', 
+				'".$post['JNS_BEND']."', 
 				'".session()->nip."', 
 				'".$post['KDBANK']."',
 				'".session()->kdUnit."',
@@ -118,8 +118,9 @@
 				'".$post['NOREK']."'
 				)";
 				$this->db->query($q);
-        //$builder->insert($post);
       }else{
+				$builder = $this->db->table('BEND');
+        $builder->where('KEYBEND',session()->keybend)->update($post);
       }
 			return;
 		}
@@ -135,5 +136,74 @@ AS BARU
 FROM BEND WHERE NIP = '197405172000032004'
 */
 
+		public function listPA(){
+			$builder = $this->db->table('ATASBEND a');
+			$builder->select('a.NIP,b.NAMA, c.NMGOL,c.PANGKAT, b.JABATAN')->where("a.UNITKEY",session()->kdUnit);
+			$builder->join("PEGAWAI b","b.NIP = a.NIP","left");
+			$builder->join('GOLONGAN c','c.KDGOL = b.KDGOL','left');
+
+			$rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function getPA($nip){
+			$builder = $this->db->table('ATASBEND a');
+			$builder->select('a.*, b.NAMA, b.KDGOL, c.NMGOL,c.PANGKAT, b.JABATAN')->where("a.UNITKEY",session()->kdUnit)->where("a.NIP",$nip);
+			$builder->join("PEGAWAI b","b.NIP = a.NIP","left");
+			$builder->join('GOLONGAN c','c.KDGOL = b.KDGOL','left');
+			$rs = $builder->get()->getRow();
+			return $rs;
+		}
+		public function simpanPA($post){
+			if(session()->nip == ""){
+				$builder = $this->db->table('ATASBEND');
+				$builder->set($post);
+				$builder->insert($post);
+			}else{
+				$builder = $this->db->table('ATASBEND');
+				$builder->where('UNITKEY',session()->kdUnit)->update($post);
+			}
+			return;
+		}
+		public function hapusPA($nip){
+      $builder = $this->db->table('KPA')->where("NIP",$nip)->where('UNITKEY',session()->kdUnit)->delete();
+			return;
+		}
+
+		public function listKPA(){
+			$builder = $this->db->table('KPA a');
+			$builder->select('a.NIP,b.NAMA, c.NMGOL,c.PANGKAT, a.JABATAN')->where("a.UNITKEY",session()->kdUnit);
+			$builder->join("PEGAWAI b","b.NIP = a.NIP","left");
+			$builder->join('GOLONGAN c','c.KDGOL = b.KDGOL','left');
+
+			$rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function getKPA($nip){
+			$builder = $this->db->table('KPA a');
+			$builder->select('a.*, b.NAMA, b.KDGOL, c.NMGOL,c.PANGKAT')->where("a.UNITKEY",session()->kdUnit)->where("a.NIP",$nip);
+			$builder->join("PEGAWAI b","b.NIP = a.NIP","left");
+			$builder->join('GOLONGAN c','c.KDGOL = b.KDGOL','left');
+			$rs = $builder->get()->getRow();
+			return $rs;
+		}
+		public function simpanKPA($post){
+			if(session()->nip == ""){
+				$builder = $this->db->table('KPA');
+				$builder->set($post);
+				$builder->insert($post);
+			}else{
+				$builder = $this->db->table('KPA');
+				$builder->where('UNITKEY',session()->kdUnit)->where('NIP',session()->nip)->update($post);
+
+//				$q = "UPDATE KPA SET JABATAN = '".$post['JABATAN']."' WHERE UNITKEY = '".session()->kdUnit."' AND NIP = '".session()->nip."'";
+//				echo $q;die();
+//				$this->db->query($q);
+			}
+			return;
+		}
+		public function hapusKPA($nip){
+      $builder = $this->db->table('KPA')->where("NIP",$nip)->where('UNITKEY',session()->kdUnit)->delete();
+			return;
+		}
 	}
 ?>
