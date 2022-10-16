@@ -3,13 +3,14 @@
   //$form->addClear("10");
   //$form->addButton(array("id"=>"btnTambahB","icon"=>"plus","title"=>"Tambah Bendahara","color"=>"primary"));
 
-  $tabel = array("tblNSKUP",array("KD UNIT","NAMA UNIT","NILAI",""));
+  $tabel = array("tblNSKUP",array("KD UNIT","NAMA UNIT","NILAI","PAGU",""));
   $form->addTable($tabel);
   foreach($up as $h){ ?>
     <tr class=''>
       <td align='left'><?php echo $h->KDUNIT ?></td>
       <td align='left'><?php echo $h->NMUNIT ?></td>
       <td align='right'><?php echo number_format($h->NILAI,2) ?></td>
+      <td align='right'><?php echo number_format($h->PAGU,2) ?></td>
       <td align='center'>
         <?php
         $elm = $h->UNITKEY;
@@ -32,7 +33,8 @@
     "columnDefs": [
       { "width": 120, "targets": 0 },
       { "width": 120, "targets": 2 },
-      { "width": 50, "targets": 3 }
+      { "width": 120, "targets": 3 },
+      { "width": 50, "targets": 4 }
     ],
     "fixedColumns": true
   });

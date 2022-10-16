@@ -116,7 +116,7 @@ class Pengaturan extends BaseController
       $data = array(
         "KEYBEND"=>"CAST((CAST(SUBSTRING(CAST(rtrim(KEYBEND) AS varchar),1,(LEN(rtrim(KEYBEND))-1)) AS INT)+1 ) AS VARCHAR) + CAST('_' AS VARCHAR)",
         "JNS_BEND"=>$this->request->getPost('txtJBend'),
-        "NIP"=>session()->nip,
+        "NIP"=>$this->request->getPost('txtNIP'),
         "KDBANK"=>$this->request->getPost('txtBank'),
         "UNITKEY"=>session()->kdUnit,
         "JAB_BEND"=>$this->request->getPost('txtBKU'),

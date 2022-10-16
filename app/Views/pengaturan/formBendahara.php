@@ -55,6 +55,18 @@
     hide_form();
   });
 
+  $("#txtJBend").change(function() {
+    if($(this).val() != ''){
+      jb = $(this).val();
+      jbb = jb.substring(1);
+      if(jbb == '1'){
+        $("#txtBKU").val("A");
+      }else{
+        $("#txtBKU").val("B");
+      }
+    }
+  })
+
   $("#txtNIP").click(function(){
     post_to_modal("pegawaiList","a=a","Daftar Pegawai");
   });

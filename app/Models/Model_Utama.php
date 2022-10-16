@@ -17,7 +17,19 @@
     public function listUnit(){
 			$builder = $this->db->table('DAFTUNIT');
 			$builder->select('*')->where("KDLEVEL >","2")->like('KDUNIT',session()->kdBidang.'%','after')->orderBy('KDUNIT','ASC');
+      $rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function getUnit(){
+			$builder = $this->db->table('DAFTUNIT');
+			$builder->select('*')->where("UNITKEY",session()->kdUnit);
+      $rs = $builder->get()->getRow();
+			return $rs;
+		}
 
+		public function listBulan(){
+			$builder = $this->db->table('BULAN');
+			$builder->select('*')->orderBy('KDPERIODE','ASC');
       $rs = $builder->get()->getResult();
 			return $rs;
 		}
@@ -39,6 +51,11 @@
 			return $rs;
 		}
 
+		public function getWebset($field){
+			$builder = $this->db->table('WEBSET');
+			$rs = $builder->select('*')->where('KDSET',$field)->get()->getRow();
+			return $rs->VALSET;
+		}
 		public function getTahap(){
 			$builder = $this->db->table('WEBUSER');
 			$rs = $builder->select('*')->get()->getRow();
@@ -50,16 +67,23 @@
 			$rs = $builder->get()->getRow();
 			return $rs->NEXTKEY;
 		}
+		public function updateNextkey($tableID){
+			$builder = $this->db->table('NEXTKEY');
+			$builder->where('TABLEID',$tableID)->update('NEXTKEY',"(rtrim(cast((cast(rtrim(replace(NEXTKEY,'_','')) as int)+1) as char(20))) + '_')");
+			return;
+		}
 
 		public function getNoRegSPP(){
 			$builder = $this->db->table('SPP');
-			$builder->select('top 1 NOREG')->where('UNITKEY',session()->kdUnit)->orderBy('NOREG','DESC');
+			$builder->select('top (1) ISNULL(NOREG,0) as NOREG')->where('UNITKEY',session()->kdUnit)->orderBy('NOREG','DESC');
 			$rs = $builder->get()->getRow();
-			return $rs->NOREG;
+			session()->set('noreg',$rs->NOREG);
+
+			return;
 		}
 		public function getNoSPP(){
 			$builder = $this->db->table('SPP');
-			$builder->select('top 1 ISNULL(NOSPP,0) as NOSPP')->where('UNITKEY',session()->kdUnit)->where('KEYBEND',session()->keybend)->orderBy('NOSPP','DESC');
+			$builder->select('top (1) ISNULL(NOSPP,0) as NOSPP')->where('UNITKEY',session()->kdUnit)->where('KEYBEND',session()->keybend)->orderBy('NOSPP','DESC');
 			$rs = $builder->get()->getRow();
 			return ($rs->NOSPP+0)+1;
 		}

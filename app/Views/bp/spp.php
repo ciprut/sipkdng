@@ -47,7 +47,7 @@
   $("#jnsSPP").change(function(){
     $("#listBendahara").html('');
     if($(this).val() != ''){
-      post_to_content("listBendahara","listBendahara","unitkey="+$("#listUnit").val()+"&jns=02");
+      post_to_content("listBendahara","listBendahara","unitkey="+$("#listUnit").val()+"&jns="+$("#jnsSPP").val());
     }
   })
   //post_to_tab("0","listSKUP","","Data Uang Persediaan");

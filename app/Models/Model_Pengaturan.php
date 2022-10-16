@@ -107,7 +107,7 @@
 					FROM BEND
 					), 
 				'".$post['JNS_BEND']."', 
-				'".session()->nip."', 
+				'".$post['NIP']."', 
 				'".$post['KDBANK']."',
 				'".session()->kdUnit."',
 				'".$post['JAB_BEND']."',

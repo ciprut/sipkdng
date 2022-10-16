@@ -6,18 +6,15 @@
     <tr class=''>
       <td align='left'><?php echo str_replace(' ','',$h->NIP) ?></td>
       <td align='left'><?php echo $h->NAMA ?></td>
-      <td align='left'><?php echo $h->URAI_BEND ?></td>
+      <td align='left'><?php echo $h->JNS_BEND.". ".$h->URAI_BEND ?></td>
       <td align='center'><?php echo $h->JAB_BEND ?></td>
       <td align='center'><?php echo $h->REKBEND ?></td>
       <td align='center'>
         <?php
         $elm = $h->KEYBEND;
-        $act = array(
-          array("id"=>"ubah","elm"=>$elm,"color"=>"primary","title"=>"Pilih Bendahara","placeholder"=>"")
-        );
-//        $form->addDropdown($act);
+
         $btt = array(
-          array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Pilih Bendahara","placeholder"=>$h->NAMA." - ".$h->JAB_BEND)
+          array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Pilih Bendahara s".$h->KEYBEND,"placeholder"=>$h->NAMA." - ".$h->JAB_BEND)
         );
         $form->addIconGroup($btt);
         ?>
@@ -26,6 +23,7 @@
   <?php
   }
   $form->closeTable($tabel);
+  echo "Webset ".session()->webset." Jenis SPP : ".session()->jns;
 ?>
 <script>
   $('#tblBendahara').removeAttr('width').DataTable({
@@ -41,9 +39,9 @@
     "fixedColumns": true
   });
 
-  $('#tblBendahara').on("click",".ubah",function(){
+  $('#tblBendahara').on("click",".ambil",function(){
     elm = $(this).data("elm");
-    post_form("formBendahara","keybend="+elm,"Form Edit Pegawai");
+    post_to_tab("1","listSPP","keybend="+elm,"SPP a.n "+$(this).data('placeholder'));
   });
 
 </script>
