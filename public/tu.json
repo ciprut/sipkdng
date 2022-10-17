@@ -200,7 +200,7 @@
         "Link": "penatausahaan\/penetapan",
         "ID_Grup": "2",
         "Urut_Grup": "2",
-        "Nm_Grup": "Penatausahaan Penerimaan",
+        "Nm_Grup": "Bendahara Penerimaan",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -212,7 +212,7 @@
         "Link": "penatausahaan\/penerimaan",
         "ID_Grup": "2",
         "Urut_Grup": "2",
-        "Nm_Grup": "Penatausahaan Penerimaan",
+        "Nm_Grup": "Bendahara Penerimaan",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -224,7 +224,7 @@
         "Link": "penatausahaan\/penyetoran",
         "ID_Grup": "2",
         "Urut_Grup": "2",
-        "Nm_Grup": "Penatausahaan Penerimaan",
+        "Nm_Grup": "Bendahara Penerimaan",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -236,7 +236,7 @@
         "Link": "penatausahaan\/pengembalian",
         "ID_Grup": "2",
         "Urut_Grup": "2",
-        "Nm_Grup": "Penatausahaan Penerimaan",
+        "Nm_Grup": "Bendahara Penerimaan",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -248,7 +248,7 @@
         "Link": "penatausahaan\/bpPenyetoran",
         "ID_Grup": "2",
         "Urut_Grup": "2",
-        "Nm_Grup": "Penatausahaan Penerimaan",
+        "Nm_Grup": "Bendahara Penerimaan",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -260,7 +260,7 @@
         "Link": "bpp\/spp",
         "ID_Grup": "3",
         "Urut_Grup": "3",
-        "Nm_Grup": "Penatausahaan BPP",
+        "Nm_Grup": "Bendahara Pengeluaran Pb",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -272,7 +272,7 @@
         "Link": "bpp\/spm",
         "ID_Grup": "3",
         "Urut_Grup": "3",
-        "Nm_Grup": "Penatausahaan BPP",
+        "Nm_Grup": "Bendahara Pengeluaran Pb",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -284,7 +284,7 @@
         "Link": "bpp\/pergeseranUang",
         "ID_Grup": "3",
         "Urut_Grup": "3",
-        "Nm_Grup": "Penatausahaan BPP",
+        "Nm_Grup": "Bendahara Pengeluaran Pb",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -296,7 +296,7 @@
         "Link": "bpp\/panjar",
         "ID_Grup": "3",
         "Urut_Grup": "3",
-        "Nm_Grup": "Penatausahaan BPP",
+        "Nm_Grup": "Bendahara Pengeluaran Pb",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -308,7 +308,7 @@
         "Link": "bpp\/tbp",
         "ID_Grup": "3",
         "Urut_Grup": "3",
-        "Nm_Grup": "Penatausahaan BPP",
+        "Nm_Grup": "Bendahara Pengeluaran Pb",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -320,7 +320,7 @@
         "Link": "bpp\/pajak",
         "ID_Grup": "3",
         "Urut_Grup": "3",
-        "Nm_Grup": "Penatausahaan BPP",
+        "Nm_Grup": "Bendahara Pengeluaran Pb",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -332,7 +332,7 @@
         "Link": "bpp\/pertanggungjawaban",
         "ID_Grup": "3",
         "Urut_Grup": "3",
-        "Nm_Grup": "Penatausahaan BPP",
+        "Nm_Grup": "Bendahara Pengeluaran Pb",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -344,7 +344,7 @@
         "Link": "bpp\/pelimpahan",
         "ID_Grup": "3",
         "Urut_Grup": "3",
-        "Nm_Grup": "Penatausahaan BPP",
+        "Nm_Grup": "Bendahara Pengeluaran Pb",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -356,7 +356,7 @@
         "Link": "bpp\/pengembalianBelanja",
         "ID_Grup": "3",
         "Urut_Grup": "3",
-        "Nm_Grup": "Penatausahaan BPP",
+        "Nm_Grup": "Bendahara Pengeluaran Pb",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -368,7 +368,7 @@
         "Link": "bpp\/bkubp",
         "ID_Grup": "3",
         "Urut_Grup": "3",
-        "Nm_Grup": "Penatausahaan BPP",
+        "Nm_Grup": "Bendahara Pengeluaran Pb",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -380,7 +380,7 @@
         "Link": "bp\/skup",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -392,7 +392,7 @@
         "Link": "bp\/spp",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -404,7 +404,7 @@
         "Link": "bp\/spm",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -416,7 +416,7 @@
         "Link": "bp\/spmidbilling",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -428,7 +428,7 @@
         "Link": "bp\/pergeseranUang",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -440,7 +440,7 @@
         "Link": "bp\/panjar",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -452,7 +452,7 @@
         "Link": "bp\/tbp",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -464,7 +464,7 @@
         "Link": "bp\/koreksiBelanja",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -476,7 +476,7 @@
         "Link": "bp\/pajak",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -488,7 +488,7 @@
         "Link": "bp\/pertanggungjawaban",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -500,7 +500,7 @@
         "Link": "bp\/pelimpahan",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -512,7 +512,7 @@
         "Link": "bp\/pengembalianBelanja",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -524,7 +524,7 @@
         "Link": "bp\/bkubp",
         "ID_Grup": "4",
         "Urut_Grup": "4",
-        "Nm_Grup": "Penatausahaan BP",
+        "Nm_Grup": "Bendahara Pengeluaran",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -536,7 +536,7 @@
         "Link": "bud\/sp2d",
         "ID_Grup": "5",
         "Urut_Grup": "5",
-        "Nm_Grup": "Penatausahaan BUD",
+        "Nm_Grup": "Bendahara Umum Daerah",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -548,7 +548,7 @@
         "Link": "bud\/penguji",
         "ID_Grup": "5",
         "Urut_Grup": "5",
-        "Nm_Grup": "Penatausahaan BUD",
+        "Nm_Grup": "Bendahara Umum Daerah",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -560,7 +560,7 @@
         "Link": "bud\/kelengkapan",
         "ID_Grup": "5",
         "Urut_Grup": "5",
-        "Nm_Grup": "Penatausahaan BUD",
+        "Nm_Grup": "Bendahara Umum Daerah",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -572,7 +572,7 @@
         "Link": "bud\/kirimPenguji",
         "ID_Grup": "5",
         "Urut_Grup": "5",
-        "Nm_Grup": "Penatausahaan BUD",
+        "Nm_Grup": "Bendahara Umum Daerah",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -584,7 +584,7 @@
         "Link": "bud\/transferAntarRekening",
         "ID_Grup": "5",
         "Urut_Grup": "5",
-        "Nm_Grup": "Penatausahaan BUD",
+        "Nm_Grup": "Bendahara Umum Daerah",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -596,7 +596,7 @@
         "Link": "bud\/sp2dntpn",
         "ID_Grup": "5",
         "Urut_Grup": "5",
-        "Nm_Grup": "Penatausahaan BUD",
+        "Nm_Grup": "Bendahara Umum Daerah",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -608,7 +608,7 @@
         "Link": "bud\/sp2b",
         "ID_Grup": "5",
         "Urut_Grup": "5",
-        "Nm_Grup": "Penatausahaan BUD",
+        "Nm_Grup": "Bendahara Umum Daerah",
         "IconGrup": "fa-user-secret"
     },
 {
@@ -620,7 +620,7 @@
         "Link": "bud\/validasiKasda",
         "ID_Grup": "5",
         "Urut_Grup": "5",
-        "Nm_Grup": "Penatausahaan BUD",
+        "Nm_Grup": "Bendahara Umum Daerah",
         "IconGrup": "fa-user-secret"
     },
 {

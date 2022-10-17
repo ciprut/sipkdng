@@ -55,6 +55,7 @@ class Bp extends BaseController
     session()->set('tahap',$this->utama->getTahap());
 		//$data["sidebar"] = $this->sidebar->menu();
 		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+		session()->set('pengajuan','spp');
 
     $data["satker"] = $this->utama->listBidang();
     return view('bp/spp',$data);
@@ -65,19 +66,33 @@ class Bp extends BaseController
 		}
 		$jns = $this->request->getPost('jns');
 
-		$params = array(
-			"up"=>array("Idxkode"=>"6","jnsSpp"=>"up","kdStatus"=>"21","keperluan"=>"uraisppup","jnsBend"=>"02","format"=>"frmtspp"),
-			"gu"=>array("Idxkode"=>"2","jnsSpp"=>"gu","kdStatus"=>"22","keperluan"=>"uraisppgu","jnsBend"=>"02","format"=>"frmtspp"),
-			"tu"=>array("Idxkode"=>"6","jnsSpp"=>"tu","kdStatus"=>"23","keperluan"=>"uraispptu","jnsBend"=>"02","format"=>"frmtspp"),
-			"ls"=>array("Idxkode"=>"2","jnsSpp"=>"gu","kdStatus"=>"25","keperluan"=>"sppnonspj","jnsBend"=>"02","format"=>"frmtspp")
-		);
-		session()->set('jnsSpp',$params[$jns]['jnsSpp']);
-		session()->set('Idxkode',$params[$jns]['Idxkode']);
-		session()->set('kdStatus',$params[$jns]['kdStatus']);
-		session()->set('keperluan',$params[$jns]['keperluan']);
-		session()->set('jnsBend',$params[$jns]['jnsBend']);
-		session()->set('format',$params[$jns]['format']);
-
+		if(session()->pengajuan == 'spp'){
+			$params = array(
+				"up"=>array("Idxkode"=>"6","jnsSpp"=>"up","kdStatus"=>"21","keperluan"=>"uraisppup","jnsBend"=>"02","format"=>"frmtspp"),
+				"gu"=>array("Idxkode"=>"2","jnsSpp"=>"gu","kdStatus"=>"22","keperluan"=>"uraisppgu","jnsBend"=>"02","format"=>"frmtspp"),
+				"tu"=>array("Idxkode"=>"6","jnsSpp"=>"tu","kdStatus"=>"23","keperluan"=>"uraispptu","jnsBend"=>"02","format"=>"frmtspp"),
+				"ls"=>array("Idxkode"=>"2","jnsSpp"=>"gu","kdStatus"=>"25","keperluan"=>"sppnonspj","jnsBend"=>"02","format"=>"frmtspp")
+			);
+			session()->set('jnsSpp',$params[$jns]['jnsSpp']);
+			session()->set('Idxkode',$params[$jns]['Idxkode']);
+			session()->set('kdStatus',$params[$jns]['kdStatus']);
+			session()->set('keperluan',$params[$jns]['keperluan']);
+			session()->set('jnsBend',$params[$jns]['jnsBend']);
+			session()->set('format',$params[$jns]['format']);
+		}else if(session()->pengajuan == 'spm'){
+			$params = array(
+				"up"=>array("Idxkode"=>"6","jnsSpm"=>"up","kdStatus"=>"21","keperluan"=>"uraisppup","jnsBend"=>"02","format"=>"frmtspp"),
+				"gu"=>array("Idxkode"=>"2","jnsSpm"=>"gu","kdStatus"=>"22","keperluan"=>"uraisppgu","jnsBend"=>"02","format"=>"frmtspp"),
+				"tu"=>array("Idxkode"=>"6","jnsSpm"=>"tu","kdStatus"=>"23","keperluan"=>"uraispptu","jnsBend"=>"02","format"=>"frmtspp"),
+				"ls"=>array("Idxkode"=>"2","jnsSpm"=>"gu","kdStatus"=>"25","keperluan"=>"sppnonspj","jnsBend"=>"02","format"=>"frmtspp")
+			);
+			session()->set('jnsSpm',$params[$jns]['jnsSpm']);
+			session()->set('Idxkode',$params[$jns]['Idxkode']);
+			session()->set('kdStatus',$params[$jns]['kdStatus']);
+			session()->set('keperluan',$params[$jns]['keperluan']);
+			session()->set('jnsBend',$params[$jns]['jnsBend']);
+			session()->set('format',$params[$jns]['format']);
+		}
 		$data["bendahara"] = $this->utama->listBendahara(session()->jnsBend);
 		return view('bp/listBendahara',$data);
 	}
@@ -181,4 +196,25 @@ class Bp extends BaseController
 		return view('bp/rincianSPP',$data);
 	}
 
+		/* --------------- SPM ------------------- */
+		public function spm(){
+			$data["title"] = "SPM - Surat Perintah Membayar";
+			session()->set('tahap',$this->utama->getTahap());
+			session()->set('tahap',$this->utama->getTahap());
+			//$data["sidebar"] = $this->sidebar->menu();
+			$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+			session()->set('pengajuan','spm');
+	
+			$data["satker"] = $this->utama->listBidang();
+			return view('bp/spm',$data);
+		}
+		public function listSPM(){
+			if($this->request->getPost('keybend') != ''){
+				session()->set('keybend',$this->request->getPost('keybend'));
+			}
+	
+			$data["spp"] = $this->model->listSPM(session()->jnsBend);
+			return view('bp/listSPM',$data);
+		}
+	
 }

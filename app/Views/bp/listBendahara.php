@@ -14,7 +14,7 @@
         $elm = $h->KEYBEND;
 
         $btt = array(
-          array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Pilih Bendahara s".$h->KEYBEND,"placeholder"=>$h->NAMA." - ".$h->JAB_BEND)
+          array("id"=>"data".session()->pengajuan,"icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Pilih Bendahara s".$h->KEYBEND,"placeholder"=>$h->NAMA." - ".$h->JAB_BEND)
         );
         $form->addIconGroup($btt);
         ?>
@@ -39,9 +39,13 @@
     "fixedColumns": true
   });
 
-  $('#tblBendahara').on("click",".ambil",function(){
+  $('#tblBendahara').on("click",".dataspp",function(){
     elm = $(this).data("elm");
     post_to_tab("1","listSPP","keybend="+elm,"SPP a.n "+$(this).data('placeholder'));
+  });
+  $('#tblBendahara').on("click",".dataspm",function(){
+    elm = $(this).data("elm");
+    post_to_tab("1","listSPM","keybend="+elm,"SPM a.n "+$(this).data('placeholder'));
   });
 
 </script>
