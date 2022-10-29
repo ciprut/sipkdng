@@ -3,73 +3,84 @@
   $form->addClear("10");
   $form->addButton(array("id"=>"btnTambahSPM","icon"=>"plus","title"=>"Tambah SPM","color"=>"primary"));
 
-  $tabel = array("tblSPP",array("NO SPM","TGL SPM","TGL SAH","NO SPP","REG SPM","NILAI",""));
+  getFlashData();
+
+  $tabel = array("tblSPM",array("NO SPM","TGL SPM","TGL SAH","NO SPP","NO SPD","KEPERLUAN",""));
   $form->addTable($tabel);
   foreach($spp as $h){ ?>
     <tr class=''>
-      <td align='left'><?php echo $h->NOSPP." ".session()->Idxkode ?></td>
-      <td align='left'><?php echo $h->TGSPP ?></td>
-      <td align='left'><?php echo $h->TGLVALID ?></td>
-      <td align='center'><?php echo $h->NOSKO ?></td>
-      <td align='center'><?php echo $h->NOREG ?></td>
-      <td align='center'><?php echo number_format($h->NILAI,2) ?></td>
+      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOSPM ?>"><?php echo $h->NOSPM." ".session()->Idxkode ?></a></td>
+      <td align='center'><?php echo ngSQLTanggal($h->TGLSPM,"ddmmmyyyy") ?></td>
+      <td align='center'><?php echo ngSQLTanggal($h->TGLVALID,"ddmmmyyyy") ?></td>
+      <td align='center'><?php echo $h->NOSPP ?></td>
+      <td align='center'><?php echo $h->KETOTOR ?></td>
+      <td align='center'><?php echo $h->KEPERLUAN ?></td>
       <td align='center'>
         <?php
-        $elm = $h->NOSPP;
+        $elm = $h->NOSPM;
 
-        $act = array(
-          array("id"=>"ubah","elm"=>$elm,"color"=>"primary","title"=>"Ubah SPP","placeholder"=>""),
-          array("id"=>"rinci","elm"=>$elm,"color"=>"primary","title"=>"Rincian SPP","placeholder"=>$h->NOSPP),
-          array("id"=>"setuju","elm"=>$elm,"color"=>"danger","title"=>"Persetujuan SPP","placeholder"=>""),
-          array("id"=>"hapus","elm"=>$elm,"color"=>"danger","title"=>"Hapus SPP","placeholder"=>"")
-        );
-        $form->addDropdown($act);
+//        array("id"=>"rinci","elm"=>$elm,"color"=>"primary","title"=>"Rincian SPM","placeholder"=>$h->NOSPM),
+        IF($h->TGLVALID == ''){
+          $act = array(
+            array("id"=>"ubah","elm"=>$elm,"color"=>"primary","title"=>"Ubah SPM","placeholder"=>""),
+            array("id"=>"setuju","elm"=>$elm,"color"=>"danger","title"=>"Persetujuan SPM","placeholder"=>""),
+            array("id"=>"hapus","elm"=>$elm,"color"=>"danger","title"=>"Hapus SPM","placeholder"=>"")
+          );
+        }else{
+          $act = array(
+            array("id"=>"setuju","elm"=>$elm,"color"=>"danger","title"=>"Pembatalan SPM","placeholder"=>"")
+          );
+        }
+        if($h->NOSP2D == ''){
+          $form->addDropdown($act);
+        }
         ?>
       </td>
     </tr>
   <?php
   }
   $form->closeTable($tabel);
-  echo "Webset ".session()->webset." Jenis SPP : ".session()->jns;
 ?>
+<div id='detilSPM'></div>
 <script>
-  $('#tblSPP').removeAttr('width').DataTable({
+  $('#tblSPM').removeAttr('width').DataTable({
     "ordering":false,
     "pageLength":10,
     "columnDefs": [
-      { "width": 150, "targets": 1 },
-      { "width": 150, "targets": 2 },
-      { "width": 100, "targets": 3 },
+      { "width": 100, "targets": 1 },
+      { "width": 100, "targets": 2 },
+      { "width": 250, "targets": 3 },
       { "width": 100, "targets": 4 },
       { "width": 50, "targets": 5 }
     ],
     "fixedColumns": true
   });
-  $("#btnTambahSPP").click(function(){
-    post_form("formSPP","nospp=","S P P");
+  $("#btnTambahSPM").click(function(){
+    post_form("formSPM","nospm=","S P M");
   });
 
-  $('#tblSPP').on("click",".hapus",function(){
+  $('#tblSPM').on("click",".hapus",function(){
     elm = $(this).data("elm");
     modal = {
       color:"danger",
       icon:"minus-circle"
     };
     showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
-      post_to_tab("1","hapusSPP","nospp="+elm)
+      post_to_tab("1","hapusSPM","nospm="+elm)
     });
   });
-  $('#tblSPP').on("click",".ubah",function(){
+  $('#tblSPM').on("click",".ubah",function(){
     elm = $(this).data("elm");
-    post_form("formSPP","nospp="+elm,"S P P");
+    post_form("formSPM","nospm="+elm,"PERUBAHAN S P M");
   });
-  $('#tblSPP').on("click",".rinci",function(){
+  $('#tblSPM').on("click",".rinci",function(){
     elm = $(this).data("elm");
-    post_to_tab("2","rincianSPP","nospp="+elm,$(this).data("placeholder"))
+    post_to_content("detilSPM","rincianSPM","nospm="+elm,$(this).data("placeholder"))
+    //post_to_tab("2","rincianSPM","nospp="+elm,$(this).data("placeholder"))
   });
-  $('#tblSPP').on("click",".setuju",function(){
+  $('#tblSPM').on("click",".setuju",function(){
     elm = $(this).data("elm");
-    post_form("formSPPSetuju","nospp="+elm,"Persetujuan S P P");
+    post_form("formSPMSetuju","nospm="+elm,"Persetujuan S P M");
   });
 
 </script>

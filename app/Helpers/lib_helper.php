@@ -32,6 +32,7 @@
   }
 
 	error_reporting(E_ALL ^ E_NOTICE);
+
 	$vbln = array("-","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember");
 	$vcolors = array(
 	"#f44336","#9c27b0","#e91e63","#673ab7","#3f51b5","#2196f3","#f06292","#90a4ae","#FFD54F","#ff7043","#9e9e9e",
@@ -59,15 +60,7 @@
 		$ret = strtolower($txt);
 		return ucwords($ret);
 	}
-/*
-	function sortJSON(arr, key, way) {
-    return arr.sort(function(a, b) {
-        var x = a[key]; var y = b[key];
-        if (way === '123') { return ((x < y) ? -1 : ((x > y) ? 1 : 0)); }
-        if (way === '321') { return ((x > y) ? -1 : ((x < y) ? 1 : 0)); }
-    });
-	}
-*/
+
 	function toArray($data){
 		$dat = explode("&",$data);
 		$n = array();
@@ -270,8 +263,8 @@
 		return $tota;
 	}
 	
-	function getKdSKPD(){
-		$ret = $h["Kd_Urusan"].".".$h["Kd_Bidang"].".".$h["Kd_Unit"].".".$h["Kd_Sub"];
+	function getKdSKPD($num){
+		$ret = substr($num,0,(strlen($num)-1));
 		return $ret;
 	}
 	
@@ -290,22 +283,28 @@
 		}
 	}
 	
-	function sat123($str){
-		$o = explode("-",$str);
-		$ret = $o[0];
-		for($i=1;$i<(sizeof($o)-1);$i++){
-			if($o[$i] != ""){
-				$ret .= "/".$o[$i];
-			}
-		}
-		return $ret;
-	}
 	function escape($str){
 		$r = htmlspecialchars($str);
 		$r = quotemeta($r);
 		return $r;
 	}
 
+	function getFlashData(){
+		if(session()->getFlashData("info")){
+			flashData("info");
+		}	
+		if(session()->getFlashData("success")){
+			flashData("success");
+		}	
+		if(session()->getFlashData("danger")){
+			flashData("danger");
+		}	
+	}
+	function getUnitkey(){
+		if($this->request->getPost('unitkey') != ''){
+			session()->set('kdUnit',$this->request->getPost('unitkey'));
+		}
+	}
 	function show_error($q = ""){
 		if($q != ""){
 			echo "<b>".$q."</b><br>".mysql_error()."<br>";
@@ -313,12 +312,20 @@
 			echo "<br>".mysql_error()."<br>";
 		}
 	}
-	
 	function separator(){
 		echo "<div class='separator'></div>";
 	}
 	function cls(){
 		echo "<div class='clear'></div>";
+	}
+	function flashData($type){
+		echo '
+		<div class="clear" style="height:30px"></div>
+		<div class="alert alert-'.$type.' alert-dismissible show" role="alert">'.session()->getFlashData($type).'
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="margin-top:10px">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>';
 	}
 	
 	function arr2q($n){
@@ -342,12 +349,6 @@
 	function kdKeg($n){
 		$x = explode(".",$n);
 		return $x[0].".".pjg($x[1],2).".".pjg($x[2],2).".".$x[3].".".pjg($x[4],2);
-	}
-
-	function kd_rek($n){
-		//5.1.1.01.01.0001
-		$x = explode(".",$n);
-		return $x[0].".".$x[1].".".$x[2].".".pjg($x[3],2).".".pjg($x[4],2).".".pjg($x[5],4);
 	}
 	
 	function kdRek($n){
@@ -421,34 +422,7 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
 			}
 		}
 	}
-		
-	function terbilangs($x){
-		$x = intval($x,10);
-		$x=abs($x);
-//		$abil = array("", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas");
-		$abil = array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
-		if ($x < 12)
-			return " " . $abil[$x];
-		elseif ($x < 20)
- 			return terbilang($x - 10) . " Belas";
-		elseif ($x < 100)
-			return terbilang($x / 10) . " Puluh" . terbilang($x % 10);
-		elseif ($x < 200)
-			return " Seratus" . terbilang($x - 100);
-		elseif ($x < 1000)
-			return terbilang($x / 100) . " Ratus" . terbilang($x % 100);
-		elseif ($x < 2000)
-			return " seribu" . terbilang($x - 1000);
-		elseif ($x < 1000000)
-			return terbilang($x / 1000) . " Ribu" . terbilang($x % 1000);
-		elseif ($x < 1000000000)//kurang dari 1 miliar 1.000.000.000
-			return terbilang($x / 1000000) . " Juta" . terbilang($x % 1000000);
-		elseif ($x < 1000000000000)
-			return terbilang($x/ 1000000000) . " Miliar". terbilang(fmod($x,1000000000));
-		elseif ($x < 1000000000000000)
-			return terbilang($x/ 1000000000000) . " Triliun". terbilang(fmod($x,1000000000000));
-	}
-	
+
 	function terbilang($x){
     $x=abs($x);
     $angka=array("", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas");
@@ -476,10 +450,7 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
     }    
         return$temp;
 	}
-	if($_SESSION["kd_skpd"] == ''){
-		session_start();
-	}
-	
+
 	function persen($a,$b){
 		$minus = 0;
 		if($a < 0){
@@ -574,11 +545,6 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
 		return $opt;
 	}
 	
- 	/*$cek = mysql_query("SELECT addr FROM ta_userlog WHERE username = '".$_SESSION["username"]."'");
-	$hc = mysql_fetch_array($cek);
-	if($hc["addr"] == $_SERVER['REMOTE_ADDR']){
-		$update = mysql_query("UPDATE ta_userlog SET logtime = '".time()."',addr = '".$_SERVER['REMOTE_ADDR']."' WHERE username = '".$_SESSION["username"]."'");
-	}*/
 	function cek_sel($def,$cek){
 		if($def == $cek){
 			$sel = "SELECTED";
@@ -603,6 +569,7 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
 //		return $t2[1]."/".$t2[2]."/".$t2[0];
 		return $t2[0]."-".$t2[1]."-".$t2[2];
 	}
+	
 	function flash(){
 		if(session()->getFlashdata('message') == true){
 			echo "
@@ -632,67 +599,129 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
 			</script>';
 		}
 	}
+	function ngTanggal($tanggal,$format) {
+		$bulan = array("-","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember");
+		$bln = array("-","Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des");
+		$thi = date("Ymdhis");
+		$hasil = $tgl = $bl = $thn = "";
+		if($tanggal != ''){
+			$thi = str_replace("/","",$tanggal);
+			$tgl = substr($thi,0,2);
+			$bl = intval(substr($thi,2,2));
+			$thn = substr($thi,4,4);
+	}
+		switch($format){
+			case "ddmmmyyyy":
+				$hasil = intval($tgl)." ".$bln[$bl]." ".$thn;
+				break;
+			case "ddmmmmyyyy":
+				$hasil = intval($tgl)." ".$bulan[$bl]." ".$thn;
+				break;
+			case "ddmmyyyy":
+				$hasil = intval($tgl)."-".pjg($bl,2)."-".$thn;
+				break;
+			case "mmmyyyy":
+				$hasil = $bulan[$bl]." ".$thn;
+				break;
+			case "mysql":
+				$hasil = $thn."-".pjg($bl,2)."-".intval($tgl);
+				break;
+			case "js":
+				$hasil = $thn."-".pjg($bl,2)."-".intval($tgl);
+				break;
+			case "dd":
+				$hasil = intval($tgl);
+				break;
+			case "yyyy":
+				$hasil = $thn;
+				break;
+			case "mm":
+			$hasil = $bl;
+			break;
+	
+			case "sqlserver":
+				$hasil = intval($tgl)."/".$bl."/".$thn;
+				break;
+			default :
+				$hasil = "no var";//$thi;
+		}
+		if(strlen($tanggal) < 8){
+			$hasil = "";
+		}
+		return $hasil;
+	}
+	function ngSQLTanggal($tanggal,$format) {
+		$bulan = array("-","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember");
+		$bln = array("-","Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des");
+		$thi = date("Y/m/d/his");
+		$hasil = $tgl = $bl = $thn = "";
+		if($tanggal != ''){
+			$thi = $tanggal;
+			$d = explode("/",$thi);
+			$tgl = $d[1];
+			$bl = intval($d[0]);
+			$thn = $d[2];
+		}
+		switch($format){
+			case "ddmmmyyyy":
+				$hasil = intval($tgl)." ".$bln[$bl]." ".$thn;
+				break;
+			case "ddmmmmyyyy":
+				$hasil = intval($tgl)." ".$bulan[$bl]." ".$thn;
+				break;
+			case "ddmmyyyy":
+				$hasil = intval($tgl)."-".pjg($bl,2)."-".$thn;
+				break;
+			case "mmmyyyy":
+				$hasil = $bulan[$bl]." ".$thn;
+				break;
+			case "mysql":
+				$hasil = $thn."-".pjg($bl,2)."-".intval($tgl);
+				break;
+			case "js":
+				$hasil = $thn."-".pjg($bl,2)."-".intval($tgl);
+				break;
+			case "dd":
+				$hasil = intval($tgl);
+				break;
+			case "yyyy":
+				$hasil = $thn;
+				break;
+			case "mm":
+				$hasil = $bl;
+				break;
+			case "sqlserver":
+				$hasil = intval($tgl)."/".$bl."/".$thn;
+				break;
+			default :
+				$hasil = $thi;
+		}
+		if(strlen($tanggal) < 8){
+			$hasil = "-";
+		}
+		return $hasil;
+	}
 	function dmyy($txt){
 		$nilai = substr($txt,6,2)."-".substr($txt,4,2)."-".substr($txt,0,4);
 		return $nilai;
 	}
-
-  function tgl($txt){
-		$bln = array("-","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember");
-	 	$d = explode("-",$txt);
-		$tgl = substr($txt,6,2);
-		$thn = substr($txt,0,4);
-		$bl = intval(substr($txt,4,2));
-		return intval($tgl)." ".$bln[$bl]." ".$thn;
-	//intval($d[1])
-  }
 	
-	function tgl2($txt){
-		$bln = array("-","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember");
-	 	$d = explode("-",$txt);
-		$tgl = $d[0];
-		$thn = $d[2];
-		$bl = intval($d[1],10);
-		return intval($tgl)." ".$bln[$bl]." ".$thn;
-	//intval($d[1])
-  }
-
-	function tgl3($txt){
-		$bln = array("-","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember");
-		$tgl = substr($txt,6,2);
-		$thn = substr($txt,0,4);
-		$bl = intval(substr($txt,4,2));
-		return intval($tgl)." ".$bln[$bl]." ".$thn;
-	//intval($d[1])
-  }
+	function thi(){
+		$thi = date("Ymdhis");
+		return $thi;
+	}
+	
+	function Ymd(){
+		$thi = date("Ymd");
+		return $thi;
+	}
 	
 	function tglTgl($txt){
 		$tgl = substr($txt,6,2);
 		return intval($tgl);
   }
 	
-	function tglBlnThn($txt){
-		$bln = array("-","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember");
-		$thn = substr($txt,0,4);
-		$bl = intval(substr($txt,4,2));
-		return $bln[$bl]."<br>".$thn;
-  }
-	function tglBlnTh($txt){
-		$bln = array("-","Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des");
-		$thn = substr($txt,2,2);
-		$bl = intval(substr($txt,4,2));
-		$tgl = substr($txt,6,2);
-		return "<div style='font-size:18px'>".$tgl."</div><div style='font-size:10px'>".$bln[$bl]." ".$thn."</div>";
-  }
-	function tglTglBlnTh($txt){
-		$bln = array("-","Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des");
-		$thn = substr($txt,2,2);
-		$bl = intval(substr($txt,4,2));
-		$tgl = substr($txt,6,2);
-		return $tgl." ".$bln[$bl]." ".$thn;
-  }
-  
-  function pjg($tx,$l){
+	function pjg($tx,$l){
     $p = strlen($tx);
     $t = $l - $p;
     if($t > 0){
@@ -701,10 +730,6 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
       $txt = $tx; 
     }
     return $txt;
-  }
-  function where_kd_skpd($data){
-    $d = explode(".",$data);
-    return "a.Kd_Urusan = $d[0] AND a.Kd_Bidang = $d[1] AND a.Kd_Unit = $d[2] AND a.Kd_Sub = $d[3] AND";
   }
 	
 	function no_inject($txt){
@@ -720,8 +745,7 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
 	}
 	
 	function say($txt,$jdl=""){
-		if($_SESSION["level"] == "1"){
-			echo "<div>";
+		echo "<div>";
 			if($jdl != ""){
 				echo "<div style='border:1px solid #333;background:#0288d1;color:#000;font-weight:bold;margin-bottom:1px;padding:10px'>".$jdl."</div>";
 			}else{
@@ -730,14 +754,11 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
 			echo "<div style='border:1px solid #333;background:#FFF;color:#000;margin-bottom:12px;padding:10px'>";
 				echo nl2br($txt);
 			echo "</div>";
-			echo "</div>";
-		}
+		echo "</div>";
 	}
 	function sayExit($txt){
-		if($_SESSION["level"] == "1"){
-			echo nl2br($txt)."<hr>";
-			exit();
-		}
+		echo nl2br($txt)."<hr>";
+		die();
 	}
 	
 	function nol($txt){
@@ -829,16 +850,7 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
 		echo strtoupper($txt);
 		echo "</div>";	
 	}
-	
-	function thi(){
-		$thi = date("Ymdhis");
-		return $thi;
-	}
-	
-	function Ymd(){
-		$thi = date("Ymd");
-		return $thi;
-	}
+
 	
 	function tanggalhariini(){
 		$hari = array("-","Senin","Selasa","Rabu","Kamis","Jum\'at","Sabtu","Minggu");
@@ -936,6 +948,4 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
 		}
 		return $pagination; //return pagination links
 	}
-
-
 ?>

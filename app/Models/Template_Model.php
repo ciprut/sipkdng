@@ -6,6 +6,7 @@
 		public function __construct() {          
 			$this->db = \Config\Database::connect();
     	$this->session = session();
+			$this->utama = new \App\Models\Model_Utama;
 		}
 
 		public function getSetting(){

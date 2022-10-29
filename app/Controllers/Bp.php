@@ -52,7 +52,6 @@ class Bp extends BaseController
   public function spp(){
 		$data["title"] = "SPP - Surat Permintaan Pembayaran";
     session()->set('tahap',$this->utama->getTahap());
-    session()->set('tahap',$this->utama->getTahap());
 		//$data["sidebar"] = $this->sidebar->menu();
 		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
 		session()->set('pengajuan','spp');
@@ -81,10 +80,10 @@ class Bp extends BaseController
 			session()->set('format',$params[$jns]['format']);
 		}else if(session()->pengajuan == 'spm'){
 			$params = array(
-				"up"=>array("Idxkode"=>"6","jnsSpm"=>"up","kdStatus"=>"21","keperluan"=>"uraisppup","jnsBend"=>"02","format"=>"frmtspp"),
-				"gu"=>array("Idxkode"=>"2","jnsSpm"=>"gu","kdStatus"=>"22","keperluan"=>"uraisppgu","jnsBend"=>"02","format"=>"frmtspp"),
-				"tu"=>array("Idxkode"=>"6","jnsSpm"=>"tu","kdStatus"=>"23","keperluan"=>"uraispptu","jnsBend"=>"02","format"=>"frmtspp"),
-				"ls"=>array("Idxkode"=>"2","jnsSpm"=>"gu","kdStatus"=>"25","keperluan"=>"sppnonspj","jnsBend"=>"02","format"=>"frmtspp")
+				"up"=>array("Idxkode"=>"6","jnsSpm"=>"up","kdStatus"=>"21","keperluan"=>"uraispmup","jnsBend"=>"02","format"=>"frmtspm"),
+				"gu"=>array("Idxkode"=>"2","jnsSpm"=>"gu","kdStatus"=>"22","keperluan"=>"uraispmgu","jnsBend"=>"02","format"=>"frmtspm"),
+				"tu"=>array("Idxkode"=>"6","jnsSpm"=>"tu","kdStatus"=>"23","keperluan"=>"uraispmtu","jnsBend"=>"02","format"=>"frmtspm"),
+				"ls"=>array("Idxkode"=>"2","jnsSpm"=>"gu","kdStatus"=>"25","keperluan"=>"spmnonspj","jnsBend"=>"02","format"=>"frmtspm")
 			);
 			session()->set('jnsSpm',$params[$jns]['jnsSpm']);
 			session()->set('Idxkode',$params[$jns]['Idxkode']);
@@ -116,7 +115,7 @@ class Bp extends BaseController
     $data['bendahara'] = $this->model->getBendahara();
     $data['noreg'] = $this->utama->getNoRegSPP();
     $data['unit'] = $this->utama->getUnit();
-    $data['format'] = $this->utama->getWebset(session()->control);
+    $data['format'] = $this->utama->getWebset(session()->format);
     $data['keperluan'] = $this->utama->getWebset(session()->keperluan);
     $data['bulan'] = $this->utama->listBulan();
     $data['spp'] = $this->model->getSPP();
@@ -130,7 +129,7 @@ class Bp extends BaseController
     $data['bendahara'] = $this->model->getBendahara();
     $data['noreg'] = $this->utama->getNoRegSPP();
     $data['unit'] = $this->utama->getUnit();
-    $data['format'] = $this->utama->getWebset(session()->control);
+    $data['format'] = $this->utama->getWebset(session()->format);
     $data['keperluan'] = $this->utama->getWebset(session()->keperluan);
     $data['bulan'] = $this->utama->listBulan();
     $data['spp'] = $this->model->getSPP();
@@ -196,25 +195,116 @@ class Bp extends BaseController
 		return view('bp/rincianSPP',$data);
 	}
 
-		/* --------------- SPM ------------------- */
-		public function spm(){
-			$data["title"] = "SPM - Surat Perintah Membayar";
-			session()->set('tahap',$this->utama->getTahap());
-			session()->set('tahap',$this->utama->getTahap());
-			//$data["sidebar"] = $this->sidebar->menu();
-			$data["menu"] = file_get_contents("./public/".session()->modul.".json");
-			session()->set('pengajuan','spm');
-	
-			$data["satker"] = $this->utama->listBidang();
-			return view('bp/spm',$data);
+	/* --------------- SPM ------------------- */
+	public function spm(){
+		$data["title"] = "SPM - Surat Perintah Membayar";
+		session()->set('tahap',$this->utama->getTahap());
+		session()->set('tahap',$this->utama->getTahap());
+		//$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+		session()->set('pengajuan','spm');
+
+		$data["satker"] = $this->utama->listBidang();
+		return view('bp/spm',$data);
+	}
+	public function listSPM(){
+		if($this->request->getPost('keybend') != ''){
+			session()->set('keybend',$this->request->getPost('keybend'));
 		}
-		public function listSPM(){
-			if($this->request->getPost('keybend') != ''){
-				session()->set('keybend',$this->request->getPost('keybend'));
-			}
-	
-			$data["spp"] = $this->model->listSPM(session()->jnsBend);
-			return view('bp/listSPM',$data);
+
+		$data["spp"] = $this->model->listSPM(session()->jnsBend);
+		return view('bp/listSPM',$data);
+	}
+	public function rincianSPM(){
+    if($this->request->getPost('nospm') != ''){
+			session()->set('nospm',$this->request->getPost('nospm'));
 		}
-	
+
+		$data["rinci"] = $this->model->rincianSPM();
+		return view('bp/rincianSPM',$data);
+	}
+
+	public function formSPM(){
+		session()->set('nospm','');
+		if($this->request->getPost('nospm') != ''){
+			session()->set('nospm',$this->request->getPost('nospm'));
+		}
+		$data['bendahara'] = $this->model->getBendahara();
+		$data['noreg'] = $this->utama->getNoRegSPM(session()->jnsSpm);
+		$data['unit'] = $this->utama->getUnit();
+		$data['format'] = $this->utama->getWebset(session()->format);
+		$data['keperluan'] = $this->utama->getWebset(session()->keperluan);
+		$data['bulan'] = $this->utama->listBulan();
+		$data['spm'] = $this->model->getSPM(session()->jnsSpm);
+		return view('bp/formSPM'.session()->jnsSpm,$data);
+	}
+	public function sppList(){
+		$data["spp"] = $this->model->sppList($this->request->getPost('tanggal'));
+		return view('bp/sppList',$data);
+	}
+	public function simpanSPM(){
+    if($this->request->getPost('id') == ''){
+      $data = array(
+        "UNITKEY"=>session()->kdUnit,
+				"NOSPM"=>$this->request->getPost('txtNoSPM'),
+        "KDSTATUS"=>session()->kdStatus,
+        "KD_BULAN"=>$this->request->getPost('txtBulan'),
+        "KEYBEND"=>session()->keybend,
+        "IDXKODE"=>session()->Idxkode,
+        "NOREG"=>pjg((session()->noreg)+1,3),
+
+				"KETOTOR"=>$this->request->getPost('txtDasar'),
+        "KEPERLUAN"=>$this->request->getPost('txtUntuk'),
+        "PENOLAKAN"=>"0",
+        "TGLSPM"=>$this->request->getPost('txtTanggal')
+      );
+//			$this->request->getPost('txtPenolakan')
+      $this->model->simpanSPM($data);
+    }else{
+      $data = array(
+        "JNS_BEND"=>$this->request->getPost('txtJBend'),
+        "KDBANK"=>$this->request->getPost('txtBank'),
+        "UNITKEY"=>session()->kdUnit,
+        "JAB_BEND"=>$this->request->getPost('txtBKU'),
+        "REKBEND"=>$this->request->getPost('txtRek'),
+        "SALDOBEND"=>$this->request->getPost('txtSBank'),
+        "NPWPBEND"=>$this->request->getPost('txtNPWP'),
+        "SALDOBENDT"=>$this->request->getPost('txtSTunai'),
+        "NOREK"=>$this->request->getPost('txtRek')
+      );
+      $this->model->simpanSPM($data);
+    }
+		return redirect()->to(site_url('/bp/listSPM'));
+	}
+	public function formSPMSetuju(){
+    session()->set('nospm','');
+    if($this->request->getPost('nospm') != ''){
+			session()->set('nospm',$this->request->getPost('nospm'));
+		}
+    $data['bendahara'] = $this->model->getBendahara();
+    $data['noreg'] = $this->utama->getNoRegSPP();
+    $data['unit'] = $this->utama->getUnit();
+    $data['format'] = $this->utama->getWebset(session()->format);
+    $data['keperluan'] = $this->utama->getWebset(session()->keperluan);
+    $data['bulan'] = $this->utama->listBulan();
+    $data['spm'] = $this->model->getSPM(session()->jnsSpm);
+		return view('bp/formSPMSetuju',$data);
+	}
+	public function hapusSPM(){
+    session()->set('nospm','');
+    if($this->request->getPost('nospm') != ''){
+			session()->set('nospm',$this->request->getPost('nospm'));
+		}
+		$this->model->hapusSPM();
+		return redirect()->to(site_url('/bp/listSPM'));
+	}
+	public function setujuSPM(){
+		$data = array(
+			"PENOLAKAN"=>$this->request->getPost('txtPenolakan'),
+			"TGLVALID"=>$this->request->getPost('txtTanggalValid')
+		);
+		$this->model->setujuSPM($data);
+
+		return redirect()->to(site_url('/bp/listSPM'));
+	}
 }

@@ -1,11 +1,13 @@
 <?php namespace App\Controllers;
 
-use App\Models\Tools_Model;
+use App\Models\Model_Bp;
+use App\Models\Model_Utama;
 //use App\Models\Model_Login;
 
 class Tools extends BaseController
 {
 	public function __construct(){
+		$this->utama = new Tools_Utama;
 		$this->model = new Tools_Model;
 		//$this->sidebar = new Model_Login;
 		$this->session = session();
@@ -16,20 +18,14 @@ class Tools extends BaseController
 	}
 
 	public function konversi(){
-		$data["title"] = "Tools - Konversi Data SIPD";
-		$data["sidebar"] = $this->sidebar->menu();
-		$data['opd'] = $this->sidebar->listSatkerUser();
-		return view('tools/konversi',$data);
+		$data["title"] = "SK Uang Persediaan";
+    session()->set('tahap',$this->utama->getTahap());
+		//$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+
+    return view('bp/skup',$data);
 	}
-	public function formPegawai(){
-    session()->set('nip','');
-    if($this->request->getPost('nip') != ''){
-			session()->set('nip',$this->request->getPost('nip'));
-		}
-    $data["pegawai"] = $this->data->getPegawai(session()->nip);
-    $data["golongan"] = $this->data->listGolongan();
-		return view('pengaturan/formPegawai',$data);
-	}
+
 
 
 }

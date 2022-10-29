@@ -7,6 +7,7 @@
 			$this->db = \Config\Database::connect();
     	$this->session = session();
 		}
+			//echo nl2br($builder->getCompiledSelect());
 
 		public function listBidang(){
 			$builder = $this->db->table('DAFTUNIT');
@@ -26,12 +27,31 @@
       $rs = $builder->get()->getRow();
 			return $rs;
 		}
+		public function listPegawai($tabel){
+			$builder = $this->db->table($tabel.' A')->join('PEGAWAI P','A.NIP = P.NIP', 'LEFT OUTER')->join('GOLONGAN G','P.KDGOL = G.KDGOL', 'LEFT OUTER');
+			$builder->select('A.*,P.NAMA, P.JABATAN, G.PANGKAT')->where("A.UNITKEY",session()->kdUnit);
+      $rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function listTTD($kddok){
+			$builder = $this->db->table('JABTTD A')->join('PEGAWAI P','A.NIP = P.NIP', 'LEFT OUTER')->join('GOLONGAN G','P.KDGOL = G.KDGOL', 'LEFT OUTER');
+			$builder->select('A.*,P.NAMA, P.JABATAN, G.PANGKAT')->where("A.UNITKEY",session()->cur_skpkd)->where('KDDOK',$kddok);
+      $rs = $builder->get()->getResult();
+			return $rs;
+		}
 
 		public function listBulan(){
 			$builder = $this->db->table('BULAN');
 			$builder->select('*')->orderBy('KDPERIODE','ASC');
       $rs = $builder->get()->getResult();
 			return $rs;
+		}
+
+		public function listRekBUD(){
+			$builder = $this->db->table('BKBKAS A');
+			$builder->join('DAFTBANK B','A.KDBANK = B.KDBANK','LEFT OUTER')->join('MATANGNRC C','A.MTGKEY = C.MTGKEY','LEFT OUTER');
+			$builder->select('A.*,B.NMBANK,C.NMPER')->orderBy('NOBBANTU','ASC');
+			return $builder->get()->getResult();
 		}
 
 		public function listBendahara($jns= null){
@@ -81,12 +101,43 @@
 
 			return;
 		}
+		public function getNoRegSPM($jnsSpm){
+			if($jnsSpm == "up"){
+				$builder = $this->db->table('ANTARBYR');
+			}
+			$builder->select('top (1) ISNULL(NOREG,0) as NOREG')->where('UNITKEY',session()->kdUnit)->orderBy('NOREG','DESC');
+			$rs = $builder->get()->getRow();
+			session()->set('noreg',$rs->NOREG);
+
+			return;
+		}
+		public function getNoRegSP2D(){
+			$builder = $this->db->table('SP2D');
+			$builder->select('top (1) ISNULL(NOREG,0) as NOREG')->where('UNITKEY',session()->kdUnit)->orderBy('NOREG','DESC');
+			$rs = $builder->get()->getRow();
+			session()->set('noreg',($rs->NOREG)+1);
+
+			return;
+		}
 		public function getNoSPP(){
 			$builder = $this->db->table('SPP');
 			$builder->select('top (1) ISNULL(NOSPP,0) as NOSPP')->where('UNITKEY',session()->kdUnit)->where('KEYBEND',session()->keybend)->orderBy('NOSPP','DESC');
 			$rs = $builder->get()->getRow();
 			return ($rs->NOSPP+0)+1;
 		}
+		public function setFlashData($error,$ok,$type='info'){
+			if($this->db->affectedRows() > 0){
+				session()->setFlashData("success", $ok);
+			}	else {	
+				session()->setFlashData("danger", $error);
+			}		
+		}
+		public function getPemda($where){
+			$builder = $this->db->table('PEMDA')->select('CONFIGVAL')->where('CONFIGID',$where)->get()->getRow();
+			session()->set($where,$builder->CONFIGVAL);
+			return;
+		}
+
 
 	}
 ?>

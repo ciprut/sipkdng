@@ -1,18 +1,18 @@
 <?php
   $form = new Form_render;
-  $form->addTitle("Detil SPP No ".session()->nospp);
+  $form->addTitle("Detil SPM No ".session()->nospm);
   $form->addClear("10");
-  if(session()->jnsSpp != "up"){
-    $form->addButton(array("id"=>"btnTambahSPP","icon"=>"plus","title"=>"Tambah SPP","color"=>"primary"));
+  if(session()->jnsSpm != "up"){
+    $form->addButton(array("id"=>"btnTambahSPM","icon"=>"plus","title"=>"Tambah Rincian","color"=>"primary"));
   }
 
-  $tabel = array("tblSPPRinci",array("NO SPP","KD STATUS","URAIAN","JUMLAH",""));
+  $tabel = array("tblSPPRinci",array("KODE","KD STATUS","URAIAN","JUMLAH",""));
   $form->addTable($tabel);
   foreach($rinci as $h){ ?>
     <tr class=''>
-      <td align='left'><?php echo$h->NOSPP ?></td>
+      <td align='left'><?php echo$h->MTGKEY ?></td>
       <td align='center'><?php echo $h->NOJETRA ?></td>
-      <td align='left'><?php echo $h->KDPER." ".$h->NMPER ?></td>
+      <td align='left'><?php echo $h->NMPER ?></td>
       <td align='right'><?php echo number_format($h->NILAI,2) ?></td>
       <td align='center'>
         <?php
@@ -38,7 +38,8 @@
     "ordering":false,
     "pageLength":10,
     "columnDefs": [
-      { "width": 120, "targets": 1 },
+      { "width": 120, "targets": 0 },
+      { "width": 100, "targets": 1 },
       { "width": 150, "targets": 3 },
       { "width": 50, "targets": 4 }
     ],

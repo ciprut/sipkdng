@@ -1,8 +1,8 @@
-<?
+<?php
   $form = new Form_render;
 ?>
 <form id='frmSPPSetuju'>
-  <?
+  <?php
     $form->addHidden(array("id"=>"id","value"=>$spp->NOSPP));
     $form->addHidden(array("id"=>"idxsko","value"=>""));
 
@@ -36,10 +36,7 @@
 
     $penolakan = array('1__Diterima','0__Ditolak');
     $row = array(
-      array("width"=>"12","type"=>"select","id"=>"txtPenolakan","label"=>"Keterangan Penolakan","default"=>$spp->PENOLAKAN,"option"=>$penolakan)
-    );
-    $form->addRow($row);
-    $row = array(
+      array("width"=>"7","type"=>"select","id"=>"txtPenolakan","label"=>"Keterangan Penolakan","default"=>$spp->PENOLAKAN,"option"=>$penolakan),
       array("width"=>"5","type"=>"text","id"=>"txtTanggalValid","label"=>"Tanggal","placeholder"=>"","value"=>$tgl)
     );
     $form->addRow($row);
@@ -53,4 +50,12 @@
   $("#btnSimpan").click(function(){
     post_to_tab("1","setujuSPP",$("#frmSPPSetuju").serialize());
   });
+  $("#txtPenolakan").change(function(){
+    if($(this).val() == "0"){
+      $("#txtTanggalValid").val("").prop( "disabled", true ).datepicker( "option", "disabled", true );
+    }else{
+      $("#txtTanggalValid").val("").prop( "disabled", false ).datepicker( "option", "disabled", false );
+    }
+  });
+
 </script>

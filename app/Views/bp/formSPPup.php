@@ -1,14 +1,14 @@
-<?
+<?php
   $form = new Form_render;
 ?>
 <form id='frmSPP'>
-  <?
+  <?php
     $form->addHidden(array("id"=>"id","value"=>$spp->NOSPP));
     $form->addHidden(array("id"=>"idxsko","value"=>""));
 
     if($spp->NOSPP != ''){
       $reg = pjg($spp->NOREG,3);
-      $kep = $spp->KEPERLUAN;
+      $kep = $spm->KEPERLUAN;
       $form->addGroup(array("type"=>"text","id"=>"txtNoSPP","label"=>"Nomer SPP","placeholder"=>"","readonly"=>"1","value"=>$spp->NOSPP));
     }else{
       $reg = pjg((session()->noreg)+1,3);
@@ -62,4 +62,5 @@
   $("#btnSimpan").click(function(){
     post_to_TAB("1","simpanSPP",$("#frmSPP").serialize());
   });
+
 </script>

@@ -20,4 +20,16 @@ class Utama extends BaseController
     $data["unit"] = $this->utama->listUnit();
 		return view('utama/listUnit',$data);
 	}
+  public function listPegawai($tabel){
+    $data["pegawai"] = $this->utama->listPegawai($tabel);
+		return view('utama/listPegawai',$data);
+	}
+	public function listTTD($kddok){
+    $data["pegawai"] = $this->utama->listTTD($kddok);
+		return view('utama/listPegawai',$data);
+	}
+	public function rekList(){
+		$data["rek"] = $this->utama->listRekBUD();
+		return view('utama/rekList',$data);
+	}
 }

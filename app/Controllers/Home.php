@@ -1,12 +1,14 @@
 <?php namespace App\Controllers;
 
 //use App\Models\Model_Login;
+use App\Models\Model_Utama;
 
 class Home extends BaseController
 {
 	public function __construct(){
 		//$this->model=new Model_Login;
 		$this->session = session();
+		$this->utama=new Model_Utama;
 	}
 	public function index()
 	{
@@ -17,6 +19,7 @@ class Home extends BaseController
 	public function verify(){
 		session()->set('tahun',$this->request->getPost('tahun'));
 		session()->set('modul',$this->request->getPost('modul'));
+		$this->utama->getPemda('cur_skpkd');
 
 		return redirect()->to(site_url('/login/verify'));
 }
