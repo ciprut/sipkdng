@@ -119,6 +119,24 @@
 
 			return;
 		}
+		public function getNoRegBKU($table){
+			$q = "SELECT NOBUKAS FROM (
+				SELECT NOBUKAS FROM BKUK WHERE NOBBANTU = '".session()->nobbantu."' 
+				UNION ALL 
+				SELECT NOBUKAS FROM BKUD WHERE NOBBANTU = '".session()->nobbantu."'
+			)A order by NOBUKAS";
+			$builder = $this->db->query($q);
+			$rs = $builder->getRow();
+			session()->set('nobukas',($rs->NOBUKAS)+1);
+
+			return;
+		}
+		public function getNobbantu($no){
+			$builder = $this->db->table('BKBKAS');
+			$builder->select('*')->where('NOBBANTU',$no)->get()->getRow();
+			$rs = $builder->get()->getRow();
+			return $rs;
+		}
 		public function getNoSPP(){
 			$builder = $this->db->table('SPP');
 			$builder->select('top (1) ISNULL(NOSPP,0) as NOSPP')->where('UNITKEY',session()->kdUnit)->where('KEYBEND',session()->keybend)->orderBy('NOSPP','DESC');

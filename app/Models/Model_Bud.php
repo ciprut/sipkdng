@@ -3,7 +3,7 @@
 	use CodeIgniter\Model;
 
 	class Model_Bud extends Model{
-		public function __construct() {          
+		public function __construct() {  
 			$this->db = \Config\Database::connect();
     	$this->session = session();
 			$this->utama = new \App\Models\Model_Utama;
@@ -185,19 +185,34 @@
 
 		public function listValidasi($post){
 			if(session()->jns == 'bkuk'){
-				$q = "
-				@allowsuperuser=0,
-				@nobbantu='".$post['NOBBANTU']."',
-				@tgl1='".$post['NOBBANTU']." 00:00:00',
-				@tgl2='".$post['NOBBANTU']." 00:00:00',
-				@field=N'1',@value='',
+				$sp = "SET NOCOUNT ON; EXEC WSPI_BKUK 
+				@allowsuperuser='0',
+				@nobbantu='".trim($post['NOBBANTU'])."',
+				@TGL1='".$post['TGL1']." 00:00:00',
+				@TGL2='".$post['TGL2']." 00:00:00',
+				@field='1',
+				@value='',
 				@hal=1,
 				@flgtgl=0,
 				@jur=0
 				";
-				$this->db->query("EXEC WSPI_BKUK ".$q);
+				$rs = $this->db->query($sp)->getResult();
 			}
-			return;
+			return $rs;
+		}
+		public function sp2dList($tgl=null){
+			$builder = $this->db->table('SP2D A');
+			$builder->select('rtrim(A.NOSP2D) as NOSP2D,convert(char(10), A.TGLSP2D, 101) as TGLSP2D,convert(char(10), A.TGLVALID, 103) as TGLVALID,rtrim(A.KEPERLUAN) as KEPERLUAN');
+			$builder->select('A.IDXTTD,B.NIP,C.NAMA');
+			$builder->join('JABTTD B','A.IDXTTD = B.IDXTTD','LEFT OUTER');
+			$builder->join('PEGAWAI C','B.NIP = C.NIP');
+			$builder->where('A.NOBBANTU',session()->nobbantu)->where('A.TGLVALID is not',null)->where('A.NOSP2D not in (select NOSP2D from BKUK)');
+			if($tgl != NULL){
+				$whereDate = 'Convert(char(10), A.TGLVALID, 101) <= Convert(datetime, \''.$tgl.'\')';
+				$builder->where($whereDate);
+			}
+			//echo $builder->getCompiledSelect();die();
+			return $builder->get()->getResult();
 		}
 
 	}

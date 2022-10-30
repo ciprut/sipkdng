@@ -48,6 +48,7 @@
     $("#listValidasi").html('');
     if($(this).val() != ''){
       post_to_content("listValidasi","listValidasi",$("#frmValidasi").serialize());
+      $(this).val('');
     }
   })
 </script>

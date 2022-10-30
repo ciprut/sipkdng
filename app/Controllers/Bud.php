@@ -137,9 +137,22 @@ class Bud extends BaseController
 			"TGL1"=>$this->request->getPost('txtTglMulai'),
 			"TGL2"=>$this->request->getPost('txtTglSsampai')
 		);
-		$this->model->listValidasi($data);
+		$data['valid'] = $this->model->listValidasi($data);
 
 		return view('bud/listValidasi',$data);
+	}
+	public function formValidasi(){
+		session()->set('nobbantu','');
+		if($this->request->getPost('nobbantu') != ''){
+			session()->set('nobbantu',trim($this->request->getPost('nobbantu')));
+		}
+		$data['bantu'] = $this->utama->getNobbantu($this->request->getPost('nobbantu'));
+		$data['noreg'] = $this->utama->getNoRegBKU('BKUK');
+		return view('bud/formValidasi',$data);
+	}
+	public function sp2dList(){
+		$data["sp2d"] = $this->model->sp2dList($this->request->getPost('tanggal'));
+		return view('bud/sp2dList',$data);
 	}
 
 }
