@@ -1,0 +1,63 @@
+TBP TU => Cari SP2D TU
+
+select 
+rtrim(S.NOSP2D)  as NOSP2D,convert(char(10), S.TGLSP2D, 103) as TGLSP2D,rtrim(S.KEPERLUAN) as KEPERLUAN,
+rtrim(D.KDUNIT) as KDUNIT,rtrim(S.NOSP2D) "PK_1"
+from  SP2D S
+INNER join DAFTUNIT D on S.UNITKEY = D.UNITKEY
+where
+S.NOSP2D like ''%%''
+and convert(char(10), S.TGLSP2D, 103) like ''%%''
+and isnull(S.KEPERLUAN,'''') like ''%%''
+and D.KDUNIT like ''%%''
+and s.UNITKEY= '2679_'
+and S.IDXKODE =  '2'
+AND s.KDSTATUS=''23''
+order by rtrim(S.NOSP2D)
+
+@param0=N'',@param1=N'',@param2=N'',@param3=N'',@param4=N'2679_',@param5=N'2'
+
+
+TBP cari Berita Acara
+select rtrim(A.NOBA)  as NOBA ,convert(char(10), TGLBA, 103) as TGLBA,rtrim(A.NOKON) as NOKON,rtrim(A.NOBA) as "PK_1"
+from  berita  a
+LEFT OUTER JOIN SPPBA B ON B.UNITKEY = a.UNITKEY AND B.NOBA = a.NOBA
+where
+A.UNITKEY =  '2679_'  and 
+AND A.KDKEGUNIT =  '8765_'
+AND A.TGLVALID is not null AND B.NOBA IS null 
+AND A.NOBA NOT IN (select NOBA from BPK  where NOBA is not null) 
+AND A.NOBA NOT IN (select NOBA from SPPBA  where NOBA is not null)
+AND  A.NOBA like ''% %''
+order by rtrim(A.NOBA)
+
+',N'@param0 nvarchar(5),
+@param1 nvarchar(5),@param2 nvarchar(4000)',@param0=N'2679_',@param1=N'8765_',@param2=N''
+
+List Sub Belanja Kegiatan
+SELECT 
+BL.*,rtrim(B.KDSTATUS) as KDSTATUS,B.TGLBPK ,B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND,B.PENERIMA,B.TGLVALID,
+B.IDXKODE,J.NMJETRA, J.KDPERS, rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER
+FROM BPKDETR BL
+LEFT OUTER JOIN BPK B ON BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY
+LEFT OUTER JOIN MATANGR M ON BL.MTGKEY = M.MTGKEY
+LEFT OUTER JOIN JTRNLKAS J ON BL.NOJETRA = J.NOJETRA
+where
+BL.UNITKEY= @param0  and BL.NOBPK= @param1  and BL.KDKEGUNIT= @param2         and case  @param3         when ''1'' then M.KDPER        when ''2'' then M.NMPER        end like ''%''+  @param4  + ''%''        
+order by M.KDPER'
+,N'@param0 nvarchar(5),@param1 nvarchar(7),@param2 nvarchar(4000),@param3 nvarchar(1),@param4 nvarchar(4000)',
+
+@param0=N'2679_',@param1=N'TBP-001',@param2=NULL,@param3=N'1',@param4=N''
+
+
+select distinct B.KDPER, B.NMPER,B.MTGKEY,B.TYPE
+from DASKR A
+left join MATANGR B on A.mtgkey = B.mtgkey
+where A.UNITKEY in (select UNITKEY from DAFTUNIT where KDUNIT= @param0 )  and A.KDKEGUNIT= @param1
+and A.MTGKEY not in (select rtrim(MTGKEY) from BPKDETR S where S.UNITKEY= @param2  and S.NOBPK= @param3   and S.KDKEGUNIT= @param1 )    order by KDPER
+
+',N'@param0 nvarchar(18),@param1 nvarchar(10),@param2 nvarchar(5),@param3 nvarchar(39)',
+@param0=N'5.02.0.00.0.00.01.',@param1=N'8765_     ',@param2=N'2679_',@param3=N'00001/TBP-UP/5.02.0.00.0.00.01/B02/2021'
+
+
+INSERT INTO BPKDETR (	NILAI,	NOJETRA,	KDKEGUNIT,	MTGKEY,	NOBPK,	UNITKEY) VALUES (	 @param0,	 @param1,	 @param2,	 @param3,	 @param4,	 @param5)',N'@param0 decimal(1,0),@param1 nvarchar(2),@param2 nvarchar(5),@param3 nvarchar(5),@param4 nvarchar(39),@param5 nvarchar(5)',@param0=0,@param1=N'21',@param2=N'8765_',@param3=N'4898_',@param4=N'00001/TBP-UP/5.02.0.00.0.00.01/B02/2021',@param5=N'2679_'

@@ -148,11 +148,38 @@ class Bud extends BaseController
 		}
 		$data['bantu'] = $this->utama->getNobbantu($this->request->getPost('nobbantu'));
 		$data['noreg'] = $this->utama->getNoRegBKU('BKUK');
+		$data['idxttd'] = $this->utama->getIdxttd('04.501');
 		return view('bud/formValidasi',$data);
 	}
 	public function sp2dList(){
 		$data["sp2d"] = $this->model->sp2dList($this->request->getPost('tanggal'));
 		return view('bud/sp2dList',$data);
+	}
+	public function simpanValidasi(){
+		session()->set('nobukas','');
+    if($this->request->getPost('id') == ''){
+      $data = array(
+				"KDBUKTI"=>trim($this->request->getPost('txtJenisBukti')),
+				"IDXTTD"=>trim($this->request->getPost('idxttd')),
+				"NOBUKTIKAS"=>trim($this->request->getPost('txtNoBuktiVal')),
+				"NOSP2D"=>trim($this->request->getPost('txtNoSP2D')),
+				"TGLKAS"=>trim($this->request->getPost('txtTanggalVal')),
+				"NOBUKAS"=>trim($this->request->getPost('txtNoVal'))
+      );
+      $this->model->simpanValidasi($data);
+    }else{
+			session()->set('nobukas',$this->request->getPost('id'));
+      $data = array(
+				"KDBUKTI"=>trim($this->request->getPost('txtJenisBukti')),
+				"IDXTTD"=>trim($this->request->getPost('idxttd')),
+				"NOBUKTIKAS"=>trim($this->request->getPost('txtNoBuktiVal')),
+				"NOSP2D"=>trim($this->request->getPost('txtNoSP2D')),
+				"TGLKAS"=>trim($this->request->getPost('txtTanggalVal')),
+				"NOBUKAS"=>trim($this->request->getPost('txtNoVal'))
+      );
+      $this->model->simpanValidasi($data);
+    }
+		return redirect()->to(site_url('/bud/listValidasi'));
 	}
 
 }

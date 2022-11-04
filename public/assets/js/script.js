@@ -503,14 +503,16 @@ function post_to_dat(url,data,callBack){
 	return h;
 }
 
-function post_to_content(content,url,variabel,callBack,goToTop){
+function post_to_content(content,url,variabel,loading){
 	plswait();
 	if(content){
 		isi = content;
 	}else{
 		isi = "content";
 	}
-	//$("#"+isi).html(tunggu);
+	if(loading){
+		$("#"+isi).html("<center>...loading...</center>");
+	}
 	var hal = $("#"+content).attr("hal");
 	$.ajax({
 		type:"POST",
@@ -523,10 +525,8 @@ function post_to_content(content,url,variabel,callBack,goToTop){
 			}
 		}
 	});
-	//cls();
 	$("#div-tgg").remove();
 	siap();
-//	window.scrollTo(0,200);
 }
 
 function post_to_modal(url,variabel,judul,lebar=''){

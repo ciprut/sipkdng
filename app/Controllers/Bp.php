@@ -258,7 +258,6 @@ class Bp extends BaseController
         "PENOLAKAN"=>"0",
         "TGLSPM"=>$this->request->getPost('txtTanggal')
       );
-//			$this->request->getPost('txtPenolakan')
       $this->model->simpanSPM($data);
     }else{
       $data = array(
@@ -307,4 +306,264 @@ class Bp extends BaseController
 
 		return redirect()->to(site_url('/bp/listSPM'));
 	}
+
+	/* --------------- BKUBP ------------------- */
+	public function bkubp(){
+		$data["title"] = "BKU Bendahara Pengeluaran";
+		session()->set('tahap',$this->utama->getTahap());
+		//$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+
+		$data["satker"] = $this->utama->listBidang();
+		return view('bp/bkubp',$data);
+	}
+	public function listBKUBP(){
+		if($this->request->getPost('keybend') != ''){
+			session()->set('keybend',$this->request->getPost('keybend'));
+			session()->set('kdUnit',$this->request->getPost('unitkey'));
+		}
+		$data["bkubp"] = $this->model->listBKUBP();
+		return view('bp/listBKUBP',$data);
+	}
+	public function formBKUBP(){
+		session()->set('nobkuskpd','');
+		if($this->request->getPost('nobkuskpd') != ''){
+			session()->set('nobkuskpd',$this->request->getPost('nobkuskpd'));
+		}
+		$data['bku'] = $this->utama->getBKUSKPD();
+		$data['noreg'] = $this->utama->getNoBKUSKPD();
+		return view('bp/formBKUBP',$data);
+	}
+	public function simpanBKUBP(){
+    if($this->request->getPost('id') == ''){
+      $data = array(
+        "NOBUKTI"=>$this->request->getPost('txtNoBukti'),
+				"TGLBKUSKPD"=>$this->request->getPost('txtTanggal'),
+        "URAIAN"=>$this->request->getPost('txtUntuk'),
+        "NOBKUSKPD"=>$this->request->getPost('txtNoBKU')."-B02"
+      );
+      $this->model->simpanBKUBP($data);
+    }else{
+      $data = array(
+        "NOBUKTI"=>$this->request->getPost('txtNoBukti'),
+				"TGLBKUSKPD"=>$this->request->getPost('txtTanggal'),
+        "URAIAN"=>$this->request->getPost('txtUntuk'),
+        "NOBKUSKPD"=>$this->request->getPost('txtNoBKU')."-B02"
+      );
+      $this->model->simpanSPM($data);
+    }
+		return redirect()->to(site_url('/bp/listBKUBP'));
+	}
+	public function hapusBKUBP(){
+		$kode = explode("__",$this->request->getPost('nobkuskpd'));
+		session()->set('nobkuskpd',$kode[0]);
+		$this->model->hapusBKUBP($kode[1]);
+		return redirect()->to(site_url('/bp/listBKUBP'));
+	}
+
+	/* --------------- PERGESERAN UANG ------------------- */
+	public function pergeseranuang(){
+		$data["title"] = "BP - Pergeseran Uang";
+		session()->set('tahap',$this->utama->getTahap());
+		//$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+
+		$data["satker"] = $this->utama->listBidang();
+		return view('bp/pergeseranuang',$data);
+	}
+	public function listPergeseranUang(){
+		if($this->request->getPost('keybend') != ''){
+			session()->set('kdUnit',$this->request->getPost('unitkey'));
+			session()->set('keybend',$this->request->getPost('keybend'));
+			session()->set('kdUnit',$this->request->getPost('unitkey'));
+		}
+		$data["bkubp"] = $this->model->listPergeseranUang();
+		return view('bp/listPergeseranUang',$data);
+	}
+	public function formPergeseranUang(){
+		session()->set('nobuku','');
+		if($this->request->getPost('nobuku') != ''){
+			session()->set('nobuku',$this->request->getPost('nobuku'));
+			$data['pu'] = $this->model->listPergeseranUang(session()->nobuku);
+		}else{
+			$data['pu'] = [];
+		}
+		return view('bp/formPergeseranUang',$data);
+	}
+	public function simpanPU(){
+    if($this->request->getPost('id') == ''){
+      $data = array(
+				"IDXTTD"=>"",
+        "KDSTATUS"=>$this->request->getPost('txtJB'),
+				"KEYBEND1"=>session()->keybend,
+				"KEYBEND2"=>"",
+				"TGLBUKU"=>$this->request->getPost('txtTanggal'),
+        "URAIAN"=>$this->request->getPost('txtUntuk'),
+				"UNITKEY"=>session()->kdUnit,
+        "NOBUKU"=>$this->request->getPost('txtNo')
+      );
+      $this->model->simpanPU($data);
+    }else{
+      $data = array(
+        "NOSP2D"=>$this->request->getPost('txtNoSP2D'),
+				"TGLBKUSKPD"=>$this->request->getPost('txtTanggal'),
+        "URAIAN"=>$this->request->getPost('txtUntuk'),
+        "NOBKUSKPD"=>$this->request->getPost('txtNoBKU')."-B02"
+      );
+      $this->model->simpanSPM($data);
+    }
+		return redirect()->to(site_url('/bp/listPergeseranUang'));
+	}
+	public function hapusPU(){
+		if($this->request->getPost('nobuku') != ''){
+			session()->set('nobuku',$this->request->getPost('nobuku'));
+		}
+		$this->model->hapusPU();
+		return redirect()->to(site_url('/bp/listPergeseranUang'));
+	}
+	public function rincianPU(){
+		if($this->request->getPost('nobuku') != ''){
+			session()->set('nobuku',$this->request->getPost('nobuku'));
+		}
+		$data["rinci"] = $this->model->rincianPU();
+		return view('bp/rincianPU',$data);
+	}
+	public function updateRinciPU(){
+		$post = array("NILAI"=>$this->request->getPost('nilai'));
+		$this->model->updateRinciPU($post);
+		return redirect()->to(site_url('/bp/rincianPU'));
+	}
+
+	/* --------------- TANDA BUKTI PENGELUARAN ------------------- */
+	public function TBP(){
+		$data["title"] = "TBP - Tanda Bukti Pengeluaran";
+		session()->set('tahap',$this->utama->getTahap());
+		//$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+
+		$data["satker"] = $this->utama->listBidang();
+		return view('bp/tbp',$data);
+	}
+
+	public function listTBP(){
+		if($this->request->getPost('keybend') != ''){
+			session()->set('kdUnit',$this->request->getPost('unitkey'));
+			session()->set('keybend',$this->request->getPost('keybend'));
+			session()->set('idSub',$this->request->getPost('sub'));
+		}
+		$data["tbp"] = $this->model->listTBP();
+		return view('bp/listTBP',$data);
+	}
+	public function rinciTBP(){
+		if($this->request->getPost('nobpk') != ''){
+			session()->set('nobpk',$this->request->getPost('nobpk'));
+		}
+		$data["rinci"] = $this->model->rinciTBP();
+		return view('bp/rinciTBP',$data);
+	}
+	public function formTBP(){
+		session()->set('nobpk','');
+		if($this->request->getPost('nobpk') != ''){
+			session()->set('nobpk',$this->request->getPost('nobpk'));
+			$data['tbp'] = $this->model->getTBP(session()->nobuku);
+		}else{
+			$data['noreg'] = $this->utama->getNoRegTBP();
+			$data['unit'] = $this->utama->getUnit();
+			$data['bend'] = $this->utama->getBendahara();
+			$data['tbp'] = [];
+		}
+		return view('bp/formTBP',$data);
+	}
+	public function simpanTBP(){
+		$stpanjar = $sttunai = $stbank = '0';
+		if($this->request->getPost('txtSbr') == 'tunai'){
+			$sttunai = '1';
+		}else if($this->request->getPost('txtSbr') == 'panjar'){
+			$stpanjar = '1';
+		}else{
+			$stbank = '1';
+		}
+    if($this->request->getPost('id') == ''){
+      $data = array(
+				"UNITKEY"=>session()->kdUnit,
+				"TGLBPK"=>$this->request->getPost('txtTanggal'),
+        "STPANJAR"=>$stpanjar,
+        "STTUNAI"=>$sttunai,
+        "STBANK"=>$stbank,
+        "KDSTATUS"=>'21',
+				"IDXKODE"=>"2",
+				"KEYBEND"=>session()->keybend,
+				"PENERIMA"=>$this->request->getPost('txtPenerima'),
+        "URAIBPK"=>$this->request->getPost('txtUntuk'),
+        "NOBPK"=>$this->request->getPost('txtNo')
+      );
+      $this->model->simpanTBP($data);
+    }else{
+      $data = array(
+        "NOSP2D"=>$this->request->getPost('txtNoSP2D'),
+				"TGLBKUSKPD"=>$this->request->getPost('txtTanggal'),
+        "URAIAN"=>$this->request->getPost('txtUntuk'),
+        "NOBKUSKPD"=>$this->request->getPost('txtNoBKU')."-B02"
+      );
+      $this->model->simpanTBP($data);
+    }
+		return redirect()->to(site_url('/bp/listTBP'));
+	}
+	public function listSubRinc(){
+		if($this->request->getPost('idSub') != ''){
+			session()->set('idSub',$this->request->getPost('idSub'));
+		}
+		$data["sro"] = $this->model->listSubRinc();
+		return view('bp/listSubRinc',$data);
+	}
+	public function tambahRO(){
+		$post = array(
+			"MTGKEY"=>$this->request->getPost('mtgkey'),
+			"NILAI"=>"0",
+			"NOJETRA"=>"21",
+			"KDKEGUNIT"=>session()->idSub,
+			"NOBPK"=>session()->nobpk,
+			"UNITKEY"=>session()->kdUnit
+		);
+		$this->model->tambahRO($post);
+		return redirect()->to(site_url('/bp/rinciTBP'));
+	}
+	public function listSDTBP(){
+		if($this->request->getPost('kdper') != ''){
+			session()->set('mtgkey',$this->request->getPost('kdper'));
+		}
+		$data["sd"] = $this->model->listSDTBP();
+		return view('bp/listSDTBP',$data);
+	}
+	public function listSDSub(){
+		$data["sd"] = $this->model->listSDSub();
+		return view('bp/listSDSub',$data);
+	}
+	public function inputSDTBP(){
+		if($this->request->getPost('kdDana') != ''){
+			session()->set('kdDana',$this->request->getPost('kdDana'));
+		}
+		$this->model->inputSDTBP();
+		return redirect()->to(site_url('/bp/listSDTBP'));
+	}
+	public function updateRinciTBP(){
+		$post = array(
+			"NILAI"=>$this->request->getPost('nilai'),
+			"KDDANA"=>$this->request->getPost('kdDana')
+		);
+		$this->model->updateRinciTBP($post);
+		return redirect()->to(site_url('/bp/listSDTBP'));
+	}
+
+	/* --------------- PERTANGGUNGJAWABAN ------------------- */
+	public function pertanggungjawaban(){
+		$data["title"] = "Pertanggungjawaban UP/GU/TU";
+		session()->set('tahap',$this->utama->getTahap());
+		//$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+
+		$data["satker"] = $this->utama->listBidang();
+		return view('bp/pertanggungjawaban',$data);
+	}
+
 }

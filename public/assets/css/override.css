@@ -1091,3 +1091,26 @@ input[type=checkbox], input[type=radio]{
   position:relative;
   padding-bottom:43px;
 }
+.prokeg li{
+  margin-left:0px;
+  list-style: none;
+  font-size: 12px;
+}
+
+.treex i.fa{
+  margin-right: 10px;
+  -webkit-transition: transform 0.1s ease-in-out;
+  transition: transform 0.1s ease-in-out;
+}
+.rot {
+  -ms-transform: rotate(90deg);
+  -webkit-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+@keyframes cw {
+  50% {transform: rotate(90deg);}
+}
+@keyframes ccw {
+  50% {transform: rotate(-90deg);}
+}

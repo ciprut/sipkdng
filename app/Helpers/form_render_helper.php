@@ -280,6 +280,9 @@ class Form_render{
 			$html = "";
 			$html .= "<div class='btn-group'>";
 			for($i=0;$i<sizeof($data);$i++){
+				if($dats["state"] != ''){
+					return;
+				}
 				$id = (isset($data[$i]["id"])) ? $data[$i]["id"] : "";
 				$elm = $data[$i]["elm"];
 				$icon = (isset($data[$i]["icon"])) ? $data[$i]["icon"] : "plus";
@@ -308,15 +311,7 @@ class Form_render{
 			echo $html;
 			return;
 		}
-		/*
-		$data = array("title"=>"Cetak","id"=>"btnAksiPrint","icon"=>"print","color"=>"success",
-      "options"=>array(
-        array("class"=>"btnCetakRekap","elm"=>$elm,"title"=>"Pagu Pembahasan","icon"=>"edit"),
-        array("class"=>"btnCetakRekapPendapatan","elm"=>$elm,"title"=>"Pagu Sumber Dana","icon"=>"edit"),
-        array("class"=>"btnCetakRekapSumberDana","elm"=>$elm,"title"=>"Pagu Pendapatan","icon"=>"edit")
-      )
-		);
-    */
+
 		function addButtonIconGroup($data,$level=null){
 			$options = $data["options"];
 			$id = $data["id"];
@@ -326,31 +321,31 @@ class Form_render{
 
 			$html = "<div class='btn-group' style='margin-left:10px'>";
 
-				$html .= "<div type='button' class='btn btn-labeled dropdown-toggle btn-".$color."' id='".$id."' data-toggle='dropdown'>";
-				$html .= "<span class='btn-label'><i class='glyphicon glyphicon-".$icon."' aria-hidden='true'></i></span>".$title."</div>";
+			$html .= "<div type='button' class='btn btn-labeled dropdown-toggle btn-".$color."' id='".$id."' data-toggle='dropdown'>";
+			$html .= "<span class='btn-label'><i class='glyphicon glyphicon-".$icon."' aria-hidden='true'></i></span>".$title."</div>";
 			$html .= "<ul class='dropdown-menu' style='background:#FFFFFF;padding:2px'>";
-				for($n=0;$n<sizeof($options);$n++){
-					$opt = $options[$n];
-					$separator = (isset($opt["type"])) ? $opt["type"] : "link";
-					if($separator != "separator"){
-						$class = $opt["class"];
-						$elm = $opt["elm"];
-						$title = $opt["title"];
-						$icon = (isset($opt["icon"])) ? $opt["icon"] : "th-list";
-						$glyp = "<i class='glyphicon glyphicon-".$icon."' aria-hidden='true'></i>";
-					}
-					if($separator == "separator"){
-						$content = "<li role='separator' class='divider' style='border-bottom:1px solid #cccccc;margin:2px'></li>";
-					}else{
-						$content = "<li style='padding:0px;margin-bottom:2px'><a href='#' class='dropdown-link' id='".$class."' data-elm='".$elm."'>".$glyp." ".$title."</a></li>";
-					}
-					$akses = (isset($data[$i]["akses"])) ? $data[$i]["akses"] : "1";
-					if($akses == '0'){
-						$html .= '';
-					}else{
-						$html .= $content;
-					}
+			for($n=0;$n<sizeof($options);$n++){
+				$opt = $options[$n];
+				$separator = (isset($opt["type"])) ? $opt["type"] : "link";
+				if($separator != "separator"){
+					$class = $opt["class"];
+					$elm = $opt["elm"];
+					$title = $opt["title"];
+					$icon = (isset($opt["icon"])) ? $opt["icon"] : "th-list";
+					$glyp = "<i class='glyphicon glyphicon-".$icon."' aria-hidden='true'></i>";
 				}
+				if($separator == "separator"){
+					$content = "<li role='separator' class='divider' style='border-bottom:1px solid #cccccc;margin:2px'></li>";
+				}else{
+					$content = "<li style='padding:0px;margin-bottom:2px'><a href='#' class='dropdown-link' id='".$class."' data-elm='".$elm."'>".$glyp." ".$title."</a></li>";
+				}
+				$akses = (isset($data[$i]["akses"])) ? $data[$i]["akses"] : "1";
+				if($akses == '0'){
+					$html .= '';
+				}else{
+					$html .= $content;
+				}
+			}
 			$html .= "</ul></div>";
 			if($level != null && $level != '1'){
 				$html = '';
@@ -359,15 +354,6 @@ class Form_render{
 			return;
 		}
 
-		/*
-		$data = array("title"=>"Action","id"=>"btnAksiPembahasan",
-      "options"=>array(
-        array("class"=>"btnUsulanPaguOPD","elm"=>$elm,"title"=>"Pagu Pembahasan","icon"=>"edit"),
-        array("class"=>"btnUsulanSumberDana","elm"=>$elm,"title"=>"Pagu Sumber Dana","icon"=>"edit"),
-        array("class"=>"btnUsulanPendapatan","elm"=>$elm,"title"=>"Pagu Pendapatan","icon"=>"edit")
-      )
-		);
-    */
 		function addButtonGroup($data,$level=null){
 			$options = $data["options"];
 			$html = "<div class='btn-group' style='margin-left:10px'>";
@@ -420,6 +406,9 @@ class Form_render{
 				Menu</div>";
 			for($n=0;$n<sizeof($data);$n++){
 				$opt = $data[$n];
+				if($opt["state"] != ''){
+					return;
+				}
 				$elm = $opt["elm"];
 				$class = $opt["id"];
 				$title = $opt["title"];
@@ -450,29 +439,29 @@ class Form_render{
 				<i class='ace-icon fa fa-th-list icon-only bigger-120'></i>
 			</button>";
 			$html .= "<ul class='dropdown-menu dropdown-only-icon dropdown-yellow dropdown-caret dropdown-close dropdown-menu-right'>";
-				for($n=0;$n<sizeof($options);$n++){
-					$opt = $options[$n];
-					$separator = (isset($opt["type"])) ? $opt["type"] : "link";
-					if($separator != "separator"){
-						$class = $opt["class"];
-						$elm = $opt["elm"];
-						$title = $opt["title"];
-						$icon = (isset($opt["icon"])) ? $opt["icon"] : "th-list";
-						$color = (isset($opt["color"])) ? $opt["color"] : "blue";
-					}
-					$content = "<li>
-					<a href='#' class='tooltip-success ".$class." has-tooltip' data-toggle='tooltip' data-placement='left' data-rel='tooltip' title='".$title."' data-elm='".$elm."'>
-						<span class='".$color."'>
-							<i class='ace-icon fa fa-".$icon." bigger-110'></i>
-						</span>
-					</a></li>";
-					$akses = (isset($data[$i]["akses"])) ? $data[$i]["akses"] : "1";
-					if($akses == '0'){
-						$html .= '';
-					}else{
-						$html .= $content;
-					}
+			for($n=0;$n<sizeof($options);$n++){
+				$opt = $options[$n];
+				$separator = (isset($opt["type"])) ? $opt["type"] : "link";
+				if($separator != "separator"){
+					$class = $opt["class"];
+					$elm = $opt["elm"];
+					$title = $opt["title"];
+					$icon = (isset($opt["icon"])) ? $opt["icon"] : "th-list";
+					$color = (isset($opt["color"])) ? $opt["color"] : "blue";
 				}
+				$content = "<li>
+				<a href='#' class='tooltip-success ".$class." has-tooltip' data-toggle='tooltip' data-placement='left' data-rel='tooltip' title='".$title."' data-elm='".$elm."'>
+					<span class='".$color."'>
+						<i class='ace-icon fa fa-".$icon." bigger-110'></i>
+					</span>
+				</a></li>";
+				$akses = (isset($data[$i]["akses"])) ? $data[$i]["akses"] : "1";
+				if($akses == '0'){
+					$html .= '';
+				}else{
+					$html .= $content;
+				}
+			}
 			$html .= "</ul></div>";
 
 			if($level != null && $level != '1'){
@@ -565,28 +554,25 @@ class Form_render{
 			return;
 		}
 
-				//Title
 		function addButtonGroups($data,$level=null){
 			$d = explode("->",$data);
 			$html = "<div class='btn-group' style='margin-left:10px'>";
-			//$html .= "<button type='button' class='btn btn-primary'>".$d[0]."</button>";
 			$html .= "<button type='button' class='btn btn-outline-primary btn-sm dropdown-toggle icon-only' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>";
-//    	$html .= $d[0]."<span class=''></span></button>";
     	$html .= "<span class=''></span></button>";
 			$html .= "<ul class='dropdown-menu' style='background:#FFFFFF;padding:2px'>";
-				$a = explode("__",$d[2]);
-				for($n=0;$n<sizeof($a);$n++){
-					$b = explode(",",$a[$n]);
-						$glyp = "<i class='glyphicon glyphicon-th-list' aria-hidden='true'></i>";
-					if(sizeof($b) > 2){
-						$glyp = "<i class='glyphicon glyphicon-".$b[2]."' aria-hidden='true'></i>";
-					}
-					if($b[0] == "separator"){
-						$html .= "<li role='separator' class='divider'></li>";
-					}else{
-						$html .= "<li style='padding:0px;'><a href='#' class='dropdown-link ".$d[1]."' data-elm='".$b[0]."'>".$glyp." ".$b[1]."</a></li>";
-					}
+			$a = explode("__",$d[2]);
+			for($n=0;$n<sizeof($a);$n++){
+				$b = explode(",",$a[$n]);
+					$glyp = "<i class='glyphicon glyphicon-th-list' aria-hidden='true'></i>";
+				if(sizeof($b) > 2){
+					$glyp = "<i class='glyphicon glyphicon-".$b[2]."' aria-hidden='true'></i>";
 				}
+				if($b[0] == "separator"){
+					$html .= "<li role='separator' class='divider'></li>";
+				}else{
+					$html .= "<li style='padding:0px;'><a href='#' class='dropdown-link ".$d[1]."' data-elm='".$b[0]."'>".$glyp." ".$b[1]."</a></li>";
+				}
+			}
 			$html .= "</ul></div>";
 
 			if($level != null && $level != '1'){
@@ -601,12 +587,6 @@ class Form_render{
 			if($flash != ''){
 				$html = "<div class='alert alert-".$flash['color']."' role='alert' 
 				style='position:fixed;top:45px;right:0px;margin:20px;z-index:99999;padding:0px;margin:0px;left:260px'>";
-				/*<h4 class='alert-heading'><b>".$flash['title']."</b></h4>
-					<hr style='margin:5px'>
-					<p style='height:50px;line-height:50px;font-size:11px;min-width:60%'>".$flash['content']."</p>
-					<hr style='margin:5px'>
-					<center><small>click untuk menutup pesan ini</small></center>
-					*/
 				$html .= "
 					<div style='height:40px;line-height:40px;font-size:12px;width:100%;padding-left:10px'>
 					<b>".$flash['title']."</b> 
@@ -656,6 +636,4 @@ class Form_render{
 			return;
 		}
 }
-//$form = new Form_render;
-//$form->addTest();
 ?>

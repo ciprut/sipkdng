@@ -3,7 +3,7 @@
 	        <div class="container">
 	        	<div class="row">
                     <div class="col" style="text-align:center">
-                    	SIPeDe - &copy; 2020 Budgeting Crew 115.
+                    	SIPKD Next Generation - &copy; 2022 - 2023 Budgeting Crew 115.
                     </div>
                 </div>
 	        </div>

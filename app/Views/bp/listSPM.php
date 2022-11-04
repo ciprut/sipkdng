@@ -66,7 +66,7 @@
       icon:"minus-circle"
     };
     showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
-      post_to_tab("1","hapusSPM","nospm="+elm)
+      post_to_content("listSPM","hapusSPM","nospm="+elm)
     });
   });
   $('#tblSPM').on("click",".ubah",function(){

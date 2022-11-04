@@ -47,7 +47,7 @@
   $("#txtTanggal").datepicker({changeMonth: true,changeYear: true,dateFormat: 'mm/dd/yy'});
   $("#frmSPP").attr("autocomplete","off");
   $("#btnSimpan").click(function(){
-    post_to_tab("1","simpanSPP",$("#frmSPP").serialize());
+    post_to_content("listSPP","simpanSPP",$("#frmSPP").serialize());
   });
   $("#txtTanggal").on('blur',function(){
     $("#txtDasar").val("");
@@ -59,8 +59,4 @@
       post_to_modal("spdList","tanggal="+$("#txtTanggal").val(),"Data Surat Penyediaan Dana");
     }
   });
-  $("#btnSimpan").click(function(){
-    post_to_TAB("1","simpanSPP",$("#frmSPP").serialize());
-  });
-
 </script>

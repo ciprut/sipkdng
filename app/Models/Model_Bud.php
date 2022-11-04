@@ -214,6 +214,54 @@
 			//echo $builder->getCompiledSelect();die();
 			return $builder->get()->getResult();
 		}
+		public function simpanValidasi($post){
+			//cari data2 SP2D
+			$notIn = "A.NOSP2D NOT IN (SELECT NOSP2D FROM BKUK UNION ALL SELECT NOSP2D FROM BKUD)";
+			$builder = $this->db->table('SP2D A')->where('A.NOSP2D',$post['NOSP2D'])->select('A.*,B.JAB_BEND');
+			$builder->join('BEND B','A.KEYBEND = B.KEYBEND', 'LEFT OUTER');
+			$sp2d = $builder->get()->getRow();
+
+			$this->db->table('BKUK')->where('NOSP2D',$post['NOSP2D'])->delete();
+			if(session()->nobukas == ""){
+				$insert = array(
+					'IDXTTD'=>$post['IDXTTD'],
+					'KDBUKTI'=>$post['KDBUKTI'],
+					'NOBBANTU'=>session()->nobbantu,
+					'NOBUKTIKAS'=>$post['NOBUKTIKAS'],
+					'NOSP2D'=>$sp2d->NOSP2D,
+					'TGLKAS'=>$post['TGLKAS'],
+					'UNITKEY'=>$sp2d->UNITKEY,
+					'URAIAN'=>$sp2d->KEPERLUAN,
+					'NOBUKAS'=>trim($post['NOBUKAS']."-B01")
+				);
+				$builder = $this->db->table('BKUK');
+				$builder->set($insert);
+				$builder->insert($insert);
+				$this->utama->setFlashData('Gagal Menyimpan Data Validasi!','Validasi BUD Berhasil Disimpan');
+			}else{/*
+				$update = array(
+					'NOSPM'=>$spm->NOSPM,
+					'KEYBEND'=>$spm->KEYBEND,
+					'IDXSKO'=>$spm->IDXSKO,
+					'IDXTTD'=>$post['IDXTTD'],
+					'IDXKODE'=>$spm->IDXKODE,
+					'NOREG'=>$post['NOREG'],
+					'KETOTOR'=>$spm->KETOTOR,
+					'NOKONTRAK'=>$spm->NOKONTRAK,
+					'KEPERLUAN'=>$spm->KEPERLUAN,
+					'TGLSP2D'=>$post['TGLSP2D'],
+					'TGLSPM'=>$spm->TGLSPM,
+					'NOBBANTU'=>trim($post['NOBBANTU'])
+				);
+				$builder = $this->db->table('SP2D');
+				$builder->where('UNITKEY',session()->kdUnit)->where('NOSP2D',session()->nosp2d)->update($update);
+
+				$this->db->query("EXEC WSP_TRANSFER_SPMSP2D @nospm = '".$spm->NOSPM."',@nosp2d = '".session()->nosp2d."', @unitkey = '".session()->kdUnit."'");
+				$this->utama->setFlashData('Gagal Mengubah Data SP2D!','SP2D Berhasil Diubah');*/
+				echo "NOT THIS SHIT!";die();
+			}
+			return;
+		}
 
 	}
 ?>

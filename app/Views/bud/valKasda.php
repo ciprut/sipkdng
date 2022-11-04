@@ -4,7 +4,7 @@
 
   $form = new Form_render;
   ?>
-  <form id='frmValidasi'>
+  <form id='frmValidasiKasda'>
   <?php
 
   $jenis = array(
@@ -47,7 +47,7 @@
     }
     $("#listValidasi").html('');
     if($(this).val() != ''){
-      post_to_content("listValidasi","listValidasi",$("#frmValidasi").serialize());
+      post_to_content("listValidasi","listValidasi",$("#frmValidasiKasda").serialize());
       $(this).val('');
     }
   })

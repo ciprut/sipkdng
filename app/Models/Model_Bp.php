@@ -339,15 +339,12 @@
 				$builder->where('S.KEYBEND',session()->keybend);
 				$builder->whereIn('S.KDSTATUS',[22,23]);
 			}
-			//echo session()->kdUnit." ".session()->Idxkode;//die();
 			//echo nl2br($builder->getCompiledSelect());die();
 			return $builder->get()->getResult();
 		}
 		public function setujuSPM($post){
 			if($post['PENOLAKAN'] == "0"){
 				$notIn = "NOSPM NOT IN (SELECT NOSPM FROM SP2D WHERE UNITKEY = '".session()->kdUnit."')";
-//$subQuery = $db->table('users_jobs')->select('job_id')->where('user_id', 3);
-				//$subQuery = $this->db->table('SP2D')->select('NOSPM')->where('UNITKEY', session()->kdUnit)->get()->getResultArray();
 				$builder = $this->db->table('ANTARBYR')->where($notIn);
 				$update = array("PENOLAKAN"=>"0","TGLVALID"=>NULL);
 				$builder->where('UNITKEY',session()->kdUnit)->where('NOSPM',session()->nospm)->update($update);
@@ -384,6 +381,282 @@
 				$builder = $this->db->table('SPP');
 				$builder->where('UNITKEY',session()->kdUnit)->where('NOREG',session()->noreg)->update($post);
 			}
+			return;
+		}
+
+		/*------------------ BKU Bendahara Pengeluaran ------------*/
+		public function listBKUBP(){
+			$q = "SET NOCOUNT ON; EXEC WSPI_BKUPENGELUARAN
+				@allowsuperuser=0,
+				@kode='B02',
+				@unitkey='".session()->kdUnit."',
+				@keybend='".session()->keybend."',
+				@tgl1='2022-01-01 00:00:00',
+				@tgl2='2022-12-31 00:00:00',
+				@field='1',
+				@value='',
+				@hal=1,
+				@flgtgl=0,
+				@jmlhal=0
+			";
+			$rs = $this->db->query($q);
+			return $rs->getResult();
+		}
+		public function simpanBKUBP($post){
+			if(session()->nobkuskpd == ""){
+				if(session()->jb == "SP2D"){
+					$insert = array(
+						"KEYBEND"=>session()->keybend,
+						'NOSP2D'=>$post['NOBUKTI'],
+						'TGLBKUSKPD'=>$post['TGLBKUSKPD'],
+						'URAIAN'=>$post['URAIAN'],
+						'UNITKEY'=>session()->kdUnit,
+						'NOBKUSKPD'=> $post['NOBKUSKPD']
+					);
+					$builder = $this->db->table('BKUSP2D');
+				}else if(session()->jb == "Bank"){
+					$insert = array(
+						"KEYBEND"=>session()->keybend,
+						'NOBUKU'=>$post['NOBUKTI'],
+						'TGLBKUSKPD'=>$post['TGLBKUSKPD'],
+						'URAIAN'=>$post['URAIAN'],
+						'UNITKEY'=>session()->kdUnit,
+						'NOBKUSKPD'=> $post['NOBKUSKPD']
+					);
+					$builder = $this->db->table('BKUBANK');
+				}else if(session()->jb == "BPK"){
+					$insert = array(
+						"KEYBEND"=>session()->keybend,
+						'NOBPK'=>$post['NOBUKTI'],
+						'TGLBKUSKPD'=>$post['TGLBKUSKPD'],
+						'URAIAN'=>$post['URAIAN'],
+						'UNITKEY'=>session()->kdUnit,
+						'NOBKUSKPD'=> $post['NOBKUSKPD']
+					);
+					$builder = $this->db->table('BKUBPK');
+				}
+				$builder->set($insert);
+				$builder->insert($insert);
+			}else{
+			}
+			return;
+		}
+		public function hapusBKUBP($tabel){
+			if($tabel == '21'){
+				$builder = $this->db->table('BKUSP2D');
+			}else if($tabel == '33'){
+				$builder = $this->db->table('BKUBANK');
+			}
+
+			$builder->where('UNITKEY',session()->kdUnit)->where('NOBKUSKPD',session()->nobkuskpd)->where('KEYBEND',session()->keybend);
+			$builder->where('TGLVALID',NULL)->delete();
+			return;
+		}
+
+		/*------------------ PERGESERAN UANG ------------*/
+		public function listPergeseranUang($nobuku=''){
+			$builder = $this->db->table('BKBANK A');
+			$builder->where('A.UNITKEY',session()->kdUnit)->where('A.KEYBEND1',session()->keybend);
+			$builder->select("0 as superuser,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,");
+			$builder->select("rtrim(A.KEYBEND1) as KEYBEND1,rtrim(A.KEYBEND2) as KEYBEND2,A.NOBUKU,A.TGLBUKU,");
+			$builder->select("A.TGLVALID,A.UNITKEY,A.URAIAN,rtrim(C.KDUNIT) as KDUNIT, rtrim(C.NMUNIT) as NMUNIT,");
+			$builder->select("D.KDDOK, E.LBLSTATUS, E.URAIAN as URAISTATUS");
+			$builder->join('DAFTUNIT C','A.UNITKEY=C.UNITKEY', 'LEFT OUTER');
+			$builder->join('JABTTD D','A.IDXTTD=D.IDXTTD', 'LEFT OUTER');
+			$builder->join('STATTRS E','A.KDSTATUS=E.KDSTATUS', 'LEFT OUTER');
+			$builder->orderBy('A.NOBUKU');
+			if($nobuku != ''){
+				$builder->where('A.NOBUKU',$nobuku);
+				$rs = $builder->get()->getRow();
+			}else{
+				$rs = $builder->get()->getResult();
+			}
+			return $rs;
+		}
+		public function simpanPU($post){
+			if(session()->nobuku == ""){
+				$builder = $this->db->table('BKBANK');
+				$builder->set($post);
+				$builder->insert($insert);
+
+				$det = array(
+					"NILAI"=>0,
+					"UNITKEY"=>session()->kdUnit,
+					"NOBUKU"=>$post["NOBUKU"],
+					"NOJETRA"=>"31"
+				);
+				$builder = $this->db->table('BKBANKDET');
+				$builder->set($det);
+				$builder->insert($insert);
+			}else{
+			}
+			return;
+		}
+		public function hapusPU(){
+			$builder = $this->db->table('BKBANKDET');
+			$builder->where('UNITKEY',session()->kdUnit)->where('NOBUKU',session()->nobuku)->where('NOJETRA','31')->delete();
+
+			$builder = $this->db->table('BKBANK');
+			$builder->where('UNITKEY',session()->kdUnit)->where('NOBUKU',session()->nobuku)->where('KEYBEND1',session()->keybend);
+			$builder->where('TGLVALID',NULL)->delete();
+			return;
+		}
+		public function rincianPU(){
+			$builder = $this->db->table('BKBANKDET A');
+			$builder->where('A.UNITKEY',session()->kdUnit)->where('A.NOBUKU',session()->nobuku);
+			$builder->select('A.NILAI,A.NOBUKU,A.NOJETRA,A.UNITKEY, rtrim(B.KEYBEND1) as KEYBEND1, rtrim(B.KEYBEND2) as KEYBEND2, C.KDPERS,C.NMJETRA');
+			$builder->join('BKBANK B','A.NOBUKU = B.NOBUKU and A.UNITKEY = B.UNITKEY','LEFT OUTER');
+			$builder->join('JTRNLKAS C','A.NOJETRA = C.NOJETRA','LEFT OUTER');
+			$rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function updateRinciPU($post){
+			$builder = $this->db->table('BKBANKDET');
+			$builder->where('UNITKEY',session()->kdUnit)->where('NOBUKU',session()->nobuku)->update($post);
+			return;
+		}
+
+		/*------------------ Tanda Bukti Penerimaan ------------------*/
+		public function listTBP(){//,@unitkey='2559_',@idxkode=2,@kdkegunit='8765_',@keybend='189018_',@field='1',@value=''
+			$q = "SET NOCOUNT ON; EXEC WSPI_BPK
+				@allowsuperuser=0,
+				@idxkode='2',
+				@unitkey='".session()->kdUnit."',
+				@keybend='".session()->keybend."',
+				@kdkegunit='".session()->idSub."',
+				@field='1',
+				@value=''
+			";
+			//echo $q;die();
+			$rs = $this->db->query($q);
+			return $rs->getResult();
+		}
+		public function rinciTBP($nobpk=''){
+			$builder = $this->db->table('BPKDETR BL');
+			$builder->where('BL.UNITKEY',session()->kdUnit)->where('BL.NOBPK',session()->nobpk);
+			$builder->select("BL.*,rtrim(B.KDSTATUS) as KDSTATUS,B.TGLBPK ,B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND,B.PENERIMA,B.TGLVALID,");
+			$builder->select("B.IDXKODE,J.NMJETRA, J.KDPERS, rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER");
+			$builder->join('BPK B',' BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY', 'LEFT OUTER');
+			$builder->join('MATANGR M','BL.MTGKEY = M.MTGKEY', 'LEFT OUTER');
+			$builder->join('JTRNLKAS J','BL.NOJETRA = J.NOJETRA', 'LEFT OUTER');
+			$builder->orderBy('M.KDPER');
+			if($nobpk != ''){
+				$builder->where('A.NOBPK',$nobpk);
+				$rs = $builder->get()->getRow();
+			}else{
+				$rs = $builder->get()->getResult();
+			}
+			return $rs;
+		}
+		public function getTBP(){
+			$builder = $this->db->table('BPK A');
+			$builder->where('A.UNITKEY',session()->kdUnit)->where('A.NOBPK',session()->nobpk);
+			$builder->select('A.*');
+			$rs = $builder->get()->getRow();
+			return $rs;
+		}
+		public function simpanTBP($post){
+			if(session()->nobpk == ""){
+				$builder = $this->db->table('BPK');
+				$builder->set($post);
+				$builder->insert($insert);
+			}else{
+			}
+			return;
+		}
+		public function listSubRinc(){
+			$notIn = "A.MTGKEY not in (select rtrim(MTGKEY) from BPKDETR S where S.UNITKEY= '".session()->kdUnit."'
+			and S.NOBPK= '".session()->nobpk."' and S.KDKEGUNIT= '".session()->idSub."')";
+
+			$builder = $this->db->table('DASKR A');
+			$builder->select('B.KDPER, B.NMPER,B.MTGKEY,B.TYPE');
+			$builder->join('MATANGR B','A.mtgkey = B.mtgkey','LEFT OUTER');
+			$builder->where('A.UNITKEY',session()->kdUnit)->where('A.KDKEGUNIT',session()->idSub);
+			$builder->where($notIn);
+			$builder->orderBy('B.KDPER')->distinct();
+			$rs = $builder->get()->getResult();
+
+			return $rs;
+		}
+		public function tambahRO($post){
+			$builder = $this->db->table('BPKDETR');
+			$builder->set($post);
+			$builder->insert($insert);
+
+			return;
+		}
+		public function listSDTBP(){
+			$builder = $this->db->table('Bpkdetrdana B');
+			$builder->select('B.NOBPK,B.KDDANA,B.MTGKEY,B.UNITKEY,C.NMDANA,B.NILAI,b.KDKEGUNIT');
+			$builder->join('JDANA C','B.KDDANA=C.KDDANA','LEFT OUTER');
+			$builder->where('B.UNITKEY',session()->kdUnit)->where('B.KDKEGUNIT',session()->idSub)->where('B.NOBPK',session()->nobpk);
+			$builder->where('B.MTGKEY',session()->mtgkey);
+			$builder->orderBy('B.KDDANA');
+			$rs = $builder->get()->getResult();
+
+			return $rs;
+		}
+		public function listSDSub(){
+			$builder = $this->db->table('SBDANAR A');
+			$builder->select('rtrim(A.KDDANA) as KDDANA,A.KDKEGUNIT,A.KDTAHAP,A.MTGKEY,A.NILAI,A.UNITKEY, B.NMDANA');
+			$builder->join('JDANA B','A.KDDANA=B.KDDANA','LEFT OUTER');
+			$builder->where('A.UNITKEY',session()->kdUnit)->where('A.KDKEGUNIT',session()->idSub)->where('A.KDTAHAP',session()->tahap);
+			$builder->where('A.MTGKEY',session()->mtgkey);
+			$notIn = "A.KDDANA not in (select KDDANA from Bpkdetrdana where MTGKEY='".session()->mtgkey."' and NOBPK= '".session()->nobpk."' and A.KDKEGUNIT= '".session()->idSub."')";
+			$builder->where($notIn);
+			$builder->orderBy('A.KDDANA');
+			$rs = $builder->get()->getResult();
+
+			return $rs;
+		}
+		public function inputSDTBP(){
+			$post = array(
+				"NILAI"=>'0',
+				"KDDANA"=>session()->kdDana,
+				"NOBPK"=>session()->nobpk,
+				"UNITKEY"=>session()->kdUnit,
+				"KDKEGUNIT"=>session()->idSub,
+				"MTGKEY"=>session()->mtgkey
+			);
+			$this->db->table('Bpkdetrdana')->set($post)->insert($post);
+
+			$q = "EXEC WSP_VAL_DPARDANA 
+			@unitkey='".session()->kdUnit."',
+			@kdtahap='".session()->tahap."',
+			@mtgkey='".session()->mtgkey."',
+			@kdkegunit='".session()->idSub."',
+			@kddana='".session()->kdDana."',
+			@dok='BPK',@nomorx='".session()->nobpk."'";
+			$this->db->query($q);
+			return;
+		}
+		public function updateRinciTBP($post){
+			$q = "SET NOCOUNT ON; EXEC WSP_VAL_DPARDANA 
+			@unitkey='".session()->kdUnit."',
+			@kdtahap='".session()->tahap."',
+			@mtgkey='".session()->mtgkey."',
+			@kdkegunit='".session()->idSub."',
+			@kddana='".$post['KDDANA']."',
+			@dok='BPK',@nomorx='".session()->nobpk."'";
+			$rs = $this->db->query($q)->getRow();
+
+			$this->db->query("exec WSP_VALIDATIONBPK_BANK @unitkey='".session()->kdUnit."',@keybend='".session()->keybend."'");
+
+			if((int)$rs->SISA < (int)$post['NILAI']){
+				session()->setFlashData("info", "Sisa dana sebesar Rp.".number_format((int)$rs->SISA,2)." tidak mencukupi..!");
+			}else{
+				$update = array("NILAI"=>$post['NILAI']);
+				$builder = $this->db->table('Bpkdetrdana')->where("KDDANA",$post['KDDANA'])->where("NOBPK",session()->nobpk);
+				$builder->where("UNITKEY",session()->kdUnit)->where("KDKEGUNIT",session()->idSub)->where("MTGKEY",session()->mtgkey);
+				$builder->update($update);
+
+				$q = "Update BPKDETR SET NILAI=isnull((select sum(nilai) from Bpkdetrdana
+				where UNITKEY= '".session()->kdUnit."' and NOBPK= '".session()->nobpk."' and MTGKEY= '".session()->mtgkey."' and KDKEGUNIT= '".session()->idSub."' ),0)
+				where UNITKEY= '".session()->kdUnit."' and NOBPK= '".session()->nobpk."' and MTGKEY= '".session()->mtgkey."' and KDKEGUNIT= '".session()->idSub."'
+				";
+				$this->db->query($q);
+				session()->setFlashData("info", "Data telah disimpan");
+			}					
 			return;
 		}
 	}

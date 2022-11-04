@@ -47,7 +47,7 @@
   $("#txtTanggal").datepicker({changeMonth: true,changeYear: true,dateFormat: 'mm/dd/yy'});
   $("#frmSPM").attr("autocomplete","off");
   $("#btnSimpan").click(function(){
-    post_to_tab("1","simpanSPM",$("#frmSPM").serialize());
+    post_to_content("listSPM","simpanSPM",$("#frmSPM").serialize());
   });
   $("#txtTanggal").on('blur',function(){
     $("#txtDasar").val("");
@@ -60,6 +60,6 @@
     }
   });
   $("#btnSimpan").click(function(){
-    post_to_TAB("1","simpanSPM",$("#frmSPM").serialize());
+    post_to_content("listSPM","simpanSPM",$("#frmSPM").serialize());
   });
 </script>

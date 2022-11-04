@@ -68,7 +68,7 @@
       icon:"minus-circle"
     };
     showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
-      post_to_tab("1","hapusSPP","nospp="+elm)
+      post_to_content("listSPP","hapusSPP","nospp="+elm)
     });
   });
   $('#tblSPP').on("click",".ubah",function(){

@@ -4,7 +4,7 @@
 <form id='frmValidasi'>
   <?php
     $form->addHidden(array("id"=>"id","value"=>$val->NOBUKAS));
-    $form->addHidden(array("id"=>"idxttd","value"=>$val->IDXTTD));
+    $form->addHidden(array("id"=>"idxttd","value"=>$idxttd->IDXTTD));
   //var_dump($bantu);
     if($val->NOBUKAS != ''){
       $reg = pjg($val->NOBUKAS,5);
@@ -18,8 +18,8 @@
     $tgl = substr($val->TGLKAS, 0,10);
     $row = array(
       array("width"=>"5","type"=>"text","id"=>"txtNoVal","label"=>"Nomer Validasi BKU","placeholder"=>"","value"=>$reg,"readonly"=>"1"),
-      array("width"=>"5","type"=>"text","id"=>"txtTanggal","label"=>"Tanggal","placeholder"=>"","value"=>$tgl),
-      array("width"=>"2","type"=>"text","id"=>"txtJenisBukti","label"=>"Kode","readonly"=>"readonly","value"=>$bantu->NOBBANTU),
+      array("width"=>"5","type"=>"text","id"=>"txtTanggalVal","label"=>"Tanggal","placeholder"=>"","value"=>$tgl),
+      array("width"=>"2","type"=>"text","id"=>"txtBantu","label"=>"Kode","readonly"=>"readonly","value"=>$bantu->NOBBANTU),
     );
     $form->addRow($row);
 
@@ -42,8 +42,8 @@
       array("width"=>"8","type"=>"text","id"=>"txtUntuk","label"=>"Untuk","readonly"=>"readonly","value"=>$val->KEPERLUAN)
     );
     $form->addRow($row);
-//    $form->addGroup(array("type"=>"text","id"=>"txtUntuk","label"=>"Untuk","placeholder"=>"","readonly"=>"1","value"=>$val->KEPERLUAN));
-    $form->addGroup(array("type"=>"text","id"=>"txtTtd","label"=>"Nama Penanda Tangan","placeholder"=>"","readonly"=>"1","value"=>$val->TTDNAMA));
+    $form->addGroup(array("type"=>"text","id"=>"txtNoBuktiVal","label"=>"Nomer Bukti","placeholder"=>"","readonly"=>"0","value"=>$val->NOBUKTI));
+    $form->addGroup(array("type"=>"text","id"=>"txtTtd","label"=>"Nama Penanda Tangan Dok: 04.501","placeholder"=>"","readonly"=>"1","value"=>$idxttd->NIPNAMA));
 
     $form->addClear(10);
     $form->addButton(array("id"=>"btnSimpan","icon"=>"save","title"=>"Simpan","color"=>"primary"));
@@ -51,29 +51,27 @@
 </form>
 <script>
   $("#frmValidasi").attr("autocomplete","off");
-  $("#txtTanggal").datepicker({changeMonth: true,changeYear: true,dateFormat: 'mm-dd-yy'});
+
+  $("#txtTanggalVal").datepicker({changeMonth: true,changeYear: true,dateFormat: 'mm-dd-yy'});
   $("#btnSimpan").click(function(){
     post_to_content("listValidasi","simpanValidasi",$("#frmValidasi").serialize());
   });
-  /*
-  $("#txtTanggal").on('blur',function(){
-    $("#txtSPD,#txtSPM,#txtRek,#txtNmBendahara,#txtTtd").val("");
-  });
-  $("#txtSPM").click(function(){
-    if($("#txtTanggal").val() == ""){
-      alert('Masukkan Tanggal SP2D sebelum memilih SPM');
+  $("#txtJenisBukti, #txtKetBukti").click(function(){
+    if($("#txtTanggalVal").val() == ""){
+      alert('Masukkan Tanggal Validasi sebelum memilih Bukti');
     }else{
-      post_to_modal("spmList","tanggal="+$("#txtTanggal").val(),"Data Surat Perintah Membayar - SPM");
+      post_to_modal("../utama/buktiList","x=","Bukti Validasi SP2D");
     }
   });
-  */
+
   $("#txtNoSP2D, #txtTglSP2D").click(function(){
-    if($("#txtTanggal").val() == ""){
+    if($("#txtTanggalVal").val() == ""){
       alert('Masukkan Tanggal Validasi sebelum memilih SP2D');
     }else{
-      post_to_modal("sp2dList","tanggal="+$("#txtTanggal").val(),"Data SP2D Yang belum di BKU");
+      post_to_modal("sp2dList","tanggal="+$("#txtTanggalVal").val(),"Data SP2D Yang belum di BKU");
     }
   });
+
   /*
   $("#txtTtd").click(function(){
     post_to_modal("../utama/listTTD/04.301","x=","Data Pegawai");

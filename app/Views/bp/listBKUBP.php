@@ -1,32 +1,30 @@
 <?php
   $form = new Form_render;
-  $jn = array('bkud'=>'BKU Penerimaan','bkuk'=>'BKU Pengeluaran','bkut'=>'BKU Transfer');
-  $form->addTitle($jn[session()->jns]);
 
-  $form->addClear("10");
-  $form->addButton(array("id"=>"btnTambahVal","icon"=>"plus","title"=>"Tambah","color"=>"primary"));
+  $form->addButton(array("id"=>"btnTambahBKUBP","icon"=>"plus","title"=>"Tambah BKU","color"=>"primary"));
 
   getFlashData();
 
-  $tabel = array("tblValidasi",array("NO","TANGGAL","TGL SAH","NO SP2D","AFEKTASI","POTONGAN","PAJAK","DIBAYAR","*"));
+  $tabel = array("tblBKUBP",array("NO","TANGGAL","JENIS BUKTI","NO BUKTI","AFEKTASI","POTONGAN","PAJAK","DIBAYAR","*"));
   $form->addTable($tabel);
-  foreach($valid as $h){ ?>
+  foreach($bkubp as $h){ ?>
     <tr class=''>
-      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOBUKTIKAS; ?>"><?php echo $h->NOBUKTIKAS ?></a></td>
-      <td align='center'><?php echo ngSQLSRVTGL($h->TGLKAS) ?></td>
-      <td align='center'><?php echo ngSQLSRVTGL($h->TGLVALID) ?></td>
-      <td align='left'><?php echo $h->NOSP2D ?></td>
+      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOBKUSKPD; ?>"><?php echo $h->NOBKUSKPD." [".trim($h->KDSTATUS)."]" ?></a></td>
+      <td align='center'><?php echo ngSQLSRVTGL($h->TGLBKUSKPD) ?></td>
+      <td align='center'><?php echo $h->JENIS ?></td>
+      <td align='left'><?php echo $h->NOBUKTI ?></td>
       <td align='right'><?php echo number_format($h->AFEKTASI,2) ?></td>
       <td align='right'><?php echo number_format($h->POTONGAN,2) ?></td>
       <td align='right'><?php echo number_format($h->PAJAK,2) ?></td>
       <td align='right'><?php echo number_format($h->DIBAYAR,2) ?></td>
       <td align='center'>
         <?php
-        $elm = $h->NOSP2D;
+        $elm = $h->NOBKUSKPD."__".trim($h->KDSTATUS);
 
         if($h->TGLVALID == NULL){
           $act = array(
-            array("id"=>"hapus","elm"=>$elm,"color"=>"danger","title"=>"Hapus Validasi BUD","placeholder"=>"")
+            array("id"=>"ubah","elm"=>$elm,"color"=>"danger","title"=>"Edit BKU BP","placeholder"=>""),
+            array("id"=>"hapus","elm"=>$elm,"color"=>"danger","title"=>"Hapus BKU","placeholder"=>"")
           );
         }else{
           $act = array(
@@ -44,9 +42,9 @@
   $form->closeTable($tabel);
   
 ?>
-<div id='detilSP2D'></div>
+<div id='detilBKUBP'></div>
 <script>
-  $('#tblValidasi').removeAttr('width').DataTable({
+  $('#tblBKUBP').removeAttr('width').DataTable({
     "ordering":false,
     "pageLength":10,
     "columnDefs": [
@@ -59,28 +57,25 @@
       { "width": 100, "targets": 7 },
       { "width": 50, "targets": 8 }
     ],
-    "fixedColumns": true
+    "fixedColumns": true,
+    "autoWidth" : false
   });
 
-  $("#btnTambahVal").click(function(){
-    post_form("formValidasi","nobbantu="+$("#nobbantu").val(),"BKU BUD");
-  });
-
-  $('#tblValidasi').on("click",".hapus",function(){
-    elm = $(this).data("elm");
+  $('#tblBKUBP').on("click",".hapus",function(){
+    elm = "unitkey="+$("#listUnit").val()+"&keybend="+$("#keybend").val()+"&nobkuskpd="+$(this).data("elm");
     modal = {
       color:"danger",
       icon:"minus-circle"
     };
     showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
-      post_to_tab("1","hapusSP2D","nosp2d="+elm)
+      post_to_content("listBKUBP","hapusBKUBP",elm);
     });
   });
-  $('#tblSP2D').on("click",".ubah",function(){
+  $('#tblBKUBP').on("click",".ubah",function(){
     elm = $(this).data("elm");
-    post_form("formSP2D","nosp2d="+elm,"PERUBAHAN S P 2 D");
+    post_form("formBKUBP","unitkey="+$("#listUnit").val()+"&keybend="+$("#keybend").val()+"&nobkuskpd="+$(this).data("elm"),"BKU Bendahara Pengeluaran");
   });
-  $('#tblValidasi').on("click",".rinci",function(){
+  $('#tblBKUBP').on("click",".rinci",function(){
     elm = $(this).data("elm");
     post_to_content("detilSP2D","rincianSP2D","nosp2d="+elm,$(this).data("placeholder"))
     //post_to_tab("2","rincianSPM","nospp="+elm,$(this).data("placeholder"))
@@ -89,4 +84,8 @@
     elm = $(this).data("elm");
     post_form("formSP2DSetuju","nosp2d="+elm,"Persetujuan S P 2 D");
   });
+  $("#btnTambahBKUBP").click(function(){
+    post_form("formBKUBP","nobkuskpd=","BKU Bendahara Pengeluaran");
+  });
+
 </script>

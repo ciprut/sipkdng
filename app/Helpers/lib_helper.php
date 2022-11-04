@@ -650,6 +650,20 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
 		}
 		return $hasil;
 	}
+	function ngSQLSRVTGL($tanggal){
+		$t = explode(" ",$tanggal);//2022-01-18
+		$d = explode("-",$t[0]);
+		$tgl = $d[2];
+		$bl = intval($d[1]);
+		$thn = $d[0];
+		$bln = array("-","Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des");
+		$hasil = intval($tgl)." ".$bln[$bl]." ".$thn;
+		if($tanggal == ""){
+			$hasil = "-";
+		}
+
+		return $hasil;
+	}
 	function ngSQLTanggal($tanggal,$format) {
 		$bulan = array("-","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember");
 		$bln = array("-","Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des");

@@ -41,21 +41,7 @@
   $("#txtTanggalValid").datepicker({changeMonth: true,changeYear: true,dateFormat: 'mm/dd/yy'});
   $("#frmSPM").attr("autocomplete","off");
   $("#btnSimpan").click(function(){
-    post_to_tab("1","setujuSPM",$("#frmSPM").serialize());
+    post_to_content("listSPM","setujuSPM",$("#frmSPM").serialize());
   });
-  /*
-  $("#txtTanggal").on('blur',function(){
-    $("#txtDasar").val("");
-  });
-  $("#txtDasar").click(function(){
-    if($("#txtTanggal").val() == ""){
-      alert('Masukkan Tanggal SPM sebelum memilih SPP');
-    }else{
-      post_to_modal("sppList","tanggal="+$("#txtTanggal").val(),"Data Surat Permintaan Pembayaran - SPP");
-    }
-  });
-  $("#btnSimpan").click(function(){
-    post_to_TAB("1","setujuSPM",$("#frmSPM").serialize());
-  });
-  */
+
 </script>

@@ -46,11 +46,28 @@
       $rs = $builder->get()->getResult();
 			return $rs;
 		}
+		public function treeViewKeg($unitkey,$kd){
+			$sp = "SET NOCOUNT ON; EXEC WSP_TREEVIEWKEG '".$unitkey."','','".session()->tahap."','','".$kd."','',''";
+			$rs = $this->db->query($sp)->getResult();
+			return $rs;
+		}
+
 
 		public function listRekBUD(){
 			$builder = $this->db->table('BKBKAS A');
 			$builder->join('DAFTBANK B','A.KDBANK = B.KDBANK','LEFT OUTER')->join('MATANGNRC C','A.MTGKEY = C.MTGKEY','LEFT OUTER');
 			$builder->select('A.*,B.NMBANK,C.NMPER')->orderBy('NOBBANTU','ASC');
+			return $builder->get()->getResult();
+		}
+
+		public function buktiList(){
+			$builder = $this->db->table('JBKAS A');
+			$builder->select('A.*')->orderBy('A.KDBUKTI','ASC');
+			return $builder->get()->getResult();
+		}
+		public function bendList($jb='%'){
+			$builder = $this->db->table('BEND A')->where('A.UNITKEY',session()->kdUnit)->like('A.JAB_BEND',$jb);
+			$builder->select('A.*,P.NAMA')->orderBy('A.JNS_BEND','ASC')->join('PEGAWAI P','A.NIP = P.NIP','LEFT OUTER');
 			return $builder->get()->getResult();
 		}
 
@@ -71,6 +88,16 @@
 			return $rs;
 		}
 
+		public function getKdKeg($field){
+			$builder = $this->db->table('MKEGIATAN');
+			$rs = $builder->select('*')->where('KDSET',$field)->get()->getRow();
+			return $rs->VALSET;
+		}
+		public function getUraian($kdStatus){
+			$builder = $this->db->table('STATTRS');
+			$rs = $builder->select('*')->where('KDSTATUS',$kdStatus)->get()->getRow();
+			return $rs;
+		}
 		public function getWebset($field){
 			$builder = $this->db->table('WEBSET');
 			$rs = $builder->select('*')->where('KDSET',$field)->get()->getRow();
@@ -92,7 +119,13 @@
 			$builder->where('TABLEID',$tableID)->update('NEXTKEY',"(rtrim(cast((cast(rtrim(replace(NEXTKEY,'_','')) as int)+1) as char(20))) + '_')");
 			return;
 		}
-
+		public function getNoRegTBP(){
+			$builder = $this->db->table('BPK');
+			$builder->select('top (1) ISNULL(LEFT(NOBPK,5),0) as NOREG')->where('UNITKEY',session()->kdUnit)->orderBy('NOBPK','DESC');
+			$rs = $builder->get()->getRow();
+			$nr = ((int)$rs->NOREG)+1;
+			return pjg($nr,5);
+		}
 		public function getNoRegSPP(){
 			$builder = $this->db->table('SPP');
 			$builder->select('top (1) ISNULL(NOREG,0) as NOREG')->where('UNITKEY',session()->kdUnit)->orderBy('NOREG','DESC');
@@ -137,6 +170,12 @@
 			$rs = $builder->get()->getRow();
 			return $rs;
 		}
+		public function getBendahara(){
+			$builder = $this->db->table('BEND');
+			$builder->select('*')->where('KEYBEND',session()->keybend)->get()->getRow();
+			$rs = $builder->get()->getRow();
+			return $rs;
+		}
 		public function getNoSPP(){
 			$builder = $this->db->table('SPP');
 			$builder->select('top (1) ISNULL(NOSPP,0) as NOSPP')->where('UNITKEY',session()->kdUnit)->where('KEYBEND',session()->keybend)->orderBy('NOSPP','DESC');
@@ -155,7 +194,65 @@
 			session()->set($where,$builder->CONFIGVAL);
 			return;
 		}
+		public function getIdxttd($kddok){
+			$builder = $this->db->table('JABTTD J');
+			$rs = $builder->select('rtrim(J.IDXTTD) as IDXTTD, J.UNITKEY, J.KDDOK, J.NIP,J.JABATAN, J.NOSKPTTD, J.TGLSKPTTD, J.NOSKSTOPTTD, J.TGLSKSTOPTTD,');
+			$builder->select('rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT,D.NMDOK,P.NAMA,(rtrim(J.NIP)+\' - \'+ rtrim(P.NAMA)) as NIPNAMA,P.JABATAN');
+			$builder->join('DAFTDOK D','J.KDDOK=D.KDDOK','LEFT OUTER');
+			$builder->join('DAFTUNIT U','J.UNITKEY=U.UNITKEY','LEFT OUTER');
+			$builder->join('PEGAWAI P','J.NIP=P.NIP','LEFT OUTER');
+			$builder->where('J.KDDOK',$kddok);
+			$rs = $builder->get()->getRow();
+			return $rs;
+		}
 
+		public function getBKUSKPD($nobku=null){
+			$builder = $this->db->table('BKUSP2D A');
+			$rs = $builder->select('A.NOBKUSKPD,A.URAIAN,B.NOSP2D,convert(char(10), A.TGLBKUSKPD, 101) AS TGLBKUSKPD,B.NOSP2D,convert(char(10), B.TGLSP2D, 101) AS TGLSP2D,B.KEPERLUAN');
+			$builder->join('SP2D B','A.NOSP2D=B.NOSP2D','LEFT OUTER');
+			$builder->where('A.UNITKEY',session()->kdUnit)->where('A.NOBKUSKPD',session()->nobkuskpd)->where('A.KEYBEND',session()->keybend);
+			$rs = $builder->get()->getRow();
+			return $rs;
+		}
+
+		public function getNoBKUSKPD(){
+			$q = "
+			SELECT top 1 A.NOBKUSKPD from (
+				select A.NOBKUSKPD from BKUSP2D A where A.UNITKEY= '".session()->kdUnit."' and (A.KEYBEND =  '".session()->keybend."')
+				union
+				select A.NOBKUSKPD from BKUBPK A where A.UNITKEY= '".session()->kdUnit."' and (A.KEYBEND =  '".session()->keybend."')
+				union
+				select A.NOBKUSKPD from BKUPANJAR A where A.UNITKEY= '".session()->kdUnit."' and (A.KEYBEND =  '".session()->keybend."')
+				union
+				select A.NOBKUSKPD from BKUPAJAK A where A.UNITKEY= '".session()->kdUnit."' and (A.KEYBEND =  '".session()->keybend."')
+				union
+				select A.NOBKUSKPD from BKUBANK A where A.UNITKEY='".session()->kdUnit."' and (A.KEYBEND =  '".session()->keybend."')
+				union
+				select A.NOBKUSKPD from BKUTBP A where A.UNITKEY= '".session()->kdUnit."' and (A.KEYBEND =  '".session()->keybend."')
+				union
+				select A.NOBKUSKPD from BKUSTS A where A.UNITKEY= '".session()->kdUnit."' and (A.KEYBEND =  '".session()->keybend."')
+			) A
+			order by A.NOBKUSKPD desc				
+			";
+			$rs = $this->db->query($q)->getRow();
+			$x = explode("-",$rs->NOBKUSKPD);
+			$nobkuskpd = (int)$x[0];
+			return ($nobkuskpd)+1;
+		}
+		public function listBKUBP($jb){
+			$sp = "SET NOCOUNT ON; EXEC WSP_LOOKUP_BKU_BEND
+				@Jenis='".$jb."',
+				@Unitkey='".session()->kdUnit."',
+				@Bend='02',
+				@Keybend='".session()->keybend."',
+				@NOMOR='',
+				@TGL='',
+				@TGL2=''
+				";
+				session()->set("jb",$jb);
+				$rs = $this->db->query($sp)->getResultArray();
+			return $rs;
+		}
 
 	}
 ?>
