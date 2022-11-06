@@ -11,7 +11,7 @@
     <tr class=''>
       <td align='left'><a class='rinci' data-elm='<?php echo $h->NOSPP ?>'><?php echo $h->NOSPP ?></a></td>
       <td align='center'><?php echo ngSQLTanggal($h->TGSPP,"ddmmmyyyy") ?></td>
-      <td align='center'><?php echo ngSQLTanggal($h->TGLVALID,"ddmmmyyyy") ?></td>
+      <td align='center'><b  class='text-danger'><?php echo ngSQLTanggal($h->TGLVALID,"ddmmmyyyy") ?></b></td>
       <td align='center'><?php echo $h->NOSKO ?></td>
       <td align='center'><?php echo $h->NOREG ?></td>
       <td align='center'><?php echo number_format($h->NILAI,2) ?></td>
@@ -77,7 +77,6 @@
   });
   $('#tblSPP').on("click",".rinci",function(){
     elm = $(this).data("elm");
-    //post_to_tab("2","rincianSPP","nospp="+elm,$(this).data("placeholder"))
     post_to_content("detilSPP","rincianSPP","nospp="+elm,$(this).data("placeholder"))
   });
   $('#tblSPP').on("click",".setuju",function(){

@@ -42,6 +42,7 @@
   $("#frmSP2D").attr("autocomplete","off");
   $("#btnSimpan").click(function(){
     post_to_content("listSP2D","simpanSP2D",$("#frmSP2D").serialize());
+    hide_form();
   });
   $("#txtTanggal").on('blur',function(){
     $("#txtSPD,#txtSPM,#txtRek,#txtNmBendahara,#txtTtd").val("");

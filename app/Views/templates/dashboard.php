@@ -14,7 +14,7 @@
     echo ngTanggal("29101977","dd")."<br>";
     echo ngTanggal("29101977","mm")."<br>";
     echo ngTanggal("29101977","yyyy")."<br>";
-    echo "Unitkey SKPKD : ".session()->cur_skpkd;
+    echo "Unitkey SKPKD : ".session()->cur_skpkd.", Tahun Anggaran : ".session()->cur_thang;
 ?>
     <p class="lead"></p>
 </div>

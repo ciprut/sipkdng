@@ -13,7 +13,7 @@
     }else{
       $reg = pjg((session()->noreg)+1,3);
       $kep = $keperluan;
-      $nospp = pjg((session()->noreg)+1, 5)."/SPP-".strtoupper(session()->jnsSpp)."/".$unit->KDUNIT."/".$bendahara->JAB_BEND."/".session()->cur_thang;
+      $nospp = pjg((session()->noreg)+1, 5)."/SPP-".strtoupper(session()->jnsSpp)."/".$unit->KDUNIT."/".$bendahara->JAB_BEND."/".session()->tahun;
       $form->addGroup(array("type"=>"text","id"=>"txtNoSPP","label"=>"Nomer SPP","placeholder"=>$webset,"value"=>$nospp,"readonly"=>"1"));
     }
     $tgl = substr($spp->TGLSPP, 0,10);
@@ -48,7 +48,6 @@
   $("#frmSPP").attr("autocomplete","off");
   $("#btnSimpan").click(function(){
     post_to_content("listSPP","simpanSPP",$("#frmSPP").serialize());
-    hide_form();
   });
   $("#txtTanggal").on('blur',function(){
     $("#txtDasar").val("");

@@ -14,8 +14,8 @@
     array_push($options,$s->KDUNIT."__".$s->KDUNIT." ".$s->NMUNIT);
   }
   $jenis = array(
-    "__Pilih Jenis Pertanggungjawaban",
-    "tbp__TBP - Tanda Bukti Pengeluaran",
+    "__Pilih Jenis Pertanggungjawaban/SPJ UP/GU/TU",
+    "tbp__TBP - Tanda Bukti Pengeluaran/Tagihan",
     "koreksi__Koreksi Belanja",
     "jkn__J K N"
   );
@@ -25,7 +25,9 @@
     array("width"=>"10","type"=>"text","id"=>"namaUnit","label"=>"Nama Unit Kerja","default"=>"","readonly"=>"1","placeholder"=>"Klik Disini"),
 
     array("width"=>"2","type"=>"text","id"=>"nipBend","label"=>"NIP","default"=>"","readonly"=>"1"),
-    array("width"=>"6","type"=>"text","id"=>"namaBend","label"=>"Nama Bendahara","default"=>"","readonly"=>"1")
+    array("width"=>"6","type"=>"text","id"=>"namaBend","label"=>"Nama Bendahara","default"=>"","readonly"=>"1"),
+
+    array("width"=>"4","type"=>"select","id"=>"jns","label"=>"Jenis SPJ","default"=>"","option"=>$jenis,"readonly"=>"0")
   );
   $form->addRow($row);
   $form->addHidden(array("id"=>"keybend","value"=>''));
@@ -37,7 +39,7 @@
 
 ?>
 </form>
-<div id="listBKUBP"></div>
+<div id="listSPJ"></div>
 <script>
   $("#frmBKUBPLookup").attr("autocomplete","off");
   $("#tglMulai").datepicker({changeMonth: true,changeYear: true,dateFormat: 'mm/dd/yy'});
@@ -45,8 +47,8 @@
 
   $("#kdUnit").val("");
   $("#kdSatker,#namaUnit").click(function(){
-    $("#listBKUBP").html('');
-    $("#nipBend,#namaBend,#tglMulai,#tglSelesai,#keybend,#jabBend").val('');
+    $("#listSPJ").html('');
+    $("#nipBend,#namaBend,#jns,#keybend,#jabBend").val('');
     post_to_modal("../utama/satkerList","a=","Data Satuan Kerja");
   })
 
@@ -55,11 +57,22 @@
   });
   
   $("#nipBend,#namaBend").click(function(){
-    $("#listBKUBP,#nipBend,#namaBend,#tglMulai,#tglSelesai").html('');
-    if($("#listUnit").val() != '' ){
+    $("#listSPJ").html('');
+    $("#jns,#nipBend,#namaBend,#keybend,#jabBend").val("");
+    if($("#kdUnit").val() != '' ){
       post_to_modal("../utama/bendList/B","unitkey="+$("#kdUnit").val()),"Data Bendahara";
     }else{
       alert("Masukkan Bidang, Unit");
+    }
+  })
+  $("#jns").change(function(){
+    $("#listSPJ").html('');
+    if($("#keybend").val() != '' && $(this).val() != ''){
+      post_to_content("listSPJ","listSPJ","unitkey="+$("#kdUnit").val()+"&keybend="+$("#keybend").val());
+      $(this).val("");
+    }else{
+      $(this).val("");
+      alert("Pilih Bendahara");
     }
   })
   //post_to_tab("0","listSKUP","","Data Uang Persediaan");

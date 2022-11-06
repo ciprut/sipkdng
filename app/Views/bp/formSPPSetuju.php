@@ -49,6 +49,7 @@
   $("#txtTanggalValid").datepicker({changeMonth: true,changeYear: true,dateFormat: 'mm/dd/yy'});
   $("#btnSimpan").click(function(){
     post_to_content("listSPP","setujuSPP",$("#frmSPPSetuju").serialize());
+    hide_form();
   });
   $("#txtPenolakan").change(function(){
     if($(this).val() == "0"){

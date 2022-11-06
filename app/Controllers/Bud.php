@@ -147,7 +147,7 @@ class Bud extends BaseController
 			session()->set('nobbantu',trim($this->request->getPost('nobbantu')));
 		}
 		$data['bantu'] = $this->utama->getNobbantu($this->request->getPost('nobbantu'));
-		$data['noreg'] = $this->utama->getNoRegBKU('BKUK');
+		$data['noreg'] = $this->utama->getNoReg('BKUK','NOBUKAS','all');
 		$data['idxttd'] = $this->utama->getIdxttd('04.501');
 		return view('bud/formValidasi',$data);
 	}
@@ -180,6 +180,14 @@ class Bud extends BaseController
       $this->model->simpanValidasi($data);
     }
 		return redirect()->to(site_url('/bud/listValidasi'));
+	}
+	public function rincianValSP2D(){
+    if($this->request->getPost('nosp2d') != ''){
+			session()->set('nosp2d',$this->request->getPost('nosp2d'));
+		}
+
+		$data["rinci"] = $this->model->rincianValSP2D();
+		return view('bud/rincianValSP2D',$data);
 	}
 
 }

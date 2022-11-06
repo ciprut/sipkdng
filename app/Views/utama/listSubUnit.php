@@ -15,7 +15,7 @@
         $btt = array(
           array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning",
           "title"=>"Ambil Data Unit Kerja",
-          "placeholder"=>$h->KDUNIT."__".$h->NMUNIT
+          "placeholder"=>getKdSKPD($h->KDUNIT)."__".$h->NMUNIT
           )
         );
         $form->addIconGroup($btt);

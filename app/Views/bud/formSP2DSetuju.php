@@ -50,6 +50,7 @@
   $("#frmSP2DSetuju").attr("autocomplete","off");
   $("#btnSimpan").click(function(){
     post_to_content("listSP2D","setujuSP2D",$("#frmSP2DSetuju").serialize());
+    hide_form();
   });
   $("#txtPenolakan").change(function(){
     if($(this).val() == "0"){

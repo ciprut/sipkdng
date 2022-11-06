@@ -11,9 +11,9 @@
       $kep = $spm->KEPERLUAN;
       $form->addGroup(array("type"=>"text","id"=>"txtNoSPM","label"=>"Nomer SPM","placeholder"=>"","readonly"=>"1","value"=>$spm->NOSPM));
     }else{
-      $reg = pjg((session()->noreg)+1,3);
+      $reg = pjg((session()->noreg),3);
       $kep = $keperluan;
-      $nospm = pjg((session()->noreg)+1, 5)."/SPM-".strtoupper(session()->jnsSpm)."/".$unit->KDUNIT."/".$bendahara->JAB_BEND."/".session()->tahun;
+      $nospm = pjg((session()->noreg), 5)."/SPM-".strtoupper(session()->jnsSpm)."/".getKdSKPD($unit->KDUNIT)."/".$bendahara->JAB_BEND."/".session()->tahun;
       $form->addGroup(array("type"=>"text","id"=>"txtNoSPM","label"=>"Nomer SPM","placeholder"=>$webset,"value"=>$nospm,"readonly"=>"1"));
     }
     $tgl = substr($spm->TGLSPM, 0,10);
@@ -48,6 +48,7 @@
   $("#frmSPM").attr("autocomplete","off");
   $("#btnSimpan").click(function(){
     post_to_content("listSPM","simpanSPM",$("#frmSPM").serialize());
+    hide_form();
   });
   $("#txtTanggal").on('blur',function(){
     $("#txtDasar").val("");

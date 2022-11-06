@@ -9,7 +9,7 @@
   $form->addTable($tabel);
   foreach($bkubp as $h){ ?>
     <tr class=''>
-      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOBKUSKPD; ?>"><?php echo $h->NOBKUSKPD." [".trim($h->KDSTATUS)."]" ?></a></td>
+      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOBUKTI; ?>" data-placeholder="<?php echo $h->NOBUKTI; ?>"><?php echo $h->NOBKUSKPD." [".trim($h->KDSTATUS)."]" ?></a></td>
       <td align='center'><?php echo ngSQLSRVTGL($h->TGLBKUSKPD) ?></td>
       <td align='center'><?php echo $h->JENIS ?></td>
       <td align='left'><?php echo $h->NOBUKTI ?></td>
@@ -42,7 +42,7 @@
   $form->closeTable($tabel);
   
 ?>
-<div id='detilBKUBP'></div>
+<div id='detilBKUBP'>asd</div>
 <script>
   $('#tblBKUBP').removeAttr('width').DataTable({
     "ordering":false,
@@ -77,13 +77,14 @@
   });
   $('#tblBKUBP').on("click",".rinci",function(){
     elm = $(this).data("elm");
-    post_to_content("detilSP2D","rincianSP2D","nosp2d="+elm,$(this).data("placeholder"))
+    post_to_content("detilBKUBP","rincianBKUBP","nobukti="+elm,$(this).data("placeholder"))
     //post_to_tab("2","rincianSPM","nospp="+elm,$(this).data("placeholder"))
   });
   $('#tblValidasi').on("click",".setuju",function(){
     elm = $(this).data("elm");
     post_form("formSP2DSetuju","nosp2d="+elm,"Persetujuan S P 2 D");
   });
+  
   $("#btnTambahBKUBP").click(function(){
     post_form("formBKUBP","nobkuskpd=","BKU Bendahara Pengeluaran");
   });

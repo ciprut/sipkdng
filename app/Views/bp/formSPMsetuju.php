@@ -42,6 +42,7 @@
   $("#frmSPM").attr("autocomplete","off");
   $("#btnSimpan").click(function(){
     post_to_content("listSPM","setujuSPM",$("#frmSPM").serialize());
+    hide_form();
   });
 
 </script>

@@ -10,8 +10,8 @@
   foreach($sp2d as $h){ ?>
     <tr class=''>
       <td align='left'><a class="rinci" data-elm="<?php echo $h->NOSP2D; ?>"><?php echo $h->NOSP2D ?></a></td>
-      <td align='left'><?php echo $h->TGLSP2D ?></td>
-      <td align='left'><?php echo $h->TGLVALID ?></td>
+      <td align='center'><?php echo ngSQLSRVTGL($h->TGLSP2D) ?></td>
+      <td align='center'><?php echo ngSQLSRVTGL($h->TGLVALID) ?></td>
       <td align='left'><?php echo $h->KETOTOR ?></td>
       <td align='center'><?php echo $h->NOREG ?></td>
       <td align='center'><?php echo $h->KEPERLUAN ?></td>

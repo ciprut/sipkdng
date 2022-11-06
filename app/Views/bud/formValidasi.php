@@ -11,7 +11,7 @@
       $kep = $val->KEPERLUAN;
       //$form->addGroup(array("type"=>"text","id"=>"txtNoVal","label"=>"Nomer Validasi BKU","placeholder"=>"","readonly"=>"1","value"=>$reg));
     }else{
-      $reg = pjg((session()->nobukas),5);
+      $reg = pjg(($noreg),5);
       $kep = $keperluan;
       //$form->addGroup(array("type"=>"text","id"=>"txtNoVal","label"=>"Nomer Validasi BKU","placeholder"=>$webset,"value"=>$reg,"readonly"=>"1"));
     }
@@ -55,6 +55,7 @@
   $("#txtTanggalVal").datepicker({changeMonth: true,changeYear: true,dateFormat: 'mm-dd-yy'});
   $("#btnSimpan").click(function(){
     post_to_content("listValidasi","simpanValidasi",$("#frmValidasi").serialize());
+    hide_form();
   });
   $("#txtJenisBukti, #txtKetBukti").click(function(){
     if($("#txtTanggalVal").val() == ""){

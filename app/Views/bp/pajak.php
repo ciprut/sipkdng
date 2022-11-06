@@ -13,6 +13,11 @@
     $unitkey = str_replace("_","",$s->UNITKEY);
     array_push($options,$s->KDUNIT."__".$s->KDUNIT." ".$s->NMUNIT);
   }
+  $jb = array(
+    "__Pilih Jenis Kegiatan",
+    "pemungutan__Pemungutan / Pemotongan Pajak",
+    "penyetoran__Penyetoran Pajak"
+  );
   $row = array(
     array("width"=>"2","type"=>"text","id"=>"kdSatker","label"=>"Kode Unit","default"=>"","readonly"=>"1","placeholder"=>"Klik Disini"),
     array("width"=>"10","type"=>"text","id"=>"namaUnit","label"=>"Nama Unit Kerja","default"=>"","readonly"=>"1","placeholder"=>"Klik Disini"),
@@ -21,7 +26,8 @@
     array("width"=>"10","type"=>"text","id"=>"namaSub","label"=>"Nama Sub Kegiatan","default"=>"","readonly"=>"1","placeholder"=>"Klik Disini"),
 
     array("width"=>"2","type"=>"text","id"=>"nipBend","label"=>"NIP","default"=>"","readonly"=>"1"),
-    array("width"=>"4","type"=>"text","id"=>"namaBend","label"=>"Nama Bendahara","default"=>"","readonly"=>"1")
+    array("width"=>"6","type"=>"text","id"=>"namaBend","label"=>"Nama Bendahara","default"=>"","readonly"=>"1"),
+    array("width"=>"4","type"=>"select","id"=>"txtJB","label"=>"Jenis Kegiatan","placeholder"=>"","default"=>"pemungutan","option"=>$jb)
   );
   $form->addRow($row);
 
@@ -33,7 +39,7 @@
 
 ?>
 </form>
-<div id="listTBP"></div>
+<div id="listPajak"></div>
 <script>
   $("#frmBKUBPLookup").attr("autocomplete","off");
   $("#kdUnit").val("");
@@ -51,7 +57,7 @@
   })
   
   $("#nipBend,#namaBend").click(function(){
-    $("#listBKUBP,#nipBend,#namaBend,#tglMulai,#tglSelesai").val('');
+    $("#nipBend,#namaBend,#tglMulai,#tglSelesai").val('');
     if($("#kdUnit").val() != '' && $("#idSub").val() != ''){
       post_to_modal("../utama/bendList/B","unitkey="+$("#kdUnit").val(),"Data Bendahara");
     }else{
@@ -59,7 +65,16 @@
     }
   })
   $("#keybend").keyup(function(){
-    post_to_content("listTBP","listTBP","unitkey="+$("#kdUnit").val()+"&keybend="+$("#keybend").val()+"&sub="+$("#idSub").val(),"1");
+    $("#txtJB").change();
+  });
+
+  $("#txtJB").change(function(){
+    if($(this).val() == ''){
+      $("#listPajak").html("");
+    }
+    if($(this).val() == 'pemungutan'){
+      post_to_content("listPajak","listPajak","unitkey="+$("#kdUnit").val()+"&keybend="+$("#keybend").val()+"&sub="+$("#idSub").val(),"1");
+    }
   });
 </script>
 <?php $this->endSection(); ?>

@@ -55,7 +55,9 @@
   $("#jnsSPM").change(function(){
     $("#listBendahara").html('');
     if($(this).val() != ''){
-      post_to_content("listSPM","listSPM","unitkey="+$("#kdUnit").val()+"&jns="+$("#jnsSPM").val());
+      post_to_content("listSPM","listSPM","unitkey="+$("#kdUnit").val()+"&jns="+$("#jnsSPM").val()+"&keybend="+$("#keybend").val());
+    }else{
+      $("#listSPM").html('');
     }
   })
 </script>

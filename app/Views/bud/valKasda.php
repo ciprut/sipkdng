@@ -9,7 +9,7 @@
 
   $jenis = array(
     "__Pilih Jenis SP2D",
-    "bkud__Valaidasi Penerimaan",
+    "bkud__Validasi Penerimaan",
     "bkuk__Validasi Pengeluaran",
     "bkut__Validasi Transfer"
   );

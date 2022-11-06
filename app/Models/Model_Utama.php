@@ -83,7 +83,7 @@
 				$builder->where("a.JNS_BEND",$jns);
 			}
       $builder->orderBy('a.JNS_BEND','ASC');
-//      echo $builder->getCompiledSelect();die();
+//      echo nl2br($builder->getCompiledSelect());die();
       $rs = $builder->get()->getResult();
 			return $rs;
 		}
@@ -118,6 +118,18 @@
 			$builder = $this->db->table('NEXTKEY');
 			$builder->where('TABLEID',$tableID)->update('NEXTKEY',"(rtrim(cast((cast(rtrim(replace(NEXTKEY,'_','')) as int)+1) as char(20))) + '_')");
 			return;
+		}
+		public function getNoReg($table,$field,$unitkey=''){
+			if($unitkey == ""){
+				$unitkey = session()->kdUnit;
+			}else if($unitkey == "all"){
+				$unitkey = '';
+			}
+			$builder = $this->db->table($table);
+			$builder->select('top (1) ISNULL(LEFT('.$field.',5),0) as NOREG')->like('UNITKEY',$unitkey)->orderBy($field,'DESC');
+			$rs = $builder->get()->getRow();
+			$nr = ((int)$rs->NOREG)+1;
+			return pjg($nr,5);
 		}
 		public function getNoRegTBP(){
 			$builder = $this->db->table('BPK');

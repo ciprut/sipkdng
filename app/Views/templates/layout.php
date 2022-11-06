@@ -31,7 +31,7 @@
         echo "<link rel='stylesheet' href='".base_url("public/assets/css/chart.css?t=".time())."'>";
         echo "<link rel='stylesheet' href='".base_url("public/assets/css/select.css?t=".time())."'>";
         echo "<link rel='stylesheet' href='".base_url("public/assets/css/override.css?t=".time())."'>";
-        
+        echo "<link rel='stylesheet' href='".base_url("public/assets/css/animate.min.css?t=".time())."'>";
       ?>
 
       <!-- Favicon and touch icons

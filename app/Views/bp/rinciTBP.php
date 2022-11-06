@@ -54,7 +54,6 @@
 
   $("#btnTambahRincianTBP").click(function(){
     post_to_tab("2",'listSubRinc','idSub='+$("#idSub").val(),'Sub Rincian Obyek');
-    //post_to_modal('listSubRinc','idSub='+$("#idSub").val(),'Sub Rincian Obyek');
   });
   $('#tblRinciTBP').on("click",".btnNilai",function(){
     elm = $(this).data("elm");

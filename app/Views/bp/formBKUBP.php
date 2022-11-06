@@ -19,7 +19,7 @@
     $form->addRow($row);
     $jb = array(
       "SP2D__SP2D",
-      "BPK__BPK",
+      "BPK__BPK / Tagihan UP/GU/TU",
       "Panjar__Panjar",
       "Pajak__Pajak",
       "Bank__Bank",

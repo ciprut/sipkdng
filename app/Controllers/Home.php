@@ -20,6 +20,7 @@ class Home extends BaseController
 		session()->set('tahun',$this->request->getPost('tahun'));
 		session()->set('modul',$this->request->getPost('modul'));
 		$this->utama->getPemda('cur_skpkd');
+		$this->utama->getPemda('cur_thang');
 
 		return redirect()->to(site_url('/login/verify'));
 }

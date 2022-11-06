@@ -63,8 +63,17 @@ class Bp extends BaseController
     if($this->request->getPost('unitkey') != ''){
 			session()->set('kdUnit',$this->request->getPost('unitkey'));
 		}
-		$jns = $this->request->getPost('jns');
-
+		session()->set('jnsBend','02');
+		$data["bendahara"] = $this->utama->listBendahara(session()->jnsBend);
+		return view('bp/listBendahara',$data);
+	}
+	public function listSPP(){
+    if($this->request->getPost('keybend') != ''){
+			session()->set('keybend',$this->request->getPost('keybend'));
+			session()->set('jnsSpp',$this->request->getPost('jn'));
+			session()->set('st',$this->request->getPost('st'));
+		}
+		$jns = session()->jnsSpp;
 		if(session()->pengajuan == 'spp'){
 			$params = array(
 				"up"=>array("Idxkode"=>"6","jnsSpp"=>"up","kdStatus"=>"21","keperluan"=>"uraisppup","jnsBend"=>"02","format"=>"frmtspp"),
@@ -92,13 +101,6 @@ class Bp extends BaseController
 			session()->set('jnsBend',$params[$jns]['jnsBend']);
 			session()->set('format',$params[$jns]['format']);
 		}
-		$data["bendahara"] = $this->utama->listBendahara(session()->jnsBend);
-		return view('bp/listBendahara',$data);
-	}
-	public function listSPP(){
-    if($this->request->getPost('keybend') != ''){
-			session()->set('keybend',$this->request->getPost('keybend'));
-		}
 
 		$data["spp"] = $this->model->listSPP(session()->jnsBend);
 		return view('bp/listSPP',$data);
@@ -112,6 +114,10 @@ class Bp extends BaseController
     if($this->request->getPost('nospp') != ''){
 			session()->set('nospp',$this->request->getPost('nospp'));
 		}
+
+		$jns = session()->jnsSpp;
+		
+
     $data['bendahara'] = $this->model->getBendahara();
     $data['noreg'] = $this->utama->getNoRegSPP();
     $data['unit'] = $this->utama->getUnit();
@@ -210,6 +216,7 @@ class Bp extends BaseController
 	public function listSPM(){
 		if($this->request->getPost('keybend') != ''){
 			session()->set('keybend',$this->request->getPost('keybend'));
+			session()->set('jnsSpm',$this->request->getPost('jns'));
 		}
 
 		$data["spp"] = $this->model->listSPM(session()->jnsBend);
@@ -230,7 +237,8 @@ class Bp extends BaseController
 			session()->set('nospm',$this->request->getPost('nospm'));
 		}
 		$data['bendahara'] = $this->model->getBendahara();
-		$data['noreg'] = $this->utama->getNoRegSPM(session()->jnsSpm);
+//		$data['noreg'] = $this->utama->getNoRegSPM(session()->jnsSpm);
+		$data['noreg'] = $this->utama->getNoReg('ANTARBYR','NOREG');
 		$data['unit'] = $this->utama->getUnit();
 		$data['format'] = $this->utama->getWebset(session()->format);
 		$data['keperluan'] = $this->utama->getWebset(session()->keperluan);
@@ -359,6 +367,14 @@ class Bp extends BaseController
 		session()->set('nobkuskpd',$kode[0]);
 		$this->model->hapusBKUBP($kode[1]);
 		return redirect()->to(site_url('/bp/listBKUBP'));
+	}
+	public function rincianBKUBP(){
+    if($this->request->getPost('nobukti') != ''){
+			session()->set('nobukti',$this->request->getPost('nobukti'));
+		}
+
+		$data["rinci"] = $this->model->rincianBKUBP();
+		return view('bp/rincianBKUBP',$data);
 	}
 
 	/* --------------- PERGESERAN UANG ------------------- */
@@ -517,15 +533,7 @@ class Bp extends BaseController
 		return view('bp/listSubRinc',$data);
 	}
 	public function tambahRO(){
-		$post = array(
-			"MTGKEY"=>$this->request->getPost('mtgkey'),
-			"NILAI"=>"0",
-			"NOJETRA"=>"21",
-			"KDKEGUNIT"=>session()->idSub,
-			"NOBPK"=>session()->nobpk,
-			"UNITKEY"=>session()->kdUnit
-		);
-		$this->model->tambahRO($post);
+		$this->model->tambahRO($this->request->getPost('mtgkey'));
 		return redirect()->to(site_url('/bp/rinciTBP'));
 	}
 	public function listSDTBP(){
@@ -557,13 +565,104 @@ class Bp extends BaseController
 
 	/* --------------- PERTANGGUNGJAWABAN ------------------- */
 	public function pertanggungjawaban(){
-		$data["title"] = "Pertanggungjawaban UP/GU/TU";
+		$data["title"] = "Pertanggungjawaban - [SPJ] UP/GU/TU";
 		session()->set('tahap',$this->utama->getTahap());
 		//$data["sidebar"] = $this->sidebar->menu();
 		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
 
 		$data["satker"] = $this->utama->listBidang();
 		return view('bp/pertanggungjawaban',$data);
+	}
+
+	public function listSPJ(){
+		if($this->request->getPost('unitkey') != ''){
+			session()->set('kdUnit',$this->request->getPost('unitkey'));
+			session()->set('keybend',$this->request->getPost('keybend'));
+		}
+		$data["spj"] = $this->model->listSPJ();
+		return view('bp/listSPJ',$data);
+	}
+	public function rincSPJBPK(){
+		if($this->request->getPost('noSPJ') != ''){
+			session()->set('noSPJ',$this->request->getPost('noSPJ'));
+		}
+		$data["bpk"] = $this->model->rincSPJBPK();
+		return view('bp/rincSPJBPK',$data);
+	}
+	public function rinciSPJSubKeg(){
+		if($this->request->getPost('noSPJ') != ''){
+			session()->set('noSPJ',$this->request->getPost('noSPJ'));
+		}
+		$data["sub"] = $this->model->rinciSPJSubKeg();
+		return view('bp/rinciSPJSubKeg',$data);
+	}
+	public function detilSPJRekening(){
+		if($this->request->getPost('idSub') != ''){
+			session()->set('idSub',$this->request->getPost('idSub'));
+		}
+		$data["ro"] = $this->model->detilSPJRekening();
+		return view('bp/detilSPJRekening',$data);
+	}
+	public function formSPJ(){
+		session()->set('noSPJ','');
+		if($this->request->getPost('noSPJ') != ''){
+			session()->set('noSPJ',$this->request->getPost('noSPJ'));
+			$data['spj'] = $this->model->getSPJ(session()->noSPJ);
+		}else{
+			$data['noreg'] = $this->utama->getNoReg('PSPJ','NOSPJ');
+			$data['unit'] = $this->utama->getUnit();
+			$data['bend'] = $this->utama->getBendahara();
+			$data['spj'] = [];
+		}
+		return view('bp/formSPJ',$data);
+	}
+	public function simpanSPJ(){
+		$post = array(
+			"IDXKODE"=>"2",
+			"IDXTTD"=>"",
+			"KDSTATUS"=>"42",
+			"KETERANGAN"=>$this->request->getPost('txtUntuk'),
+			"KEYBEND"=>session()->keybend,
+			"TGLBUKU"=>$this->request->getPost('txtTanggalBuku'),
+			"TGLSPJ"=>$this->request->getPost('txtTanggalSPJ'),
+			"NOSPJ"=>$this->request->getPost('txtNoSPJ'),
+			"UNITKEY"=>session()->kdUnit
+		);
+		$this->model->simpanSPJ($post);
+		return redirect()->to(site_url('/bp/listSPJ'));
+	}
+	public function BPKList(){
+		$data['bpk'] = $this->model->BPKList();
+		return view('bp/BPKList',$data);
+	}
+	public function insertBPKSPJ(){
+		$post = array(
+			'NOSPJ'=>session()->noSPJ,
+			"NOBPK"=>$this->request->getPost('noBPK'),
+			"UNITKEY"=>session()->kdUnit
+		);
+		$this->model->insertBPKSPJ($post);
+		return redirect()->to(site_url('/bp/rincSPJBPK'));
+	}
+
+	/* --------------- PAJAK ------------------- */
+	public function pajak(){
+		$data["title"] = "Pemungutan / Penyetoran Pajak";
+		session()->set('tahap',$this->utama->getTahap());
+		//$data["sidebar"] = $this->sidebar->menu();
+		$data["menu"] = file_get_contents("./public/".session()->modul.".json");
+
+		$data["satker"] = $this->utama->listBidang();
+		return view('bp/pajak',$data);
+	}
+	public function listPajak(){
+		if($this->request->getPost('unitkey') != ''){
+			session()->set('kdUnit',$this->request->getPost('unitkey'));
+			session()->set('keybend',$this->request->getPost('keybend'));
+			session()->set('idSub',$this->request->getPost('sub'));
+		}
+		$data['pajak'] = $this->model->listPajak();
+		return view('bp/listPajak',$data);
 	}
 
 }

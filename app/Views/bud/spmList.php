@@ -4,8 +4,8 @@
   $form->addTable($tabel);
   foreach($spm as $h){ ?>
     <tr class=''>
-      <td align='center' width='120px'><?php echo $h->TGLSPM ?></td>
-      <td align='center' width='120px'><?php echo $h->TGLVALID ?></td>
+      <td align='center' width='120px'><?php echo ngSQLSRVTGL($h->TGLSPM) ?></td>
+      <td align='center' width='120px'><?php echo ngSQLSRVTGL($h->TGLVALID) ?></td>
       <td align='left'><?php echo $h->NOSPM ?></td>
       <td align='left'><?php echo $h->KETOTOR ?></td>
       <td align='center' width='50px'>

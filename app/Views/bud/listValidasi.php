@@ -12,7 +12,7 @@
   $form->addTable($tabel);
   foreach($valid as $h){ ?>
     <tr class=''>
-      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOBUKTIKAS; ?>"><?php echo $h->NOBUKTIKAS ?></a></td>
+      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOSP2D; ?>"><?php echo $h->NOBUKAS ?></a></td>
       <td align='center'><?php echo ngSQLSRVTGL($h->TGLKAS) ?></td>
       <td align='center'><?php echo ngSQLSRVTGL($h->TGLVALID) ?></td>
       <td align='left'><?php echo $h->NOSP2D ?></td>
@@ -82,8 +82,7 @@
   });
   $('#tblValidasi').on("click",".rinci",function(){
     elm = $(this).data("elm");
-    post_to_content("detilSP2D","rincianSP2D","nosp2d="+elm,$(this).data("placeholder"))
-    //post_to_tab("2","rincianSPM","nospp="+elm,$(this).data("placeholder"))
+    post_to_content("detilSP2D","rincianValSP2D","nosp2d="+elm,$(this).data("placeholder"))
   });
   $('#tblValidasi').on("click",".setuju",function(){
     elm = $(this).data("elm");

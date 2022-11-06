@@ -9,6 +9,7 @@
 			$this->utama = new \App\Models\Model_Utama;
 		}
 
+		/* ========================== PEMBUATAN SP2D ===================== */
 		public function getSP2D(){
 			$builder = $this->db->table('SP2D A')->where("A.UNITKEY",session()->kdUnit)->where('A.NOSP2D',session()->nosp2d);
 			$builder->select('A.*,AB.KEYBEND,P.NAMA as BENDAHARA,B.NIP,T.NAMA as TTDNAMA,X.NIP as TTD,BB.KDBANK,BB.MTGKEY,BB.NOREKB');
@@ -183,6 +184,7 @@
 			return;
 		}
 
+		/* ======================= VALIDASI BUD ======================= */
 		public function listValidasi($post){
 			if(session()->jns == 'bkuk'){
 				$sp = "SET NOCOUNT ON; EXEC WSPI_BKUK 
@@ -261,6 +263,34 @@
 				echo "NOT THIS SHIT!";die();
 			}
 			return;
+		}
+		public function rincianValSP2D(){
+			//CARI UNITKEY DARI SP2D D
+			$bd = $this->db->table('SP2D')->select("*")->where('NOSP2D',session()->nosp2d)->where('TGLVALID !=',null)->get()->getRow();
+
+      $builderD = $this->db->table('SP2DDETD S')->select('KDPER,\'\' as KDKEGUNIT,NMPER,NILAI, \'SP2D\' as JENIS, \'6\' as IDXKODE');
+      $builderD->join('MATANGD M','S.MTGKEY=M.MTGKEY','left outer');
+      $builderD->where('S.UNITKEY',$bd->UNITKEY)->where('S.NOSP2D',session()->nosp2d)->where('S.NOJETRA','21');
+      $query1 = $builderD->getCompiledSelect();
+
+      $builderR = $this->db->table('SP2DDETR S')->select('KDPER,KDKEGUNIT,NMPER,NILAI, \'SP2D\' as JENIS, \'6\'  as IDXKODE');
+      $builderR->join('MATANGR M','S.MTGKEY = M.MTGKEY','left outer');
+      $builderR->where('S.UNITKEY',$bd->UNITKEY)->where('S.NOSP2D',session()->nosp2d)->where('S.NOJETRA','21');
+      $query2 = $builderR->getCompiledSelect();
+
+      $builderB = $this->db->table('SP2DDETB S')->select('KDPER,\'\' as KDKEGUNIT,NMPER,NILAI, \'SP2D\' as JENIS, \'6\' as IDXKODE');
+      $builderB->join('MATANGB M','S.MTGKEY = M.MTGKEY','left outer');
+      $builderB->where('S.UNITKEY',$bd->UNITKEY)->where('S.NOSP2D',session()->nosp2d)->where('S.NOJETRA','21');
+      $query3 = $builderB->getCompiledSelect();
+
+			$builderL = $this->db->table('SP2DDETRTL S')->select('KDPER,\'\' as KDKEGUNIT,NMPER,NILAI, \'SP2D\' as JENIS, \'6\' as IDXKODE');
+      $builderL->join('MATANGR M','S.MTGKEY = M.MTGKEY','left outer');
+      $builderL->where('S.UNITKEY',$bd->UNITKEY)->where('S.NOSP2D',session()->nosp2d)->where('S.NOJETRA','21');
+      $query4 = $builderL->getCompiledSelect();
+
+			$q = $query1.' UNION ALL '.$query2.' UNION ALL '.$query3.' UNION ALL '.$query4;
+			//echo nl2br($q);
+      return $this->db->query($q)->getResult();
 		}
 
 	}
