@@ -1,0 +1,64 @@
+=== SPM GU ===
+select distinct 
+'0' as ALLOWSUPERUSER,A.IDXKODE,A.IDXSKO,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS, isnull((A.KEPERLUAN),'')KEPERLUAN,
+isnull((A.NOKONTRAK),'')NOKONTRAK, A.KDP3, isnull((DP3.NMP3),'')NMP3, A.KETOTOR,rtrim(A.KEYBEND) as KEYBEND,A.NOREG,A.NOSPM,A.NOSPP, A.PENOLAKAN,A.TGLSPM,A.TGLVALID,A.TGSPP,A.UNITKEY, SK.TGLSKO,SK.NOSKO, '' as KDKEGUNIT, A.KDDANA,A.KDKABKOT 
+from ANTARBYR A 
+LEFT OUTER JOIN SPMDETR D ON A.NOSPM = D.NOSPM and A.UNITKEY = D.UNITKEY
+LEFT OUTER JOIN SKO SK ON A.IDXSKO = SK.IDXSKO and A.UNITKEY = SK.UNITKEY
+LEFT OUTER JOIN DAFTPHK3 DP3 ON A.KDP3 = DP3.KDP3
+LEFT OUTER JOIN BEND B on A.KEYBEND=B.KEYBEND
+LEFT OUTER JOIN JBEND J ON B.JNS_BEND = J.JNS_BEND
+where 
+A.UNITKEY= session()->kdUnit and A.IDXKODE= '2' and ( '2' not in ('2') or ( '2' ='2' and A.KDSTATUS in ('22','23'))) and 
+A.KEYBEND = session()->keybend 
+order by A.NOSPM
+
+@param0=0,@param1=NULL,@param2=N'2559_',@param3=2,@param4=N'189018_',@param5=N'1',@param6=N''
+
+=== LOOKUP SPP ===
+IF ( @param0 =''2'' and @param1 =''24'') 
+
+select distinct
+rtrim(A.NOSPP) 'NOSPP' ,convert(char(10), A.TGSPP, 103) 'TGSPP' ,rtrim(A.KEPERLUAN) 'URAIAN'
+from SPP A
+INNER JOIN SPPDETR s ON s.UNITKEY = A.UNITKEY AND s.NOSPP = A.NOSPP
+INNER JOIN MKEGIATAN m ON m.KDKEGUNIT = s.KDKEGUNIT
+where
+A.UNITKEY = session()->kdUnit and
+isnull(A.PENOLAKAN,1)=1 and
+A.IDXKODE = '2' AND
+A.KDSTATUS = '24' AND
+s.KDKEGUNIT= '' and
+A.NOSPP NOT in (select isnull(NOSPP,'') from ANTARBYR where UNITKEY = session()->kdUnit ) and
+A.TGLVALID is not null order by rtrim(A.NOSPP)
+
+ELSE ==========>INI GU/TU
+
+select 
+
+rtrim(A.NOSPP) 'NOSPP' ,convert(char(10), A.TGSPP, 103) 'TGSPP' ,rtrim(A.KEPERLUAN) 'URAIAN'
+from SPP A
+where 
+A.UNITKEY = session()->kdUnit and
+isnull(A.PENOLAKAN,1)=1 and
+A.IDXKODE = '2' AND
+A.KDSTATUS = @param1 and
+A.NOSPP NOT in (select isnull(NOSPP,'') from ANTARBYR where UNITKEY = session()->kdUnit ) and
+A.TGLVALID is not null
+order by rtrim(A.NOSPP)
+
+@param0=N'2',@param1=N'22',@param2=N'',@param3=N'',@param4=N'',@param5=N'2559_',@param6=N''
+
+@param1 => 22 = GU
+@param1 => 23 = TU
+
+=== SIMPAN SPM GU
+INSERT INTO ANTARBYR (	
+KDKABKOT,KDDANA,IDXKODE,IDXSKO,IDXTTD,KDP3,KDSTATUS,KEPERLUAN,KETOTOR,KEYBEND,NOKONTRAK,NOREG,NOSPP,PENOLAKAN,TGLSPM,TGSPP,UNITKEY,	NOSPM) VALUES (	
+ @param0,	 @param1,	 @param2,	 @param3,	 @param4,	 @param5,	 @param6,	 @param7,	 @param8,	 @param9,	 @param10,	 @param11,	 @param12,	 @param13,	 @param14,	 @param15,	 @param16,	 @param17)
+
+@param0=N'',@param1=N'',@param2=2,@param3=N'433_',@param4=NULL,@param5=NULL,@param6=N'22',@param7=N'Pengajuan SPP GU',@param8=N'08.00/01.0/000001/1.01.0.00.0.00.01.0000/M/1/2022',@param9=N'189018_',@param10=NULL,@param11=N'00002',@param12=N'00002/SPP-GU/1.01.0.00.0.00.01/B02/2022',@param13=N'1',@param14='2022-01-12 00:00:00',@param15='2022-01-12 00:00:00',@param16=N'2559_',@param17=N'00002/SPM-GU/1.01.0.00.0.00.01/B02/2022'
+
+WSP_TRANSFER_SPPSPM @nospp=N'00002/SPP-GU/1.01.0.00.0.00.01/B02/2022',@nospm=N'00002/SPM-GU/1.01.0.00.0.00.01/B02/2022',@unitkey=N'2559_'
+
+

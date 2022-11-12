@@ -38,11 +38,11 @@
 -->
       <script src="<?php echo base_url("public/assets/js/jquery-2.1.4.min.js"); ?>"></script>
       <script src="<?php echo base_url("public/assets/js/ace-extra.min.js"); ?>"></script>
-      <script src="<?php echo base_url("public/assets/js/script.js"); ?>"></script>
+      <script src="<?php echo base_url("public/assets/js/script.js?t=".time()); ?>"></script>
 
       <script src="<?php echo base_url("public/assets/js/datatables.js"); ?>" type="text/javascript"></script> 
 
-      <script src="<?php echo base_url("public/assets/js/jquery.myplugin.js"); ?>"></script>
+      <script src="<?php echo base_url("public/assets/js/jquery.myplugin.js?t=".time()); ?>"></script>
       <script src="<?php echo base_url("public/assets/js/jquery-ui.min.js"); ?>"></script>
       <script src="<?php echo base_url("public/assets/js/chart.js"); ?>"></script>
       <script src="<?php echo base_url("public/assets/js/select.js"); ?>"></script>
@@ -74,7 +74,7 @@
         .dropdown-menu {
            overflow-y:auto; 
            max-height:50vh;
-           width:400px;
+           width:245px;
         }
       </style>
     </head>

@@ -45,19 +45,19 @@
 
 ?>
 </form>
-<div id="listPU"></div>
+<div id="listPanjar"></div>
 <script>
   $("#frmBKUBPLookup").attr("autocomplete","off");
 
   $("#kdSatker,#namaUnit").click(function(){
     $("#kdSatker,#namaUnit,#nipBend,#namaBend,#keybend,#kdUnit").val("");
-    $("#listPU").html("");
+    $("#listPanjar").html("");
     post_to_modal("../utama/satkerList","a=","Data Satuan Kerja");
   })
   
   $("#nipBend,#namaBend").click(function(){
     $("#nipBend,#namaBend").val('');
-    $("#listPU").html("");
+    $("#listPanjar").html("");
     if($("#kdUnit").val() != '' && $("#idSub").val() != ''){
       post_to_modal("../utama/bendList/B","unitkey="+$("#kdUnit").val(),"Data Bendahara");
     }else{
@@ -65,7 +65,7 @@
     }
   })
   $("#keybend").keyup(function(){
-    post_to_content("listPU","listPergeseranUang","unitkey="+$("#listUnit").val()+"&keybend="+$("#keybend").val(),"1");
+    post_to_content("listPanjar","listPanjar","unitkey="+$("#kdUnit").val()+"&keybend="+$("#keybend").val(),"1");
   });
 </script>
 <?php $this->endSection(); ?>

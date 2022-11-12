@@ -14,7 +14,11 @@
         $elm = $h->UNITKEY;
         $btt = array(
           array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning",
-          "title"=>"Ambil Data Unit Kerja",
+          "title"=>"Set Unit Kerja",
+          "placeholder"=>getKdSKPD($h->KDUNIT)."__".$h->NMUNIT
+        ),
+        array("id"=>"btnBend","icon"=>"user","elm"=>$elm,"color"=>"warning",
+          "title"=>"Bendahara",
           "placeholder"=>getKdSKPD($h->KDUNIT)."__".$h->NMUNIT
           )
         );
@@ -32,7 +36,7 @@
     "pageLength":3,
     "columnDefs": [
       { "width": 150, "targets": 0 },
-      { "width": 50, "targets": 2 }
+      { "width": 90, "targets": 2 }
     ],
     "fixedColumns": true,
     "bLengthChange" : false,
@@ -45,6 +49,14 @@
     $("#kdSatker").val(dats[0]);
     $("#namaUnit").val(dats[1]);
     closeModal();
+  });
+  $('#tblListSubUnit').on("click",".btnBend",function(){
+    elm = $(this).data("elm");
+    dats = $(this).data("placeholder").split("__");
+    $("#kdUnit").val(elm);
+    $("#kdSatker").val(dats[0]);
+    $("#namaUnit").val(dats[1]);
+    post_to_content("listSubUnit","../utama/bendList/B","unitkey="+elm,"Data Bendahara");
   });
 
 </script>

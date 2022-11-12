@@ -74,6 +74,7 @@
     }
     if($(this).val() == 'pemungutan'){
       post_to_content("listPajak","listPajak","unitkey="+$("#kdUnit").val()+"&keybend="+$("#keybend").val()+"&sub="+$("#idSub").val(),"1");
+      $(this).val("");
     }
   });
 </script>

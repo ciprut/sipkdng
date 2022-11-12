@@ -10,7 +10,7 @@
       <td align='center'><?php echo $h->REKBEND ?></td>
       <td align='center' width='50px'>
         <?php
-        $elm = $h->KEYBEND;
+        $elm = trim($h->KEYBEND);
         $btt = array(
           array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning",
           "title"=>"Ambil Data Bendahara",

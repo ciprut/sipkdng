@@ -635,5 +635,23 @@ class Form_render{
 			echo $html;
 			return;
 		}
+
+		function addTabs($judul,$id=null){
+			$nom = explode("__",$judul);
+			if(is_null($id)){$id='myTabs';}
+
+			$html = "<div id='".$id."' style='display:none'><ul>";
+			for($i=0;$i<sizeof($nom);$i++){
+				$html .= "<li><a href='#".$id."-".($i+1)."' id='header-".$id."-".($i+1)."'>".$nom[$i]."</a></li>";
+			}
+			$html .= "</ul>";
+			for($i=0;$i<sizeof($nom);$i++){
+				$html .= "<div id='".$id."-".($i+1)."'></div>";
+			}
+			$html .= "</div>";
+			$html .= '<script>$( "#'.$id.'" ).tabs();</script>';
+			echo $html;
+			return;
+		}
 }
 ?>

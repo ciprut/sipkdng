@@ -33,7 +33,7 @@
         if($h->NOSPM == ''){
           $form->addDropdown($act);
         }else{
-          echo "&nbsp;";
+          echo "*";
         }
         ?>
       </td>
@@ -42,6 +42,7 @@
   }
   $form->closeTable($tabel);
 
+  //$form->addTabs('Rincian SPP__Rincian SPJ','tabsSPP');
 ?>
 <div id='detilSPP'></div>
 <script>
@@ -77,7 +78,10 @@
   });
   $('#tblSPP').on("click",".rinci",function(){
     elm = $(this).data("elm");
-    post_to_content("detilSPP","rincianSPP","nospp="+elm,$(this).data("placeholder"))
+    post_to_tab("1","rincianSPP","nospp="+elm,"Rincian SPP No "+elm);
+//    $("#tabsSPP").fadeIn();
+//    post_to_content("tabsSPP-1","rincianSPP","nospp="+elm,$(this).data("placeholder"));
+//    $("#header-tabsSPP-1").click();
   });
   $('#tblSPP').on("click",".setuju",function(){
     elm = $(this).data("elm");

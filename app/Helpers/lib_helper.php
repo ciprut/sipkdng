@@ -650,13 +650,53 @@ $m .= "SAVED ".$vfile_upload." - OK - ";
 		}
 		return $hasil;
 	}
-	function ngSQLSRVTGL($tanggal){
-		$t = explode(" ",$tanggal);//2022-01-18
-		$d = explode("-",$t[0]);
-		$tgl = $d[2];
-		$bl = intval($d[1]);
-		$thn = $d[0];
+	function ngSQLSRVTGL($tanggal,$kode=null){
+		if($kode == '101'){//01/11/2022	
+			$d = explode("/",$tanggal);
+			$tgl = $d[1];
+			$bl = intval($d[0]);
+			$thn = $d[2];
+		}else
+		if($kode == '103'){//11/01/2022
+			$d = explode("/",$tanggal);
+			$tgl = $d[0];
+			$bl = intval($d[1]);
+			$thn = $d[2];
+		}else{//2022-01-18
+			$t = explode(" ",$tanggal);
+			$d = explode("-",$t[0]);
+			$tgl = $d[2];
+			$bl = intval($d[1]);
+			$thn = $d[0];
+			}
 		$bln = array("-","Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agt","Sep","Okt","Nov","Des");
+		$hasil = intval($tgl)." ".$bln[$bl]." ".$thn;
+		if($tanggal == ""){
+			$hasil = "-";
+		}
+
+		return $hasil;
+	}
+	function ngSQLSERVERTGL($tanggal,$kode=null){
+		if($kode == '101'){//01/11/2022	
+			$d = explode("/",$tanggal);
+			$tgl = $d[1];
+			$bl = intval($d[0]);
+			$thn = $d[2];
+		}else
+		if($kode == '103'){//11/01/2022
+			$d = explode("/",$tanggal);
+			$tgl = $d[0];
+			$bl = intval($d[1]);
+			$thn = $d[2];
+		}else{//2022-01-18
+			$t = explode(" ",$tanggal);
+			$d = explode("-",$t[0]);
+			$tgl = $d[2];
+			$bl = intval($d[1]);
+			$thn = $d[0];
+			}
+		$bln = array("-","Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember");
 		$hasil = intval($tgl)." ".$bln[$bl]." ".$thn;
 		if($tanggal == ""){
 			$hasil = "-";

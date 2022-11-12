@@ -83,20 +83,16 @@
 				$builder->where('(isnull(D.KDKEGUNIT,\'\')=isnull(\'\',\'\') or isnull(\'\',\'\')=\'\' or D.KDKEGUNIT is null)');
 				$builder->where('S.KEYBEND',session()->keybend)->where('S.UNITKEY',session()->kdUnit);
 				if(session()->st == "pengajuan"){
-//					$builder->where('S.TGLVALID',NULL);
 				}else{
-//					$builder->where('S.TGLVALID',NULL);
 				}
 			}
 			if(session()->jnsSpp == "gu"){
 				$builder->where('S.UNITKEY',session()->kdUnit)->where('S.IDXKODE',session()->Idxkode)->where('RIGHT(J.JNS_BEND,1)','2');
 				$builder->where('(isnull(D.KDKEGUNIT,\'\')=isnull(\'\',\'\') or isnull(\'\',\'\')=\'\' or D.KDKEGUNIT is null)');
 				$builder->where('S.KEYBEND',session()->keybend);
-				$builder->whereIn('S.KDSTATUS',[22,23]);
+				$builder->whereIn('S.KDSTATUS',[22,23])->distinct();
 			}
 			if($tgl != NULL){
-				//$whereDate = 'Convert(char(10), S.TGLVALID, 101) <= Convert(datetime, \''.$tgl.'\')';
-				//$builder->where($whereDate)->where('S.UNITKEY',session()->kdUnit);
 			}
 			//echo nl2br($builder->getCompiledSelect());die();
 			return $builder->get()->getResult();
@@ -175,15 +171,63 @@
 				$builder->where('A.UNITKEY',session()->kdUnit)->where('A.NOSPP',session()->nospp)->where('A.NOJETRA',session()->kdStatus);
 			}
 			if(session()->jnsSpp == "gu"){
-				$builder = $this->db->table('SPPDETB A');
-				$builder->where('S.UNITKEY',session()->kdUnit)->where('S.IDXKODE',session()->Idxkode)->where('RIGHT(J.JNS_BEND,1)','2');
-				$builder->where('(isnull(D.KDKEGUNIT,\'\')=isnull(\'\',\'\') or isnull(\'\',\'\')=\'\' or D.KDKEGUNIT is null)');
-				$builder->where('S.KEYBEND',session()->keybend);
-				$builder->whereIn('S.KDSTATUS',[22,23]);
+				$builder = $this->db->table('SPJSPP A');
+				$builder->select("A.NOSPJ,A.NOSPP,A.UNITKEY, J.IDXKODE, J.KETERANGAN+' - '+K.NMUNIT KETERANGAN, J.KEYBEND, J.TGLSPJ, J.TGLBUKU, J.KDSTATUS,");
+				$builder->select("NILAI = isnull((select sum(isnull(NILAI,0)) from SPJDETR C where C.NOSPJ=A.NOSPJ),0) +isnull((select sum(isnull(NILAI,0)) 
+				from SPJDETRTL C where C.NOSPJ=A.NOSPJ),0)");
+				$builder->join('PSPJ J','A.NOSPJ=J.NOSPJ','LEFT OUTER')->join(' DAFTUNIT K','J.UNITKEY=K.UNITKEY','INNER');
+				$builder->where('A.UNITKEY',session()->kdUnit)->where('A.NOSPP',session()->nospp)->orderBy('A.NOSPJ');
 			}
 			//echo session()->kdUnit." ".session()->Idxkode;//die();
+			return $builder->get()->getResult();
+		}
+		public function SPJList() {
+			$opsi = $this->utama->getWebset('bppgu');
+			if($opsi == 'Y'){
+				$builder = $this->db->table('PSPJ A');
+				$builder->select('A.NOSPJ,convert(char(10),A.TGLSPJ, 103) as TGLSPJ,rtrim(left(A.KETERANGAN,100)) As KETERANGAN');
+				$builder->where('A.UNITKEY',session()->kdUnit)->where('A.TGLSAH IS NOT',null)->where("(A.KDSTATUS='42' and '22' ='22')")->where('IDXKODE','2');
+				$builder->where("(A.KEYBEND= '".trim(session()->keybend)."' or (A.KEYBEND is null or A.KEYBEND=''))");
+				$builder->where("A.NOSPJ not in (select NOSPJ from SPJSPP where UNITKEY= '".session()->kdUnit."')")->orderBy('A.NOSPJ');
+			}else{
+				$builder = $this->db->table('PSPJ A');
+				$builder->select('A.NOSPJ,convert(char(10),A.TGLSPJ, 103) as TGLSPJ,rtrim(left(A.KETERANGAN,100)) As KETERANGAN');
+				$builder->where("(A.UNITKEY= '".trim(session()->kdUnit)."' OR A.UNITKEY IN(SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD= '".trim(session()->kdUnit)."' ))");
+				$builder->where('A.TGLSAH IS NOT',null)->where("(A.KDSTATUS='42' and '22' ='22')")->where('IDXKODE','2');
+				$builder->where("A.NOSPJ not in (select NOSPJ from SPJSPP where UNITKEY= '".session()->kdUnit."')")->orderBy('A.NOSPJ');
+			}
 			//echo nl2br($builder->getCompiledSelect());die();
 			return $builder->get()->getResult();
+		}
+		public function tambahSPJSPP($post){
+			$this->db->table('SPJSPP')->set($post)->insert($post);
+			$q = "EXEC WSP_TRANSFER_SPJSPP @unitkey='".session()->kdUnit."',@nospj='".$post['NOSPJ']."',@nospp='".session()->nospp."'";
+			$this->db->query($q);
+		}
+		public function rincianSPJSPP(){
+			$q = "
+			select distinct 
+			UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,NILAI,TYPE,'".session()->nospp."' as NOSPP, '' as NUPRGRM 
+			from ( 
+				select distinct '".session()->kdUnit."' UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(
+					select rtrim(numdigit) 
+					from 
+					struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'D' as TYPE, 
+					NILAI=(
+						select 
+						sum(NILAI) from SPPDETR where UNITKEY= '".session()->kdUnit."' and NOSPP= '".session()->nospp."'and KDKEGUNIT=K.KDKEGUNIT) 
+						from KEGUNIT K left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT 
+						left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM 
+						left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY 
+						left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY 
+						where (K.UNITKEY = '".session()->kdUnit."' OR K.UNITKEY IN(SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD= '".session()->kdUnit."' )) and 
+						K.KDKEGUNIT in (select KDKEGUNIT from SPPDETR where UNITKEY= '".session()->kdUnit."' and NOSPP= '".session()->nospp."' )
+			)A 
+			where UNITKEY ='".session()->kdUnit."' 
+			order by KDPER
+			";
+			$rs = $this->db->query($q)->getResult();
+			return $rs;
 		}
 
 		/* ---------------------- SPM ------------------- */
@@ -210,7 +254,7 @@
 				$builder->where('S.UNITKEY',session()->kdUnit)->where('S.IDXKODE',session()->Idxkode)->where('RIGHT(J.JNS_BEND,1)','2');
 				$builder->where('(isnull(D.KDKEGUNIT,\'\')=isnull(\'\',\'\') or isnull(\'\',\'\')=\'\' or D.KDKEGUNIT is null)');
 				$builder->where('S.KEYBEND',session()->keybend);
-				$builder->whereIn('S.KDSTATUS',[22,23]);
+				$builder->whereIn('S.KDSTATUS',[22,23])->distinct();
 			}
 			if($tgl != NULL){
 				$whereDate = 'Convert(char(10), S.TGLVALID, 101) <= Convert(datetime, \''.$tgl.'\')';
@@ -245,11 +289,18 @@
 				$builder->where('A.KEYBEND',session()->keybend);
 			}
 			if(session()->jnsSpm == "gu"){
-				$builder->where('S.UNITKEY',session()->kdUnit)->where('S.IDXKODE',session()->Idxkode)->where('RIGHT(J.JNS_BEND,1)','2');
-				$builder->where('(isnull(D.KDKEGUNIT,\'\')=isnull(\'\',\'\') or isnull(\'\',\'\')=\'\' or D.KDKEGUNIT is null)');
-				$builder->where('S.KEYBEND',session()->keybend);
-				$builder->whereIn('S.KDSTATUS',[22,23]);
-				echo $builder->getCompiledSelect();die();
+				$builder = $this->db->table('ANTARBYR A')->distinct();
+				$builder->select("'0' as ALLOWSUPERUSER,A.IDXKODE,A.IDXSKO,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS, isnull((A.KEPERLUAN),'')KEPERLUAN,");
+				$builder->select("isnull((A.NOKONTRAK),'')NOKONTRAK, A.KDP3, isnull((DP3.NMP3),'')NMP3, A.KETOTOR,rtrim(A.KEYBEND) as KEYBEND,A.NOREG,A.NOSPM,A.NOSPP,");
+				$builder->select("A.PENOLAKAN,convert(char(10), A.TGLSPM, 101) AS TGLSPM,convert(char(10), a.TGLVALID, 101) AS TGLVALID,A.TGSPP,A.UNITKEY, SK.TGLSKO,SK.NOSKO, '' as KDKEGUNIT, A.KDDANA,A.KDKABKOT ");
+				$builder->join('SPMDETR D','A.NOSPM = D.NOSPM and A.UNITKEY = D.UNITKEY','LEFT OUTER');
+				$builder->join('SKO SK','A.IDXSKO = SK.IDXSKO and A.UNITKEY = SK.UNITKEY','LEFT OUTER');
+				$builder->join('DAFTPHK3 DP3','A.KDP3 = DP3.KDP3','LEFT OUTER');
+				$builder->join('BEND B','A.KEYBEND=B.KEYBEND','LEFT OUTER');
+				$builder->join('JBEND J','B.JNS_BEND = J.JNS_BEND','LEFT OUTER');
+				$builder->where('A.UNITKEY',session()->kdUnit)->where('A.IDXKODE','2')->where("( '2' not in ('2') or ( '2' ='2' and A.KDSTATUS in ('22','23')))");
+				$builder->where('A.KEYBEND',session()->keybend)->orderBy('A.NOSPM');
+				//echo nl2br($builder->getCompiledSelect());die();
 			}
 			return $builder->get()->getResult();
 		}
@@ -314,6 +365,13 @@
 			}
 			return;
 		}
+		public function simpanSPMGU($post){
+			$this->db->table('ANTARBYR')->set($post)->insert($post);
+			$q = "EXEC WSP_TRANSFER_SPPSPM @nospp='".$post['NOSPP']."',@nospm='".$post['NOSPM']."',@unitkey='".session()->kdUnit."'";
+			$this->db->query($q);
+			$this->utama->setFlashData('Tidak dapat menyimpan data SPM.',"SPM telah berhasil disimpan","info");
+			return;
+		}
 		public function hapusSPM($post){
 			$builder = $this->db->table('ANTARBYR');
 			if(session()->jnsSpm == "up"){
@@ -337,16 +395,30 @@
 				$builder->select('rtrim(C.KDPER) as KDPER, rtrim(C.NMPER) as NMPER, C.TYPE');
 				$builder->join('MATANGB C','A.MTGKEY = C.MTGKEY','left outer');
 				$builder->where('A.UNITKEY',session()->kdUnit)->where('A.NOSPM',session()->nospm)->where('A.NOJETRA',session()->kdStatus);
+				//echo nl2br($builder->getCompiledSelect());die();
+				return $builder->get()->getResult();
 			}
-			if(session()->jnsSpp == "gu"){
-				$builder = $this->db->table('SPPDETB A');
-				$builder->where('S.UNITKEY',session()->kdUnit)->where('S.IDXKODE',session()->Idxkode)->where('RIGHT(J.JNS_BEND,1)','2');
-				$builder->where('(isnull(D.KDKEGUNIT,\'\')=isnull(\'\',\'\') or isnull(\'\',\'\')=\'\' or D.KDKEGUNIT is null)');
-				$builder->where('S.KEYBEND',session()->keybend);
-				$builder->whereIn('S.KDSTATUS',[22,23]);
+			if(session()->jnsSpm == "gu"){
+				$q = "
+				select distinct 
+				UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,NILAI,TYPE, '".session()->nospm."' as NOSPM 
+				from ( 
+					select '".session()->kdUnit."' UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) 
+					from struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'D' as TYPE, 
+					NILAI=(select sum(NILAI) from SPMDETR where UNITKEY= '".session()->kdUnit."' and NOSPM= '".session()->nospm."' and KDKEGUNIT=K.KDKEGUNIT) 
+					from KEGUNIT K left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM 
+					left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY 
+					where (K.UNITKEY = '".session()->kdUnit."' OR K.UNITKEY IN (SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD= '".session()->kdUnit."' )) and 
+					K.KDKEGUNIT in (select KDKEGUNIT from SPMDETR 
+				where 
+				UNITKEY= '".session()->kdUnit."' and NOSPM= '".session()->nospm."' ) 
+				)A 
+				where UNITKEY = '".session()->kdUnit."'
+				order by KDPER
+				";
+				$rs = $this->db->query($q)->getResult();
+				return $rs;
 			}
-			//echo nl2br($builder->getCompiledSelect());die();
-			return $builder->get()->getResult();
 		}
 		public function setujuSPM($post){
 			if($post['PENOLAKAN'] == "0"){
@@ -397,8 +469,8 @@
 				@kode='B02',
 				@unitkey='".session()->kdUnit."',
 				@keybend='".session()->keybend."',
-				@tgl1='2022-01-01 00:00:00',
-				@tgl2='2022-12-31 00:00:00',
+				@tgl1='".session()->cur_thang."-01-01 00:00:00',
+				@tgl2='".session()->cur_thang."-12-31 00:00:00',
 				@field='1',
 				@value='',
 				@hal=1,
@@ -440,6 +512,16 @@
 						'NOBKUSKPD'=> $post['NOBKUSKPD']
 					);
 					$builder = $this->db->table('BKUBPK');
+				}else if(session()->jb == "Pajak"){
+					$insert = array(
+						"KEYBEND"=>session()->keybend,
+						'NOBKPAJAK'=>$post['NOBUKTI'],
+						'TGLBKUSKPD'=>$post['TGLBKUSKPD'],
+						'URAIAN'=>$post['URAIAN'],
+						'UNITKEY'=>session()->kdUnit,
+						'NOBKUSKPD'=> $post['NOBKUSKPD']
+					);
+					$builder = $this->db->table('BKUPAJAK');
 				}
 				$builder->set($insert);
 				$builder->insert($insert);
@@ -680,11 +762,11 @@
 			$q = "
 			SELECT UNITKEY,NOBUKU as NOBUKTI,'NOBUKU' as BUKTI,'BKUBANK' as TABEL FROM BKUBANK WHERE NOBUKU = '".session()->nobukti."'
 			UNION ALL
-			SELECT UNITKEY,NOBKPAJAK as NOBUKTI,'NOBUKU' as BUKTI,'BKUBANK' as TABEL FROM BKUPAJAK WHERE NOBKPAJAK = '".session()->nobukti."'
+			SELECT UNITKEY,NOBKPAJAK as NOBUKTI,'NOBKPAJAK' as BUKTI,'BKUPAJAK' as TABEL FROM BKUPAJAK WHERE NOBKPAJAK = '".session()->nobukti."'
 			UNION ALL
 			SELECT UNITKEY,NOBPK as NOBUKTI,'NOBPK' as BUKTI,'BPKDET' as TABEL FROM BKUBPK WHERE NOBPK = '".session()->nobukti."'
 			UNION ALL
-			SELECT UNITKEY,NOPANJAR as NOBUKTI,'NOBUKU' as BUKTI,'BKUBANK' as TABEL FROM BKUPANJAR WHERE NOPANJAR = '".session()->nobukti."'
+			SELECT UNITKEY,NOPANJAR as NOBUKTI,'NOPANJAR' as BUKTI,'BKUBANK' as TABEL FROM BKUPANJAR WHERE NOPANJAR = '".session()->nobukti."'
 			UNION ALL
 			SELECT UNITKEY,NOSP2D as NOBUKTI,'NOSP2D' as BUKTI,'SP2DDET' as TABEL FROM BKUSP2D WHERE NOSP2D = '".session()->nobukti."'
 			UNION ALL
@@ -720,7 +802,13 @@
       $query4 = $builderL->getCompiledSelect();
 
 			$q = $query1.' UNION ALL '.$query2.' UNION ALL '.$query3.' UNION ALL '.$query4;
-			//echo nl2br($q);
+			if($bd->BUKTI == 'NOBKPAJAK'){
+				$builder = $this->db->table('BKPAJAKDET S')->select("KDPAJAK as KDPER,'' as KDKEGUNIT,NMPAJAK as NMPER,NILAI, 'Pajak' as JENIS, '0' as IDXKODE");
+				$builder->join('JPAJAK M','S.PJKKEY = M.PJKKEY','LEFT OUTER');
+				$builder->where('S.UNITKEY',$bd->UNITKEY)->where('NOBKPAJAK',session()->nobukti);
+				$q = $builder->getCompiledSelect();
+			}
+//			echo nl2br($bd->BUKTI." ".$q);die();
       return $this->db->query($q)->getResult();
 		}
 
@@ -744,6 +832,12 @@
 			) and 
 			A.IDXKODE= '2' and A.KEYBEND= '".session()->keybend."' and A.KDSTATUS not in ('20') order by A.NOSPJ";
 			$rs = $this->db->query($q)->getResult();
+			return $rs;
+		}
+		public function getSPJ(){
+			$builder = $this->db->table('PSPJ')->select('NOSPJ,convert(char(10),TGLSPJ, 103) as TGLSPJ,convert(char(10),TGLBUKU, 103) as TGLBUKU,KETERANGAN');
+			$builder->where("UNITKEY",session()->kdUnit)->where("NOSPJ",session()->noSPJ);
+			$rs = $builder->get()->getRow();
 			return $rs;
 		}
 		public function rincSPJBPK(){
@@ -813,6 +907,10 @@
 			$builder = $this->db->table("PSPJ")->set($post)->insert($post);
 			return;
 		}
+		public function validasiSPJ($post){
+			$builder = $this->db->table("PSPJ")->where('NOSPJ',session()->noSPJ)->update($post);
+			return;
+		}
 		public function BPKList(){
 			$builder = $this->db->table('WEBSET')->select('VALSET')->where('KDSET','spjbku')->get()->getRow();
 			$builder = $this->db->table('BPK B')->select('B.NOBPK,convert(char(10),B.TGLBPK, 103) as TGLBPK,rtrim(left(B.URAIBPK,80)) as URAIBPK,BD.JNS_BEND+\'-\'+P.NAMA as NAMA');
@@ -854,9 +952,154 @@
 			$builder->where('A.UNITKEY',session()->kdUnit)->where('A.KEYBEND',session()->keybend)->where('A.KDSTATUS','35');
 			$builder->where('(isnull(B.KDKEGUNIT,\'\')=isnull(\''.session()->idSub.'\',\'\') or isnull(\''.session()->idSub.'\',\'\')=\'\')');
 			$builder->orderBy('A.NOBKPAJAK');
+			
+			$rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function getPajak(){
+			$builder = $this->db->table('BKPAJAK A')->select('A.*,B.NOBPK,convert(char(10), C.TGLBPK, 103) AS TGLBPK')->where('A.UNITKEY',session()->kdUnit)->where('A.NOBKPAJAK',session()->nobkpajak);
+			$builder->join('BPKPAJAK B','A.NOBKPAJAK=B.NOBKPAJAK',"LEFT OUTER")->join('BPK C','B.NOBPK = C.NOBPK');
+			$rs = $builder->get()->getRow();
+			return $rs;
+		}
+		public function pajakTBPList($tgl){
+			$builder = $this->db->table('BPK B')->join('BPKDETR D','B.UNITKEY=D.UNITKEY and B.NOBPK=D.NOBPK','LEFT OUTER');
+			$builder->select('rtrim(B.NOBPK) AS NOBPK, convert(char(10), B.TGLBPK, 103) AS TGLBPK, rtrim(B.URAIBPK)AS URAIBPK, rtrim(B.NOBPK) AS PK_1');
+			$builder->where('B.UNITKEY',session()->kdUnit)->where('B.KEYBEND',session()->keybend)->where('D.KDKEGUNIT',session()->idSub);
+			$builder->where("B.NOBPK not in (select NOBPK from BPKPAJAK where UNITKEY = '".session()->kdUnit."')")->distinct();
+			$rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function simpanPajak($bkpajak,$bpkpajak){
+			$this->db->table("BKPAJAK")->set($bkpajak)->insert($bkpajak);
+			$this->db->table("BPKPAJAK")->set($bpkpajak)->insert($bpkpajak);
+		}
+		public function updatePajak($id,$update){
+			$this->db->table("BKPAJAK")->where('NOBKPAJAK',$id)->update($update);
+		}
+		public function detilPajak(){
+			$builder = $this->db->table('BKPAJAKDET A')->join('BKPAJAK B','A.NOBKPAJAK = B.NOBKPAJAK and A.UNITKEY = B.UNITKEY','LEFT OUTER');
+			$builder->join('JPAJAK C','A.PJKKEY = C.PJKKEY','LEFT OUTER')->select('A.NILAI,A.NOBKPAJAK,A.PJKKEY,A.UNITKEY,B.TGLVALID');
+			$builder->select("rtrim(B.KEYBEND) as KEYBEND ,C.KDPAJAK,C.NMPAJAK,C.RUMUSPJK,isnull(A.NTPN,'') AS NTPN,B.KDSTATUS");
+			$builder->where('A.UNITKEY',session()->kdUnit)->where('A.NOBKPAJAK',session()->nobkpajak);
+			$rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function listRekPajak(){
+			$builder = $this->db->table('JPAJAK JP')->select('JP.PJKKEY, JP.KDPAJAK, JP.NMPAJAK, JP.RUMUSPJK');
+			$builder->where("JP.PJKKEY not in (select PJKKEY from BKPAJAKDET where UNITKEY= '".session()->kdUnit."' and NOBKPAJAK= '".session()->nobkpajak."')");
+			$builder->orderBy('JP.KDPAJAK');
+			$rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function simpanDetilPajak($post){
+			$this->db->table('BKPAJAKDET')->set($post)->insert($post);
+			return;
+		}
+		public function hapusDetilPajak($no){
+			$this->db->table('BKPAJAKDET')->where('UNITKEY',session()->kdUnit)->where('NOBKPAJAK',session()->nobkpajak)->where('PJKKEY',$no)->delete();
+			return;
+		}
+		public function updateRinciPajak($no,$post){
+			$this->db->table('BKPAJAKDET')->where('UNITKEY',session()->kdUnit)->where('NOBKPAJAK',session()->nobkpajak)->where('PJKKEY',$no)->update($post);
+			return;
+		}
+
+		/* -------------------------------- PANJAR KEGIATAN ------------------ */
+		public function listPanjar(){
+			$builder = $this->db->table('PANJAR A')->where("A.UNITKEY",session()->kdUnit)->where("A.IDXKODE","2")->where("A.KEYBEND",session()->keybend);
+			$builder->select("'0' as ALLOWSUPERUSER,A.IDXKODE,rtrim(A.KDSTATUS) as KDSTATUS,rtrim(A.KEYBEND) as KEYBEND,");
+			$builder->select("A.NIP,A.NOPANJAR, A.REFF,A.TGLPANJAR,A.TGLVALID,A.UNITKEY,A.URAIAN,");
+			$builder->select("A.STTUNAI, A.STBANK, B.JAB_BEND, B.JNS_BEND, B.KDBANK,B.NPWPBEND,");
+			$builder->select("B.REKBEND, B.SALDOBEND, B.TGLSTOPBEND, C.KDUNIT, C.NMUNIT,C.TYPE,");
+			$builder->select("D.JABATAN, D.KDGOL,D.NAMA,D.PDDK , E.LBLSTATUS,E.URAIAN as URAISTATUS , F.URAIAN as URAIKODE");
+			$builder->join("BEND B","A.KEYBEND=B.KEYBEND","LEFT OUTER");
+			$builder->join("DAFTUNIT C","A.UNITKEY=C.UNITKEY","LEFT OUTER");
+			$builder->join("PEGAWAI D","A.NIP=D.NIP","LEFT OUTER");
+			$builder->join("STATTRS E","A.KDSTATUS=E.KDSTATUS","LEFT OUTER");
+			$builder->join("ZKODE F","A.IDXKODE=F.IDXKODE","LEFT OUTER")->orderBy("A.NOPANJAR");
+			$rs = $builder->get()->getResult();
+			return $rs;
+		}
+		public function simpanPanjar($post){
+			$this->db->table('PANJAR')->set($post)->insert($post);
+			return;
+		}
+		public function updatePanjar($nopanjar,$post){
+			$this->db->table('PANJAR')->WHERE('NOPANJAR',$nopanjar)->where('UNITKEY',session()->kdUnit)->where('KEYBEND',session()->keybend)->update($post);
+			return;
+		}
+		public function hapusPanjar($nopanjar){
+			$this->db->table('PANJAR')->WHERE('NOPANJAR',$nopanjar)->where('UNITKEY',session()->kdUnit)->where('KEYBEND',session()->keybend)->delete();
+			return;
+		}
+		public function rinciPanjar(){
+			$builder = $this->db->table('PANJARDET A')->where("A.UNITKEY",session()->kdUnit)->where("A.NOPANJAR",session()->nopanjar);
+			$builder->select("A.KDKEGUNIT,A.NILAI,A.NOJETRA,A.NOPANJAR,A.UNITKEY , rtrim(B.KEYBEND) as KEYBEND , ");
+			$builder->select("C.KDPERS,C.NMJETRA , D.IDPRGRM,D.NUKEG,D.NMKEGUNIT ");
+			$builder->join("PANJAR B","A.NOPANJAR = B.NOPANJAR and A.UNITKEY = B.UNITKEY","LEFT OUTER");
+			$builder->join("JTRNLKAS C","A.NOJETRA = C.NOJETRA","LEFT OUTER");
+			$builder->join("MKEGIATAN D","A.KDKEGUNIT = D.KDKEGUNIT","LEFT OUTER")->orderBy("D.NUKEG");
 			//echo nl2br($builder->getCompiledSelect());die();
 			$rs = $builder->get()->getResult();
 			return $rs;
 		}
+		public function simpanRinciPanjar($kdkegunit){
+			$k = explode(",",$kdkegunit);
+			for($i=0;$i<sizeof($k);$i++){
+				$post = array(
+					'NILAI'=>'0','NOJETRA'=>'32','UNITKEY'=>session()->kdUnit,'NOPANJAR'=>session()->nopanjar,'KDKEGUNIT'=>$k[$i]
+				);
+				$this->db->table('PANJARDET')->set($post)->insert($post);
+			}
+			return;
+		}
+		public function listKegRinciPanjar(){
+			$q = "
+			select * from ( 
+				select '1' AS LEVELKEG,P.UNITKEY,isnull(UR.UNITKEY,'')+'-H' as MTGKEY, 
+				rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel='2'))) as NUKEG, 
+				isnull(UR.NMUNIT,'NON URUSAN') as NMKEGUNIT,'H' as TYPE,'' AS KDKEGUNIT
+				from PGRMUNIT 
+				P left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM 
+				left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY 
+				left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY 
+				inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM 
+				where P.UNITKEY = '".session()->kdUnit."' and P.KDTAHAP= '".session()->tahap."' 
+				union 
+				select '2' AS LEVELKEG,P.UNITKEY,P.IDPRGRM+'-H' as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) 
+				from struunit 
+				where kdlevel='2')))+rtrim(MP.NUPRGRM) as NUKEG, MP.NMPRGRM as NMKEGUNIT,'H' as TYPE,'' AS KDKEGUNIT
+				from PGRMUNIT P 
+				left outer join MPGRM MP on P.IDPRGRM = MP.IDPRGRM 
+				left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY 
+				left outer join DAFTUNIT UN on P.UNITKEY = UN.UNITKEY 
+				inner join KEGUNIT K on P.UNITKEY=K.UNITKEY and P.IDPRGRM=K.IDPRGRM 
+				where P.UNITKEY = '".session()->kdUnit."' and P.KDTAHAP= '".session()->tahap."' 
+				union 
+				select '3' AS LEVELKEG,K.UNITKEY,K.KDKEGUNIT+'-D' as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) 
+				from struunit
+				where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as NUKEG, MK.NMKEGUNIT as NMKEGUNIT,'D' as TYPE,K.KDKEGUNIT AS KDKEGUNIT
+				from KEGUNIT K
+				left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT 
+				left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM 
+				left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY 
+				left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY 
+				where K.UNITKEY = '".session()->kdUnit."' and K.KDTAHAP= '".session()->tahap."') A 
+				where UNITKEY =  '".session()->kdUnit."' and MTGKEY not in (
+					select KDKEGUNIT+'-D' from PANJARDET S where S.UNITKEY=  '".session()->kdUnit."' and S.NOPANJAR=  '".session()->nopanjar."' 
+				) order by NUKEG
+			";
+			$rs = $this->db->query($q)->getResult();
+			return $rs;
+		}
+		public function updateRinciPanjar($kd,$post){
+			$builder = $this->db->table('PANJARDET')->WHERE('NOPANJAR',session()->nopanjar)->where('UNITKEY',session()->kdUnit)->where('NOJETRA','32');
+			$builder->where('KDKEGUNIT',$kd)->update($post);
+
+			$this->db->query("exec WSP_VALIDATIONPANJARBANK_31 @unitkey='".session()->kdUnit."',@keybend='".session()->keybend."'");
+			return;
+		}
+	
 	}
 ?>

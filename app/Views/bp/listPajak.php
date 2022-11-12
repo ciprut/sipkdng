@@ -1,29 +1,23 @@
 <?php
   $form = new Form_render;
+  $form->AddTitle('Pemungutan Pajak');
   $form->addClear("10");
   $form->addButton(array("id"=>"btnTambahPajak","icon"=>"plus","title"=>"Tambah Pajak","color"=>"primary"));
-
-  $tabel = array("tblListPajak",array("NO","TANGGAL PAJAK","TGL BUKU SPJ","NO BPK","URAIAN",""));
+  $tabel = array("tblListPajak",array("NO BUKTI PAJAK","TANGGAL PAJAK","TGL BUKU SPJ","NO BPK/TBP","URAIAN",""));
   $form->addTable($tabel);
   foreach($pajak as $h){ ?>
     <tr class=''>
-      <td align='left' width='120px'><?php echo $h->NOBKPAJAK ?></td>
+      <td align='left' width='120px'><a class='detil' data-elm="<?php echo $h->NOBKPAJAK ?>"  data-placeholder="<?php echo $h->TGLVALID ?>"><?php echo $h->NOBKPAJAK ?></a></td>
       <td align='center'><?php echo ngSQLSRVTGL($h->TGLBKPAJAK) ?></td>
       <td align='center'><?php echo ngSQLSRVTGL($h->TGLVALID) ?></td>
       <td align='left'><?php echo $h->NOBPK ?></td>
       <td align='left'><?php echo $h->URAIAN ?></td>
       <td align='center' width='50px'>
         <?php
-        $elm = $h->NOSPJ;
-        $btt = array(
-          array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Ambil Data","placeholder"=>$h->NOSPJ)
-        );
-        $form->addIconGroup($btt);
-
+        $elm = $h->NOBKPAJAK;
         $act = array(
-          array("id"=>"ubah","elm"=>$elm,"color"=>"primary","title"=>"Ubah SPP","placeholder"=>""),
-          array("id"=>"rinci","elm"=>$elm,"color"=>"primary","title"=>"Rincian SPP","placeholder"=>""),
-          array("id"=>"hapus","elm"=>$elm,"color"=>"danger","title"=>"Hapus SPP","placeholder"=>"")
+          array("id"=>"ubah","elm"=>$elm,"color"=>"primary","title"=>"Ubah Pajak","placeholder"=>""),
+          array("id"=>"hapus","elm"=>$elm,"color"=>"danger","title"=>"Hapus Pajak","placeholder"=>"")
         );
         if(session()->jnsSpp != "up"){
           $form->addDropdown($act);
@@ -35,6 +29,7 @@
   }
   $form->closeTable($tabel);
 ?>
+<div id='detilPajak'></div>
 <script>
   $('#tblListPajak').removeAttr('width').DataTable({
     "ordering":false,
@@ -50,10 +45,13 @@
     "bLengthChange" : false,
     "autoWidth" : false
   });
+  $("#btnTambahPajak").click(function(){
+    post_form("formPajak","nobkpajak=","PAJAK");
+  });
 
-  $('#tblListPajak').on("click",".ambil",function(){
+  $('#tblListPajak').on("click",".detil",function(){
     elm = $(this).data("elm");
-    post_to_tab("1","rincSPJBPK","noSPJ="+elm);
+    post_to_content("detilPajak",'detilPajak','nobkpajak='+elm);
   });
 
 </script>

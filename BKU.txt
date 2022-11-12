@@ -1,0 +1,17 @@
+=== BKU PAJAK
+INSERT INTO BKUPAJAK ( KEYBEND,	NOBKPAJAK,	TGLBKUSKPD,	URAIAN,	NOBKUSKPD,	UNITKEY) VALUES (	 @param0,	 @param1,	 @param2,	 @param3,	 @param4,	 @param5)',N'@param0 nvarchar(7),@param1 nvarchar(38),@param2 datetime,@param3 nvarchar(11),@param4 nvarchar(9),@param5 nvarchar(5)',@param0=N'189018_',@param1=N'00001/PAJAK/1.01.0.00.0.00.01/B02/2022',@param2='2022-01-12 00:00:00',@param3=N'sipkd pajak',@param4=N'00003-B02',@param5=N'2559_'
+
+WSPI_BKUPENGELUARAN @allowsuperuser=0,@kode=N'B02',@unitkey=N'2559_',@keybend=N'189018_',@tgl1='2022-01-01 00:00:00',@tgl2='2022-12-31 00:00:00',@field=N'1',@value=N'',@hal=1,@flgtgl=0,@jmlhal=0
+
+
+
+
+=== RINCIAN BKU
+== PAJAK ==>
+select KDPAJAK as KDPER,'''' as KDKEGUNIT,NMPAJAK as NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from BKPAJAKDET S left outer join JPAJAK M on S.PJKKEY = M.PJKKEY        where UNITKEY= @param2  and NOBKPAJAK= @param3',N'@param0 nvarchar(5),@param1 int,@param2 nvarchar(5),@param3 nvarchar(38)',@param0=N'Pajak',@param1=0,@param2=N'2559_',@param3=N'00001/PAJAK/1.01.0.00.0.00.01/B02/2022'
+
+==> SP2D
+select KDPER,'''' as KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from SP2DDETB S left outer join MATANGB M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOSP2D= @param3  and NOJETRA=''21''        union        select KDPER,'''' as KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from SP2DDETD S left outer join MATANGD M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOSP2D= @param3  and NOJETRA=''21''        union        select KDPER,KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from SP2DDETR S left outer join MATANGR M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOSP2D= @param3  and NOJETRA=''21''        union        select KDPER,'''' as KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from SP2DDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOSP2D= @param3  and NOJETRA=''21''',N'@param0 nvarchar(4),@param1 int,@param2 nvarchar(5),@param3 nvarchar(40)',@param0=N'SP2D',@param1=6,@param2=N'2559_',@param3=N'00002/SP2D-UP/1.01.0.00.0.00.01/B02/2022'
+
+==>  BPK
+select KDPER,'''' as KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from BPKDETB S left outer join MATANGB M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOBPK= @param3  and NOJETRA=''21''        union        select KDPER,'''' as KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from BPKDETD S left outer join MATANGD M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOBPK= @param3  and NOJETRA=''21''        union        select KDPER,KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from BPKDETR S left outer join MATANGR M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOBPK= @param3  and NOJETRA=''21''        union        select KDPER,'''' as KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from BPKDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOBPK= @param3  and NOJETRA=''21''',N'@param0 nvarchar(3),@param1 int,@param2 nvarchar(5),@param3 nvarchar(39)',@param0=N'BPK',@param1=2,@param2=N'2559_',@param3=N'00001/TBP-UP/1.01.0.00.0.00.01/B02/2022'

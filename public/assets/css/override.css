@@ -1114,3 +1114,10 @@ input[type=checkbox], input[type=radio]{
 @keyframes ccw {
   50% {transform: rotate(-90deg);}
 }
+.ace-nav>li>a {
+min-width: 200px !important;
+text-align: left !important;
+}
+.user-info{
+  min-width: 200px !important;
+}

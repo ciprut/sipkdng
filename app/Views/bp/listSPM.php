@@ -7,7 +7,7 @@
 
   $tabel = array("tblSPM",array("NO SPM","TGL SPM","TGL SAH","NO SPP","NO SPD","KEPERLUAN",""));
   $form->addTable($tabel);
-  foreach($spp as $h){ ?>
+  foreach($spm as $h){ ?>
     <tr class=''>
       <td align='left'><a class="rinci" data-elm="<?php echo $h->NOSPM ?>"><?php echo $h->NOSPM." ".session()->Idxkode ?></a></td>
       <td align='center'><?php echo ngSQLTanggal($h->TGLSPM,"ddmmmyyyy") ?></td>
@@ -40,9 +40,12 @@
   <?php
   }
   $form->closeTable($tabel);
+
+  $form->addTabs('Rincian Kegiatan__Rincian Pajak','tabsSPM');
 ?>
 <div id='detilSPM'></div>
 <script>
+  $( "#myTabs" ).tabs();
   $('#tblSPM').removeAttr('width').DataTable({
     "ordering":false,
     "pageLength":10,
@@ -56,7 +59,8 @@
     "fixedColumns": true
   });
   $("#btnTambahSPM").click(function(){
-    post_form("formSPM","nospm=","S P M");
+    txt = $("#jnsSPM option:selected").text();
+    post_form("formSPM","nospm=",txt);
   });
 
   $('#tblSPM').on("click",".hapus",function(){
@@ -75,8 +79,10 @@
   });
   $('#tblSPM').on("click",".rinci",function(){
     elm = $(this).data("elm");
-    post_to_content("detilSPM","rincianSPM","nospm="+elm,$(this).data("placeholder"))
-    //post_to_tab("2","rincianSPM","nospp="+elm,$(this).data("placeholder"))
+    //$("#tabsSPM").fadeIn();
+    post_to_tab("1","rincianSPM","nospm="+elm,"Rincian Kegiatan");
+    //post_to_content("tabsSPM-1","rincianSPM","nospm="+elm,$(this).data("placeholder"));
+    //$("#header-tabsSPM-1").click();
   });
   $('#tblSPM').on("click",".setuju",function(){
     elm = $(this).data("elm");

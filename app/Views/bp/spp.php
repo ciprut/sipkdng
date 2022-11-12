@@ -64,6 +64,7 @@ $row = array(
 
   $("#jnsSPP").change(function(){
     $("#listSPP").html('');
+    $("#st").val("");
     if($(this).val() != '' && $("#keybend").val() != ''){
       elm = $(this).data("elm");
     }else{

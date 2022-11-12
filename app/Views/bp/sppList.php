@@ -11,8 +11,9 @@
       <td align='center' width='50px'>
         <?php
         $elm = $h->NOSPP;
+        $ph = $h->TGSPP."__".$h->NOSPP."__".$h->NOSKO."__".$h->TGLSKO;
         $btt = array(
-          array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Ambil Data Pegawai","placeholder"=>$h->IDXSKO)
+          array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Ambil Data Pegawai","placeholder"=>$ph)
         );
         $form->addIconGroup($btt);
       ?>
@@ -40,6 +41,11 @@
   $('#tblspdList').on("click",".ambil",function(){
     elm = $(this).data("elm");
     $("#txtDasar").val(elm);
+    dats = $(this).data("placeholder").split("__");
+    $("#txtTanggalSPP").val(dats[0]);
+    $("#txtNoSPP").val(dats[1]);
+    $("#txtNoSPD").val(dats[2]);
+    $("#txtTanggalSPD").val(dats[3]);
     closeModal();
   });
 

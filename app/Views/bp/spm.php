@@ -14,7 +14,8 @@
   $jenis = array(
     "__Pilih Jenis SPM",
     "up__SPM UP - Uang Persediaan",
-    "gu__SPM GU/TU - Ganti/Tambah UP",
+    "gu__SPM GU - Ganti Uang Persediaan",
+    "tu__SPM TU - Tambah Uang Persediaan",
     "ls__SPM LS - Belanja LS",
     "pb__SPM LS - Pembiayaan",
     "gj__SPM LS - Gaji, Tunjangan dan TPP",

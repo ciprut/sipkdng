@@ -959,6 +959,23 @@ function clear_forms(){
 	});
 }
 
+function cekForm(txt){
+	elm = txt.split(",");
+	err=0;
+	for(i=0;i<=elm.length;i++){
+		if($("#"+elm[i]).val() == ''){
+			err ++;
+			$("#"+elm[i]).focus();
+		}
+	}
+	if(err > 0){
+		alert('Lengkapi Form..!');
+		return false;
+	}else{
+		return true;
+	}
+}
+
 function hide_form(){
 	fntunggu_selesai();
 	//$("#form-container").unwrap();

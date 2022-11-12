@@ -23,6 +23,9 @@
           array("id"=>"detil","elm"=>$elm,"color"=>"primary","title"=>"Detil Tagihan","placeholder"=>$h->NOSPJ),
           array("id"=>"subkeg","elm"=>$elm,"color"=>"primary","title"=>"Detil Sub Kegiatan","placeholder"=>$h->NOSPJ)
         );
+        if($h->NOSAH == ''){
+          array_push($act,array("id"=>"validasi","elm"=>$elm,"color"=>"primary","title"=>"Validasi SPJ","placeholder"=>$h->NOSPJ));
+        }
         $form->addDropdown($act);
       ?>
       </td>
@@ -57,6 +60,10 @@
   $('#tblListSPJ').on("click",".subkeg",function(){
     elm = $(this).data("elm");
     post_to_tab("1","rinciSPJSubKeg","noSPJ="+elm," Data Sub Kegiatan "+$(this).data("placeholder"));
+  });
+  $('#tblListSPJ').on("click",".validasi",function(){
+    elm = $(this).data("elm");
+    post_form("formValidasiSPJ","noSPJ="+elm," Validasi SPJ");
   });
 
 </script>

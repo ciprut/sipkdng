@@ -59,12 +59,16 @@ class Utama extends BaseController
 		return view('utama/listSubUnit',$data);
 	}
 
-	public function treeViewKeg(){
+	public function treeViewKeg($cek = null){
 		$unitkey = $this->request->getPost('kdUnit');
 		$kd = $this->request->getPost('kdSatker');
 		//$data['prog'] = $this->utama->programUnit($unitkey);
 		$data["tree"] = $this->utama->treeViewKeg($unitkey,$kd);
-		return view('utama/treeViewKeg',$data);
+		if($cek == 'checkboxes'){
+			return view('utama/treeViewKegCheckbox',$data);
+		}else{
+			return view('utama/treeViewKeg',$data);
+		}
 	}
 
 }

@@ -106,7 +106,7 @@
 		public function getTahap(){
 			$builder = $this->db->table('WEBUSER');
 			$rs = $builder->select('*')->get()->getRow();
-			return $rs->KDTAHAP;
+			return trim($rs->KDTAHAP);
 		}
 		public function getNextkey($tabel){
 			$builder = $this->db->table('NEXTKEY');
@@ -126,9 +126,11 @@
 				$unitkey = '';
 			}
 			$builder = $this->db->table($table);
-			$builder->select('top (1) ISNULL(LEFT('.$field.',5),0) as NOREG')->like('UNITKEY',$unitkey)->orderBy($field,'DESC');
+			$builder->select('top (1) ISNULL(LEFT('.$field.',5),0) as NOREG')->where('UNITKEY LIKE \'%'.$unitkey.'%\'')->orderBy($field,'DESC');
+			//echo nl2br($builder->getCompiledSelect());die();
 			$rs = $builder->get()->getRow();
 			$nr = ((int)$rs->NOREG)+1;
+			session()->set('noreg',$nr);
 			return pjg($nr,5);
 		}
 		public function getNoRegTBP(){

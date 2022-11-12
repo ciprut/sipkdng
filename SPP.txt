@@ -1,0 +1,85 @@
+=== SPP GU DETIL ===
+select 
+A.NOSPJ,A.NOSPP,A.UNITKEY , J.IDXKODE, J.KETERANGAN+'' - ''+K.NMUNIT KETERANGAN, J.KEYBEND, J.TGLSPJ, J.TGLBUKU, J.KDSTATUS, 
+NILAI = isnull((select sum(isnull(NILAI,0)) from SPJDETR C where C.NOSPJ=A.NOSPJ),0) +isnull((select sum(isnull(NILAI,0)) 
+from SPJDETRTL C where C.NOSPJ=A.NOSPJ),0) 
+from SPJSPP A 
+left outer join PSPJ J on A.NOSPJ=J.NOSPJ 
+inner join DAFTUNIT K on J.UNITKEY=K.UNITKEY 
+where 
+A.UNITKEY= @param0 and A.NOSPP= @param1 
+order by A.NOSPJ
+
+@param0=N'2560_',@param1=N'00002/SPP-GU/1.02.0.00.0.00.01./B02/2022',@param2=N'1',@param3=N''
+
+=== Tambah rincian spp gu ===
+declare @opsi char (2) set @opsi=(select valset from webset where kdset=''bppgu'') 
+Y==>
+select 
+A.NOSPJ,convert(char(10),A.TGLSPJ, 103) as TGLSPJ,rtrim(left(A.KETERANGAN,100)) As KETERANGAN 
+from PSPJ A 
+where 
+A.UNITKEY= @param0 and 
+A.TGLSAH is not null and 
+(A.KDSTATUS=''42'' and @param1 =''22'') and
+IDXKODE= @param2 and 
+(A.KEYBEND= @param3 or (A.KEYBEND is null or A.KEYBEND='''')) and 
+A.NOSPJ not in (select NOSPJ from SPJSPP where UNITKEY= @param0 ) 
+order by A.NOSPJ end 
+
+else begin 
+
+select 
+A.NOSPJ,convert(char(10),A.TGLSPJ, 103) as TGLSPJ,rtrim(left(A.KETERANGAN,100)) As KETERANGAN 
+from PSPJ A 
+where 
+(A.UNITKEY= @param0 OR A.UNITKEY IN(SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD= @param0 )) and 
+A.TGLSAH is not null and 
+(A.KDSTATUS=''42'' and @param1 =''22'') and 
+IDXKODE= @param2 and 
+A.NOSPJ not in (select NOSPJ from SPJSPP where UNITKEY= @param0 )
+order by A.NOSPJ end
+
+@param0=N'2560_',@param1=N'22',@param2=2,@param3=N'189222_',@param4=N'1',@param5=N''
+
+=== INSERT SPJ ===
+INSERT INTO SPJSPP ( NOSPP, UNITKEY,	NOSPJ) VALUES (	 @param0,	 @param1,	 @param2)',N'@param0 nvarchar(40),@param1 nvarchar(5),@param2 nvarchar(35)',@param0=N'00002/SPP-GU/1.02.0.00.0.00.01./B02/2022',@param1=N'2560_',@param2=N'00001/SPJ/1.02.0.00.0.00.01/UP/2022'
+
+=== RINCIAN SPJ ON SPP ===
+select distinct 
+UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,NILAI,TYPE, @param0 as NOSPP, @param1 as NUPRGRM 
+from ( select distinct @param2 UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(select rtrim(numdigit) from struunit where kdlevel=''2'')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,''D'' as TYPE, NILAI=(select sum(NILAI) from SPPDETR where UNITKEY= @param2 and NOSPP= @param0 and KDKEGUNIT=K.KDKEGUNIT) from KEGUNIT K left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY where (K.UNITKEY = @param2 OR K.UNITKEY IN(SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD= @param2 )) and K.KDKEGUNIT in (select KDKEGUNIT from SPPDETR where UNITKEY= @param2 and NOSPP= @param0 ) )A where UNITKEY = @param2 and case @param3 when ''1'' then KDPER when ''2'' then NMPER end like ''%''+ @param4 + ''%'' order by KDPER',N'@param0 nvarchar(39),@param1 nvarchar(4000),@param2 nvarchar(5),@param3 nvarchar(1),@param4 nvarchar(4000)',@param0=N'00002/SPP-GU/1.01.0.00.0.00.01/B02/2022',@param1=N'',@param2=N'2559_',@param3=N'1',@param4=N''
+
+
+select A.KDKEGUNIT,A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPP,A.UNITKEY ,B.IDXKODE ,rtrim(C.KDPER) as KDPER, rtrim(C.NMPER) as NMPER, C.TYPE ,D.KDPERS 
+from SPPDETR A 
+left outer join SPP B on A.NOSPP = B.NOSPP and A.UNITKEY = B.UNITKEY 
+left outer join MATANGR C on A.MTGKEY = C.MTGKEY 
+left outer join JTRNLKAS D on A.NOJETRA = D.NOJETRA 
+
+where B.UNITKEY= @param0 and B.NOSPP= @param1 and A.NOJETRA= @param2 and 
+A.KDKEGUNIT= @param3 and case @param4 when ''1'' then C.KDPER when ''2'' then C.NMPER end like ''%''+ @param5 + ''%'' order by C.KDPER',N'@param0 nvarchar(5),@param1 nvarchar(39),@param2 nvarchar(2),@param3 nvarchar(5),@param4 nvarchar(1),@param5 nvarchar(4000)',@param0=N'2559_',@param1=N'00002/SPP-GU/1.01.0.00.0.00.01/B02/2022',@param2=N'21',@param3=N'8765_',@param4=N'1',@param5=N''
+
+
+=== RINCIAN SPJ -> SPP GU/TU ===
+select distinct 
+UNITKEY,MTGKEY as KDKEGUNIT,KDPER,NMPER,NILAI,TYPE, @param0 as NOSPP, @param1 as NUPRGRM 
+from ( 
+	select distinct @param2 UNITKEY,K.KDKEGUNIT as MTGKEY, rtrim(isnull(UR.KDUNIT,(
+		select rtrim(numdigit) 
+		from 
+		struunit where kdlevel='2')))+rtrim(MP.NUPRGRM)+rtrim(MK.NUKEG) as KDPER, MK.NMKEGUNIT as NMPER,'D' as TYPE, 
+		NILAI=(
+			select 
+			sum(NILAI) from SPPDETR where UNITKEY= @param2 and NOSPP= @param0 and KDKEGUNIT=K.KDKEGUNIT) 
+			from KEGUNIT K left outer join MKEGIATAN MK on MK.KDKEGUNIT=K.KDKEGUNIT 
+			left outer join MPGRM MP on MK.IDPRGRM = MP.IDPRGRM 
+			left outer join DAFTUNIT UR on MP.UNITKEY = UR.UNITKEY 
+			left outer join DAFTUNIT UN on K.UNITKEY = UN.UNITKEY 
+			where (K.UNITKEY = @param2 OR K.UNITKEY IN(SELECT UNITKEYUK FROM DAFTUNITUK WHERE UNITKEYSKPD= @param2 )) and 
+			K.KDKEGUNIT in (select KDKEGUNIT from SPPDETR where UNITKEY= @param2 and NOSPP= @param0 )
+ )A 
+where UNITKEY = @param2 
+order by KDPER
+
+@param0=N'00002/SPP-GU/1.01.0.00.0.00.01/B02/2022',@param1=N'',@param2=N'2559_',@param3=N'1',@param4=N''

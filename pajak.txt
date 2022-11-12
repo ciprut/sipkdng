@@ -1,0 +1,46 @@
+== cari TBP untuk pajak
+select 
+rtrim(B.NOBPK) AS [01,No.BPK,30,C,C,X], convert(char(10), B.TGLBPK, 103) AS [02,Tgl.BPK,10,C,C,X], rtrim(B.URAIBPK)AS [03,Uraian,50,L,C,X], rtrim(B.NOBPK) AS "PK_1" 
+from BPK B 
+left outer join BPKDETR D on B.UNITKEY=D.UNITKEY and B.NOBPK=D.NOBPK 
+where 
+B.UNITKEY = session()->kdUnit and 
+B.KEYBEND= session()->keybend and 
+D.KDKEGUNIT= session()->idSub and 
+B.NOBPK not in (select NOBPK from BPKPAJAK where UNITKEY = session()->kdUnit ) 
+order by rtrim(B.NOBPK)
+
+@param0=N'2559_',@param1=N'189018_',@param2=N'8802_',@param3=N'',@param4=N'',@param5=N''
+
+== SIMPAN PAJAK
+INSERT INTO BKPAJAK (NTPN,IDXTTD,KDSTATUS,KEYBEND,	TGLBKPAJAK,TGLVALID,URAIAN,UNITKEY,NOBKPAJAK)
+VALUES (	 @param0,	 @param1,	 @param2,	 @param3,	 @param4,	 @param5,	 @param6,	 @param7,	 @param8)'
+@param0=N'',@param1=N'',@param2=N'35',@param3=N'189018_',@param4='2022-01-12 00:00:00',@param5='2022-01-12 00:00:00',@param6=N'pajak',@param7=N'2559_',@param8=N'00001/PAJAK/1.01.0.00.0.00.01/B02/2022'
+
+insert into BPKPAJAK (UNITKEY,NOBPK,KDSTATUS,NOBKPAJAK,KDKEGUNIT) values ( @param0 , @param1 , @param2 , @param3 , @param4 )',N'@param0 nvarchar(5),@param1 nvarchar(39),@param2 nvarchar(2),@param3 nvarchar(38),@param4 nvarchar(5)',@param0=N'2559_',@param1=N'00001/TBP-UP/1.01.0.00.0.00.01/B02/2022',@param2=N'35',@param3=N'00001/PAJAK/1.01.0.00.0.00.01/B02/2022',@param4=N'8765_'
+
+== RINCIAN PAJAK / LIST
+select 
+A.NILAI,A.NOBKPAJAK,A.PJKKEY,A.UNITKEY,
+rtrim(B.KEYBEND) as KEYBEND ,C.KDPAJAK,C.NMPAJAK,C.RUMUSPJK,isnull(A.NTPN,'''') AS NTPN, 
+B.KDSTATUS 
+from BKPAJAKDET A 
+LEFT OUTER JOIN BKPAJAK B ON A.NOBKPAJAK = B.NOBKPAJAK and A.UNITKEY = B.UNITKEY 
+LEFT OUTER JOIN JPAJAK C on A.PJKKEY = C.PJKKEY 
+where 
+A.UNITKEY= @param0 and A.NOBKPAJAK= @param1
+
+@param0=N'2559_',@param1=N'00001/PAJAK/1.01.0.00.0.00.01/B02/2022',@param2=N'1',@param3=N''
+
+== PILIHAN
+SELECT
+JP.PJKKEY, JP.KDPAJAK, JP.NMPAJAK, JP.RUMUSPJK 
+FROM JPAJAK JP 
+where 
+JP.PJKKEY not in (select PJKKEY from BKPAJAKDET where UNITKEY= @param0 and NOBKPAJAK= @param1 )
+order by JP.KDPAJAK
+
+@param0=N'2559_',@param1=N'00001/PAJAK/1.01.0.00.0.00.01/B02/2022',@param2=N'1',@param3=N''
+
+== SAVE RINCIAN
+INSERT INTO BKPAJAKDET (NILAI,	UNITKEY,	NOBKPAJAK,	PJKKEY) VALUES (	 @param0,	 @param1,	 @param2,	 @param3)',N'@param0 decimal(1,0),@param1 nvarchar(5),@param2 nvarchar(38),@param3 nvarchar(2)',@param0=0,@param1=N'2559_',@param2=N'00001/PAJAK/1.01.0.00.0.00.01/B02/2022',@param3=N'1_'
