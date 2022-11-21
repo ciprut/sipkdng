@@ -52,7 +52,7 @@
   $("#kdSatker,#namaUnit").click(function(){
     $("#kdSatker,#namaUnit,#nipBend,#namaBend,#keybend,#kdUnit").val("");
     $("#listPanjar").html("");
-    post_to_modal("../utama/satkerList","a=","Data Satuan Kerja");
+    post_to_modal("../utama/satkerListBend","a=","Data Satuan Kerja");
   })
   
   $("#nipBend,#namaBend").click(function(){

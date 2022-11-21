@@ -67,7 +67,7 @@
     if($("#txtTanggal").val() == ""){
       alert('Masukkan Tanggal SPM sebelum memilih SPP');
     }else{
-      post_to_modal("sppList","tanggal="+$("#txtTanggal").val(),"Data Surat Permintaan Pembayaran - SPP");
+      post_to_modal("sppList","tanggal="+$("#txtTanggal").val(),"Data SPP Yang Belum Jadi SPM");
     }
   });
   $("#txtJnsSPM").change(function(){

@@ -53,7 +53,7 @@
   $("#kdSatker,#namaUnit").click(function(){
     $("#listBKUBP").html('');
     $("#nipBend,#namaBend,#tglMulai,#tglSelesai,#keybend,#jabBend").val('');
-    post_to_modal("../utama/satkerList","a=","Data Satuan Kerja");
+    post_to_modal("../utama/satkerListBend","a=","Data Satuan Kerja");
   })
 
   $("#keybend").keyup(function(){

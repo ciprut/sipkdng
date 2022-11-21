@@ -36,11 +36,12 @@ class Utama extends BaseController
 		$data["rek"] = $this->utama->buktiList();
 		return view('utama/buktiList',$data);
 	}
-	public function bendList($jb){
+	
+	public function bendList($jb=null){
 		if($this->request->getPost('unitkey') != ''){
 			session()->set('kdUnit',$this->request->getPost('unitkey'));
 		}
-    $data["bend"] = $this->utama->bendList($jb);
+    $data["bend"] = $this->utama->bendList();
 		return view('utama/bendList',$data);
 	}
 	public function listBKUBP($jb){
@@ -51,12 +52,23 @@ class Utama extends BaseController
 		$data["bidang"] = $this->utama->listBidang();
 		return view('utama/satkerList',$data);
 	}
+	public function satkerListBend(){
+		$data["bidang"] = $this->utama->listBidang();
+		return view('utama/satkerListBend',$data);
+	}
   public function listSubUnit(){
     if($this->request->getPost('bidang') != ''){
 			session()->set('kdBidang',$this->request->getPost('bidang'));
 		}
     $data["unit"] = $this->utama->listUnit();
 		return view('utama/listSubUnit',$data);
+	}
+	public function listSubUnitBend(){
+    if($this->request->getPost('bidang') != ''){
+			session()->set('kdBidang',$this->request->getPost('bidang'));
+		}
+    $data["unit"] = $this->utama->listUnit();
+		return view('utama/listSubUnitBend',$data);
 	}
 
 	public function treeViewKeg($cek = null){

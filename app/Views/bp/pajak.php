@@ -22,13 +22,14 @@
     array("width"=>"2","type"=>"text","id"=>"kdSatker","label"=>"Kode Unit","default"=>"","readonly"=>"1","placeholder"=>"Klik Disini"),
     array("width"=>"10","type"=>"text","id"=>"namaUnit","label"=>"Nama Unit Kerja","default"=>"","readonly"=>"1","placeholder"=>"Klik Disini"),
 
-    array("width"=>"2","type"=>"text","id"=>"kdSub","label"=>"Kode Sub Kegiatan","default"=>"","readonly"=>"1","placeholder"=>"Klik Disini"),
-    array("width"=>"10","type"=>"text","id"=>"namaSub","label"=>"Nama Sub Kegiatan","default"=>"","readonly"=>"1","placeholder"=>"Klik Disini"),
-
     array("width"=>"2","type"=>"text","id"=>"nipBend","label"=>"NIP","default"=>"","readonly"=>"1"),
-    array("width"=>"6","type"=>"text","id"=>"namaBend","label"=>"Nama Bendahara","default"=>"","readonly"=>"1"),
-    array("width"=>"4","type"=>"select","id"=>"txtJB","label"=>"Jenis Kegiatan","placeholder"=>"","default"=>"pemungutan","option"=>$jb)
+    array("width"=>"10","type"=>"text","id"=>"namaBend","label"=>"Nama Bendahara","default"=>"","readonly"=>"1"),
+
+    array("width"=>"2","type"=>"text","id"=>"kdSub","label"=>"Kode Sub Kegiatan","default"=>"","readonly"=>"1","placeholder"=>"Klik Disini"),
+    array("width"=>"10","type"=>"text","id"=>"namaSub","label"=>"Nama Sub Kegiatan","default"=>"","readonly"=>"1","placeholder"=>"Klik Disini")
+
   );
+//  array("width"=>"4","type"=>"select","id"=>"txtJB","label"=>"Jenis Kegiatan","placeholder"=>"","default"=>"pemungutan","option"=>$jb)
   $form->addRow($row);
 
   $form->addHidden(array("id"=>"kdUnit","value"=>''));
@@ -37,6 +38,7 @@
   $form->addClear(10);
   //$form->addButton(array("id"=>"btnLihatPU","icon"=>"search","title"=>"Lihat Data","color"=>"primary"));
 
+  $form->addSingleTabs(array('pemungutan__Pemungutan Pajak','penyetoran__Penyetoran Pajak'),'pajakTabs');
 ?>
 </form>
 <div id="listPajak"></div>
@@ -48,7 +50,8 @@
     post_to_modal("../utama/satkerList","a=","Data Satuan Kerja");
   })
   $("#kdSub,#namaSub").click(function(){
-    $("#kdSub,#namaSub,#idSub,#nipBend,#namaBend,#keybend").val("");
+   // $("#kdSub,#namaSub,#idSub,#nipBend,#namaBend,#keybend").val("");
+    $("#kdSub,#namaSub,#idSub").val("");
     if($("#kdUnit").val() != ""){
       post_to_modal("../utama/treeViewKeg","kdUnit="+$("#kdUnit").val()+"&kdSatker="+$("#kdSatker").val(),"Data Program / Kegiatan / Sub Kegiatan");
     }else{
@@ -58,14 +61,15 @@
   
   $("#nipBend,#namaBend").click(function(){
     $("#nipBend,#namaBend,#tglMulai,#tglSelesai").val('');
-    if($("#kdUnit").val() != '' && $("#idSub").val() != ''){
+    if($("#kdUnit").val() != ''){// && $("#idSub").val() != ''
       post_to_modal("../utama/bendList/B","unitkey="+$("#kdUnit").val(),"Data Bendahara");
     }else{
       alert("Pilih Bidang, Unit dan Sub Kegiatan");
     }
   })
-  $("#keybend").keyup(function(){
-    $("#txtJB").change();
+  $("#idSub").keyup(function(){
+    $("#pemungutan").click();
+    //$("#txtJB").change();
   });
 
   $("#txtJB").change(function(){
@@ -76,6 +80,18 @@
       post_to_content("listPajak","listPajak","unitkey="+$("#kdUnit").val()+"&keybend="+$("#keybend").val()+"&sub="+$("#idSub").val(),"1");
       $(this).val("");
     }
+  });
+  $("#pemungutan").click(function(){
+    $("#content-pajakTabs").html("...loading...");
+    if($("#idSub").val() != ''){
+      post_to_content("content-pajakTabs","listPajak","unitkey="+$("#kdUnit").val()+"&keybend="+$("#keybend").val()+"&sub="+$("#idSub").val(),"1");
+    }else{
+      $("#content-pajakTabs").html("...lengapi form...");
+    }
+  });
+  $("#penyetoran").click(function(){
+    $("#content-pajakTabs").html("...menu belum ada...");
+      //post_to_content("content-pajakTabs","listPajak","unitkey="+$("#kdUnit").val()+"&keybend="+$("#keybend").val()+"&sub="+$("#idSub").val(),"1");
   });
 </script>
 <?php $this->endSection(); ?>

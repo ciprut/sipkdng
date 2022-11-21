@@ -53,7 +53,7 @@
   $("#nipBend,#namaBend").click(function(){
     $("#listBKUBP,#nipBend,#namaBend,#tglMulai,#tglSelesai").val('');
     if($("#kdUnit").val() != '' && $("#idSub").val() != ''){
-      post_to_modal("../utama/bendList/B","unitkey="+$("#kdUnit").val(),"Data Bendahara");
+      post_to_modal("../utama/bendList","unitkey="+$("#kdUnit").val(),"Data Bendahara");
     }else{
       alert("Pilih Bidang, Unit dan Sub Kegiatan");
     }

@@ -15,3 +15,8 @@ select KDPER,'''' as KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKO
 
 ==>  BPK
 select KDPER,'''' as KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from BPKDETB S left outer join MATANGB M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOBPK= @param3  and NOJETRA=''21''        union        select KDPER,'''' as KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from BPKDETD S left outer join MATANGD M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOBPK= @param3  and NOJETRA=''21''        union        select KDPER,KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from BPKDETR S left outer join MATANGR M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOBPK= @param3  and NOJETRA=''21''        union        select KDPER,'''' as KDKEGUNIT,NMPER,NILAI, @param0  as JENIS, @param1  as IDXKODE from BPKDETRTL  S left outer join MATANGR M on S.MTGKEY=M.MTGKEY        where UNITKEY= @param2  and NOBPK= @param3  and NOJETRA=''21''',N'@param0 nvarchar(3),@param1 int,@param2 nvarchar(5),@param3 nvarchar(39)',@param0=N'BPK',@param1=2,@param2=N'2559_',@param3=N'00001/TBP-UP/1.01.0.00.0.00.01/B02/2022'
+
+==> BKU PANJAR
+exec WSP_LOOKUP_BKU_BEND @Jenis='Panjar',@Unitkey='2559_',@Bend='02',@Keybend='189018_',@NOMOR='',@TGL='',@TGL2=''
+==> STS =>  "01,Tgl. STS,10,C,C,X","02,No. STS,30,C,C,X","03,Uraian,50,L,C,X","04,Tgl.Cair,10,C,C,X","PK_1"
+==> TBP => "01,Tgl. TBP,10,C,C,X","02,No. TBP,30,C,C,X","03,Uraian,50,L,C,X","PK_1"

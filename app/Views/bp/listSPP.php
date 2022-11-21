@@ -2,6 +2,7 @@
   $form = new Form_render;
   $form->addClear("10");
   $form->addButton(array("id"=>"btnTambahSPP","icon"=>"plus","title"=>"Tambah SPP","color"=>"primary"));
+  $form->addHidden(array("id"=>"jns","value"=>strtoupper(session()->jnsSpp)));
   
   getFlashData();
 
@@ -14,7 +15,7 @@
       <td align='center'><b  class='text-danger'><?php echo ngSQLTanggal($h->TGLVALID,"ddmmmyyyy") ?></b></td>
       <td align='center'><?php echo $h->NOSKO ?></td>
       <td align='center'><?php echo $h->NOREG ?></td>
-      <td align='center'><?php echo number_format($h->NILAI,2) ?></td>
+      <td align='right'><?php echo number_format($h->NILAI,2) ?></td>
       <td align='center'>
         <?php
 //            array("id"=>"rinci","elm"=>$elm,"color"=>"primary","title"=>"Rincian SPP","placeholder"=>$h->NOSPP),
@@ -50,16 +51,17 @@
     "ordering":false,
     "pageLength":10,
     "columnDefs": [
-      { "width": 150, "targets": 1 },
-      { "width": 150, "targets": 2 },
-      { "width": 100, "targets": 3 },
+      { "width": 100, "targets": 1 },
+      { "width": 100, "targets": 2 },
       { "width": 100, "targets": 4 },
-      { "width": 50, "targets": 5 }
+      { "width": 100, "targets": 5 },
+      { "width": 50, "targets": 6 }
     ],
-    "fixedColumns": true
+    "fixedColumns": true,
+    "autoWidth" : false
   });
   $("#btnTambahSPP").click(function(){
-    post_form("formSPP","nospp=","S P P");
+    post_form("formSPP","nospp=","S P P "+$("#jns").val());
   });
 
   $('#tblSPP').on("click",".hapus",function(){
@@ -69,7 +71,7 @@
       icon:"minus-circle"
     };
     showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
-      post_to_content("listSPP","hapusSPP","nospp="+elm)
+      post_to_content("tab-1","hapusSPP","nospp="+elm)
     });
   });
   $('#tblSPP').on("click",".ubah",function(){
@@ -78,7 +80,7 @@
   });
   $('#tblSPP').on("click",".rinci",function(){
     elm = $(this).data("elm");
-    post_to_tab("1","rincianSPP","nospp="+elm,"Rincian SPP No "+elm);
+    post_to_tab("2","rincianSPP","nospp="+elm,"Rincian SPP No "+elm);
 //    $("#tabsSPP").fadeIn();
 //    post_to_content("tabsSPP-1","rincianSPP","nospp="+elm,$(this).data("placeholder"));
 //    $("#header-tabsSPP-1").click();
@@ -86,6 +88,16 @@
   $('#tblSPP').on("click",".setuju",function(){
     elm = $(this).data("elm");
     post_form("formSPPSetuju","nospp="+elm,"Persetujuan S P P");
+  });
+  $('#tblSPP').on("click",".btnHapus",function(){
+    elm = $(this).data("elm");
+    modal = {
+      color:"danger",
+      icon:"minus-circle"
+    };
+    showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
+      post_to_tab("1","hapusSPP","nospp="+elm,$(this).data("placeholder"));
+    });
   });
 
 </script>

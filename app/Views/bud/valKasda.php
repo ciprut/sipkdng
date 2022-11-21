@@ -9,16 +9,16 @@
 
   $jenis = array(
     "__Pilih Jenis SP2D",
-    "bkud__Validasi Penerimaan",
-    "bkuk__Validasi Pengeluaran",
-    "bkut__Validasi Transfer"
+    "bkud__Penerimaan",
+    "bkuk__Pengeluaran",
+    "bkut__Transfer"
   );
   $row = array(
     array("width"=>"1","type"=>"text","id"=>"nobbantu","label"=>"Kode","readonly"=>"readonly","placeholder"=>"","value"=>""),
-    array("width"=>"4","type"=>"text","id"=>"txtRek","label"=>"Rekening BUD","readonly"=>"readonly","value"=>""),
-    array("width"=>"2","type"=>"text","id"=>"txtTglMulai","label"=>"Dari Tanggal","placeholder"=>"","value"=>date('Y-m-d')),
-    array("width"=>"2","type"=>"text","id"=>"txtTglSsampai","label"=>"Sampai Tanggal","placeholder"=>"","value"=>date('Y-m-d')),
-    array("width"=>"3","type"=>"select","id"=>"jnsBUD","label"=>"Jenis SP2D","default"=>"","option"=>$jenis,"readonly"=>"0")
+    array("width"=>"7","type"=>"text","id"=>"txtRek","label"=>"Rekening BUD","readonly"=>"readonly","value"=>""),
+    array("width"=>"1","type"=>"text","id"=>"txtTglMulai","label"=>"Dari","placeholder"=>"","value"=>date_format(date_create(session()->cur_thang.'-01-01'),'Y-m-d')),
+    array("width"=>"1","type"=>"text","id"=>"txtTglSsampai","label"=>"Sampai","placeholder"=>"","value"=>date('Y-m-d')),
+    array("width"=>"2","type"=>"select","id"=>"jnsBUD","label"=>"Jenis Validasi","default"=>"","option"=>$jenis,"readonly"=>"0")
   );
   $form->addRow($row);
 ?>

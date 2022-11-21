@@ -13,8 +13,8 @@
         <?php
         $elm = $h->UNITKEY;
         $btt = array(
-          array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning",
-          "title"=>"Set Unit Kerja",
+          array("id"=>"btnBend","icon"=>"user","elm"=>$elm,"color"=>"warning",
+          "title"=>"Bendahara",
           "placeholder"=>getKdSKPD($h->KDUNIT)."__".$h->NMUNIT
           )
         );

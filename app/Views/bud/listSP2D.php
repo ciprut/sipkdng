@@ -9,7 +9,7 @@
   $form->addTable($tabel);
   foreach($sp2d as $h){ ?>
     <tr class=''>
-      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOSP2D; ?>"><?php echo $h->NOSP2D ?></a></td>
+      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOSP2D; ?>" data-placeholder="<?php echo $h->NOSP2D; ?>"><?php echo $h->NOSP2D ?></a></td>
       <td align='center'><?php echo ngSQLSRVTGL($h->TGLSP2D) ?></td>
       <td align='center'><?php echo ngSQLSRVTGL($h->TGLVALID) ?></td>
       <td align='left'><?php echo $h->KETOTOR ?></td>
@@ -76,8 +76,8 @@
   });
   $('#tblSP2D').on("click",".rinci",function(){
     elm = $(this).data("elm");
-    post_to_content("detilSP2D","rincianSP2D","nosp2d="+elm,$(this).data("placeholder"))
-    //post_to_tab("2","rincianSPM","nospp="+elm,$(this).data("placeholder"))
+    //post_to_content("detilSP2D","rincianSP2D","nosp2d="+elm,$(this).data("placeholder"))
+    post_to_tab("2","rincianSP2D","nosp2d="+elm,"Detil SP2D "+$(this).data("placeholder"))
   });
   $('#tblSP2D').on("click",".setuju",function(){
     elm = $(this).data("elm");

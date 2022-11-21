@@ -3,6 +3,8 @@
   $form->addClear("10");
   $form->addButton(array("id"=>"btnTambahPanjar","icon"=>"plus","title"=>"Tambah Data Panjar","color"=>"primary"));
 
+  getFlashData();
+
   $tabel = array("tblListPanjar",array("NO","TANGGAL","TGL BKU","STATUS","KETERANGAN",""));
   $form->addTable($tabel);
   foreach($panjar as $h){ ?>

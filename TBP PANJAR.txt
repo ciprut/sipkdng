@@ -1,0 +1,73 @@
+SELECT BL.*,rtrim(B.KDSTATUS) as KDSTATUS,B.TGLBPK ,B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND,B.PENERIMA,B.TGLVALID, B.IDXKODE,J.NMJETRA, J.KDPERS, rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER FROM BPKDETR BL LEFT OUTER JOIN BPK B ON BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY LEFT OUTER JOIN MATANGR M ON BL.MTGKEY = M.MTGKEY LEFT OUTER JOIN JTRNLKAS J ON BL.NOJETRA = J.NOJETRA where BL.UNITKEY= @param0 and BL.NOBPK= @param1 and BL.KDKEGUNIT= @param2 and case @param3 when ''1'' then M.KDPER when ''2'' then M.NMPER end like ''%''+ @param4 + ''%'' order by M.KDPER',N'@param0 nvarchar(5),@param1 nvarchar(39),@param2 nvarchar(4000),@param3 nvarchar(1),@param4 nvarchar(4000)',@param0=N'2560_',@param1=N'00004/TBP-UP/1.02.0.00.0.00.01/B02/2021',@param2=NULL,@param3=N'1',@param4=N''
+
+==== SISA
+ WSP_VAL_DPARDANA @unitkey=N'2559_',@kdtahap=N'2',@mtgkey=N'5267_',@kdkegunit=N'8802_',@kddana=N'48',@dok=N'BPK',@nomorx=N'00004/TBP-UP/1.01.0.00.0.00.01/B02/2022'
+
+UPDATE 	Bpkdetrdana SET 	NILAI = @param0 WHERE 	 KDDANA = @param1	AND NOBPK = @param2	AND UNITKEY = @param3	AND KDKEGUNIT = @param4	AND MTGKEY = @param5',N'@param0 decimal(7,0),@param1 nvarchar(2),@param2 nvarchar(39),@param3 nvarchar(5),@param4 nvarchar(5),@param5 nvarchar(5)',@param0=3600000,@param1=N'48',@param2=N'00004/TBP-UP/1.01.0.00.0.00.01/B02/2022',@param3=N'2559_',@param4=N'8802_',@param5=N'5267_'
+
+=== SISA PANJAR 
+ WSP_VALIDATIONBPK_PANJAR @unitkey=N'2559_',@keybend=N'189018_',@kdkegunit=N'8802_'
+
+SELECT BL.*,rtrim(B.KDSTATUS) as KDSTATUS,B.TGLBPK ,B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND,B.PENERIMA,B.TGLVALID, B.IDXKODE,J.NMJETRA, J.KDPERS, rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER FROM BPKDETR BL LEFT OUTER JOIN BPK B ON BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY LEFT OUTER JOIN MATANGR M ON BL.MTGKEY = M.MTGKEY LEFT OUTER JOIN JTRNLKAS J ON BL.NOJETRA = J.NOJETRA where BL.UNITKEY= @param0 and BL.NOBPK= @param1 and BL.KDKEGUNIT= @param2 and case @param3 when ''1'' then M.KDPER when ''2'' then M.NMPER end like ''%''+ @param4 + ''%'' order by M.KDPER',N'@param0 nvarchar(5),@param1 nvarchar(39),@param2 nvarchar(5),@param3 nvarchar(1),@param4 nvarchar(4000)',@param0=N'2559_',@param1=N'00004/TBP-UP/1.01.0.00.0.00.01/B02/2022',@param2=N'8802_',@param3=N'1',@param4=N''
+
+UPDATE 	Bpkdetrdana SET 	NILAI = @param0 WHERE 	 KDDANA = @param1	AND NOBPK = @param2	AND UNITKEY = @param3	AND KDKEGUNIT = @param4	AND MTGKEY = @param5',N'@param0 decimal(4,4),@param1 nvarchar(2),@param2 nvarchar(39),@param3 nvarchar(5),@param4 nvarchar(5),@param5 nvarchar(5)',@param0=0,@param1=N'48',@param2=N'00004/TBP-UP/1.01.0.00.0.00.01/B02/2022',@param3=N'2559_',@param4=N'8802_',@param5=N'5267_'
+
+select B.NOBPK,B.KDDANA,B.MTGKEY,B.UNITKEY,C.NMDANA,B.NILAI,b.KDKEGUNIT from Bpkdetrdana B INNER JOIN JDANA C ON B.KDDANA=C.KDDANA where B.UNITKEY= @param0 and B.NOBPK= @param1 and B.MTGKEY= @param2 and B.KDKEGUNIT= @param3 and case @param4 when ''1'' then B.NOBPK when ''2'' then B.KDDANA end like ''%''+ @param5 + ''%'' order by B.KDDANA',N'@param0 nvarchar(5),@param1 nvarchar(39),@param2 nvarchar(5),@param3 nvarchar(5),@param4 nvarchar(1),@param5 nvarchar(4000)',@param0=N'2559_',@param1=N'00004/TBP-UP/1.01.0.00.0.00.01/B02/2022',@param2=N'5267_',@param3=N'8802_',@param4=N'1',@param5=N''
+
+ WSP_VAL_DPARDANA @unitkey=N'2559_',@kdtahap=N'2',@mtgkey=N'5267_',@kdkegunit=N'8802_',@kddana=N'48',@dok=N'BPK',@nomorx=N'00004/TBP-UP/1.01.0.00.0.00.01/B02/2022'
+
+
+=== HAPUS TBP
+
+SELECT 
+BL.*,rtrim(B.KDSTATUS) as KDSTATUS,B.TGLBPK ,B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND,B.PENERIMA,
+B.TGLVALID, B.IDXKODE,J.NMJETRA, J.KDPERS, rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER 
+FROM BPKDETR BL 
+LEFT OUTER JOIN BPK B ON BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY 
+LEFT OUTER JOIN MATANGR M ON BL.MTGKEY = M.MTGKEY 
+LEFT OUTER JOIN JTRNLKAS J ON BL.NOJETRA = J.NOJETRA 
+where 
+BL.UNITKEY= @param0 and BL.NOBPK= @param1 and BL.KDKEGUNIT= @param2
+order by M.KDPER
+@param0='2559_',@param1='00002/TBP-UP/1.01.0.00.0.00.01/B02/2022',@param2=NULL,@param3='1',@param4=''
+
+select B.NOBPK,B.KDDANA,B.MTGKEY,B.UNITKEY,C.NMDANA,B.NILAI,b.KDKEGUNIT from Bpkdetrdana B INNER JOIN JDANA C ON B.KDDANA=C.KDDANA where B.UNITKEY= @param0 and B.NOBPK= @param1 and B.MTGKEY= @param2 and B.KDKEGUNIT= @param3 and case @param4 when ''1'' then B.NOBPK when ''2'' then B.KDDANA end like ''%''+ @param5 + ''%'' order by B.KDDANA',N'@param0 nvarchar(5),@param1 nvarchar(39),@param2 nvarchar(5),@param3 nvarchar(5),@param4 nvarchar(1),@param5 nvarchar(4000)',@param0=N'2559_',@param1=N'00004/TBP-UP/1.01.0.00.0.00.01/B02/2022',@param2=N'5267_',@param3=N'8802_',@param4=N'1',@param5=N''
+
+ WSP_VAL_DPARDANA @unitkey=N'2559_',@kdtahap=N'2',@mtgkey=N'5267_',@kdkegunit=N'8802_',@kddana=N'48',@dok=N'BPK',@nomorx=N'00004/TBP-UP/1.01.0.00.0.00.01/B02/2022'
+
+DELETE FROM	BPK WHERE 	 UNITKEY = @param0	AND NOBPK = @param1',N'@param0 nvarchar(5),@param1 nvarchar(39)',@param0=N'2559_',@param1=N'00002/TBP-UP/1.01.0.00.0.00.01/B02/2022'
+
+SELECT BL.*,rtrim(B.KDSTATUS) as KDSTATUS,B.TGLBPK ,B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND,B.PENERIMA,B.TGLVALID, B.IDXKODE,J.NMJETRA, J.KDPERS, rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER FROM BPKDETR BL LEFT OUTER JOIN BPK B ON BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY LEFT OUTER JOIN MATANGR M ON BL.MTGKEY = M.MTGKEY LEFT OUTER JOIN JTRNLKAS J ON BL.NOJETRA = J.NOJETRA where BL.UNITKEY= @param0 and BL.NOBPK= @param1 and BL.KDKEGUNIT= @param2 and case @param3 when ''1'' then M.KDPER when ''2'' then M.NMPER end like ''%''+ @param4 + ''%'' order by M.KDPER',N'@param0 nvarchar(5),@param1 nvarchar(39),@param2 nvarchar(4000),@param3 nvarchar(1),@param4 nvarchar(4000)',@param0=N'2559_',@param1=N'00004/TBP-UP/1.01.0.00.0.00.01/B02/2022',@param2=NULL,@param3=N'1',@param4=N''
+
+SELECT BL.*,rtrim(B.KDSTATUS) as KDSTATUS,B.TGLBPK ,B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND,B.PENERIMA,B.TGLVALID, B.IDXKODE,J.NMJETRA, J.KDPERS, rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER FROM BPKDETR BL LEFT OUTER JOIN BPK B ON BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY LEFT OUTER JOIN MATANGR M ON BL.MTGKEY = M.MTGKEY LEFT OUTER JOIN JTRNLKAS J ON BL.NOJETRA = J.NOJETRA where BL.UNITKEY= @param0 and BL.NOBPK= @param1 and BL.KDKEGUNIT= @param2 and case @param3 when ''1'' then M.KDPER when ''2'' then M.NMPER end like ''%''+ @param4 + ''%'' order by M.KDPER',N'@param0 nvarchar(5),@param1 nvarchar(39),@param2 nvarchar(4000),@param3 nvarchar(1),@param4 nvarchar(4000)',@param0=N'2559_',@param1=N'00004/TBP-UP/1.01.0.00.0.00.01/B02/2022',@param2=NULL,@param3=N'1',@param4=N''
+
+exec WSPI_BPK @allowsuperuser=0,@unitkey=N'2559_',@idxkode=2,@kdkegunit=N'8802_',@keybend=N'189018_',@field=N'1',@value=N''
+
+
+==== HAPUS -> CEK apakah TBP ada di SPJ
+select A.NOBPK,A.NOSPJ,A.UNITKEY,B.TGLBPK,B.URAIBPK 
+from BPKSPJ A 
+left outer join BPK B on A.UNITKEY=B.UNITKEY and A.NOBPK=B.NOBPK 
+where A.UNITKEY= '2559_' and A.NOBPK='00002/TBP-UP/1.01.0.00.0.00.01/B02/2022'
+
+==> CEK apakah TBP sudah di BKUkan
+select '0' as ALLOWSUPERUSER,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KEYBEND) as KEYBEND,A.NOBKUSKPD,A.NOBPK,A.TGLBKUSKPD,A.TGLVALID,
+A.UNITKEY,A.URAIAN ,B.TGLBPK,B.URAIBPK 
+from BKUBPK A 
+Left outer Join BPK B on A.NOBPK = B.NOBPK and A.UNITKEY=B.UNITKEY 
+where A.UNITKEY= '2559_' and A.NOBPK= '00002/TBP-UP/1.01.0.00.0.00.01/B02/2022'
+
+==> CEK APAKAH ADA RINCIANNYA
+SELECT
+BL.*,rtrim(B.KDSTATUS) as KDSTATUS,B.TGLBPK ,B.URAIBPK, rtrim(B.KEYBEND) as KEYBEND,B.PENERIMA,B.TGLVALID,
+B.IDXKODE,J.NMJETRA, J.KDPERS, rtrim(M.KDPER) as KDPER, rtrim(M.NMPER) as NMPER
+FROM BPKDETR BL
+LEFT OUTER JOIN BPK B ON BL.NOBPK = B.NOBPK and BL.UNITKEY=B.UNITKEY
+LEFT OUTER JOIN MATANGR M ON BL.MTGKEY = M.MTGKEY
+LEFT OUTER JOIN JTRNLKAS J ON BL.NOJETRA = J.NOJETRA
+where BL.UNITKEY= '2559_' and BL.NOBPK= '00004/TBP-UP/1.01.0.00.0.00.01/B02/2022' and BL.KDKEGUNIT= '8802_'
+order by M.KDPER
+
+==> HAPUS BKUnya
+
+DELETE FROM	BPK WHERE 	 UNITKEY = '2559_'	AND NOBPK = '00002/TBP-UP/1.01.0.00.0.00.01/B02/2022'

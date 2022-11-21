@@ -11,8 +11,8 @@
   foreach($rinci as $h){ ?>
     <?php $idx = $h->MTGKEY ?>
     <tr class=''>
-      <td align='left'><?php echo $h->KDPER ?></a></td>
-      <td align='left'><?php echo $h->NMPER ?></a></td>
+      <td align='left'><a class='btnNilai' data-elm='<?php echo $h->MTGKEY ?>' data-placeholder='<?php echo $h->NMPER ?>'><?php echo $h->KDPER ?></a></td>
+      <td align='left'><?php echo $h->NMPER ?></td>
       <td align='right'>
         <span class='awal awal<?php echo $idx ?>'><?php echo number_format($h->NILAI,2) ?></span>
         <input type='text' class='inputAwal inputAwal<?php echo $idx ?>' 
@@ -23,10 +23,10 @@
       <td align='center'>
         <?php
         $total += $h->NILAI;
-        if($h->TGLVALID == NULL){
+        if($h->TGLVALID == NULL && $h->NILAI == 0){
           $form->addIconGroup(
             array(
-              array("id"=>'btnNilai',"icon"=>"pencil","elm"=>$h->MTGKEY,"placeholder"=>myTrim($h->NMPER),"color"=>'success',"title"=>"Nilai")
+              array("id"=>'btnHapus',"icon"=>"trash","elm"=>$h->MTGKEY,"placeholder"=>myTrim($h->NMPER),"color"=>'danger',"title"=>"Hapus")
             )
           );
         }
@@ -58,6 +58,16 @@
   $('#tblRinciTBP').on("click",".btnNilai",function(){
     elm = $(this).data("elm");
     post_to_tab("2","listSDTBP","kdper="+elm,$(this).data("placeholder"));
+  });
+  $('#tblRinciTBP').on("click",".btnHapus",function(){
+    elm = $(this).data("elm");
+    modal = {
+      color:"danger",
+      icon:"minus-circle"
+    };
+    showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
+      post_to_tab("1","hapusRinciTBP","mtgkey="+elm,$(this).data("placeholder"));
+    });
   });
 
 </script>

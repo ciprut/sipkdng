@@ -1,0 +1,103 @@
+select NOSP2D from SP2D where UNITKEY= @param0 and IDXKODE= @param1',N'@param0 nvarchar(5),@param1 int',@param0=N'2559_',@param1=6
+===> SP2D GU
+select distinct
+'0' as ALLOWSUPERUSER,A.IDXKODE,A.IDXSKO,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,
+isnull((A.KEPERLUAN),'')KEPERLUAN,isnull((A.NOKONTRAK),'')NOKONTRAK, A.KDP3, isnull((DP3.NMP3),'')NMP3, A.KETOTOR,
+rtrim(A.KEYBEND) as KEYBEND,A.NOREG,A.NOSP2D, A.NOSPM,A.PENOLAKAN,A.TGLSP2D,A.TGLSPM,A.TGLVALID,A.UNITKEY,
+SK.NOSKO,SK.TGLSKO, @param1 as KDKEGUNIT, A.NOBBANTU,C.NMBKAS,K.TGLKON
+from
+SP2D A
+LEFT OUTER JOIN SP2DDETR D ON A.NOSP2D = D.NOSP2D and A.UNITKEY = D.UNITKEY
+LEFT OUTER JOIN SKO SK ON A.IDXSKO = SK.IDXSKO and A.UNITKEY = SK.UNITKEY
+LEFT OUTER JOIN DAFTPHK3 DP3 ON A.KDP3 = DP3.KDP3
+left outer join BKBKAS C on A.NOBBANTU = C.NOBBANTU
+left outer join BEND B on A.KEYBEND=B.KEYBEND
+left outer join JBEND J on J.JNS_BEND=B.JNS_BEND
+LEFT OUTER JOIN KONTRAK K ON A.NOKONTRAK = K.NOKON AND a.UNITKEY = k.UNITKEY
+where
+A.UNITKEY= @param2 and A.IDXKODE= @param3 and ( @param3 not in ('2') or ( @param3 ='2' and A.KDSTATUS in ('21','22','23')))
+order by A.NOSP2D
+@param0=0,@param1=NULL,@param2=N'2559_',@param3=2,@param4=N'1',@param5=N''
+
+
+===> SP2D UP
+
+
+
+===> listSPM 
+IF @param0 =''22'' 
+select 
+rtrim(A.NOSPM) "01,No. SPM,30,C,C,X" ,convert(char(10), A.TGLSPM, 103) "02,Tgl. SPM,10,C,C,X" ,rtrim(A.KEPERLUAN) 
+"03,Uraian,50,L,C,X" ,
+rtrim(A.NOSPM) "PK_1" 
+from ANTARBYR A 
+where 
+A.NOSPM like ''%'' + @param1 + ''%'' AND convert(char(10), A.TGLSPM, 103) like ''%'' + @param2 + ''%'' 
+AND isnull(A.KEPERLUAN,'''') like ''%'' + @param3 + ''%'' AND 
+A.UNITKEY = @param4 AND 
+isnull(A.PENOLAKAN,1)=1 and (A.KEYBEND= @param5 or @param5 ='''') AND 
+A.IDXKODE = @param6 
+AND A.KDSTATUS = @param0 AND 
+A.NOSPM NOT IN (
+select NOSPM from SP2D WHERE UNITKEY = @param4 ) AND 
+TGLVALID is not null order by rtrim(A.NOSPM) 
+
+ELSE IF ( @param6 =''2'' and @param0 =''24'') 
+
+select distinct 
+rtrim(A.NOSPM) "01,No. SPM,30,C,C,X" ,convert(char(10), A.TGLSPM, 103) "02,Tgl. SPM,10,C,C,X" ,rtrim(A.KEPERLUAN) "03,Uraian,50,L,C,X" ,
+rtrim(A.NOSPM) "PK_1" 
+from 
+ANTARBYR A 
+INNER JOIN SPMDETR s ON s.UNITKEY = A.UNITKEY AND s.NOSPM = A.NOSPM 
+INNER JOIN MKEGIATAN m ON m.KDKEGUNIT = s.KDKEGUNIT 
+where 
+A.NOSPM like ''%'' + @param1 + ''%'' AND 
+convert(char(10), A.TGLSPM, 103) like ''%'' + @param2 + ''%'' AND
+isnull(A.KEPERLUAN,'''') like ''%'' + @param3 + ''%'' AND 
+A.UNITKEY = @param4 AND
+isnull(A.PENOLAKAN,1)=1 AND 
+A.IDXKODE = @param6 AND 
+A.KDSTATUS = @param0 AND 
+A.NOSPM NOT IN (select NOSPM from SP2D WHERE UNITKEY = @param4 ) AND 
+s.KDKEGUNIT= @param7 AND 
+TGLVALID is not null 
+order by 
+rtrim(A.NOSPM) 
+
+ELSE ---------->UP
+
+select 
+rtrim(A.NOSPM) "01,No. SPM,30,C,C,X" ,convert(char(10), A.TGLSPM, 103) "02,Tgl. SPM,10,C,C,X" ,rtrim(A.KEPERLUAN) "03,
+Uraian,50,L,C,X" ,rtrim(A.NOSPM) "PK_1" 
+from ANTARBYR A 
+where 
+A.NOSPM like ''%'' + @param1 + ''%'' AND 
+convert(char(10), A.TGLSPM, 103) like ''%'' + @param2 + ''%'' AND 
+isnull(A.KEPERLUAN,'''') like ''%'' + @param3 + ''%'' AND 
+A.UNITKEY = @param4 AND 
+isnull(A.PENOLAKAN,1)=1 AND 
+A.IDXKODE = @param6 AND 
+A.KDSTATUS = @param0 AND 
+A.NOSPM NOT IN (select NOSPM from SP2D WHERE UNITKEY = @param4 ) AND
+TGLVALID is not null order by rtrim(A.NOSPM)
+
+@param0=N'21',@param1=N'',@param2=N'',@param3=N'',@param4=N'2559_',@param5=N'',@param6=N'6',@param7=N''
+
+================ BENDAHARANYA SPM
+select 
+rtrim(B.KEYBEND) as KEYBEND,B.JNS_BEND, B.NIP, B.KDBANK, B.UNITKEY, B.JAB_BEND, B.REKBEND, 
+B.SALDOBEND,B.SALDOBENDT, B.NPWPBEND, B.TGLSTOPBEND, rtrim(D.KDUNIT) as KDUNIT, 
+rtrim(D.NMUNIT) as NMUNIT , P.NAMA,(rtrim(B.NIP)+'' - ''+ rtrim(P.NAMA)) as NIPNAMA, P.JABATAN ,J.URAI_BEND 
+from BEND B 
+left outer join DAFTUNIT D on B.UNITKEY = D.UNITKEY
+left outer join PEGAWAI P on B.NIP = P.NIP 
+left outer join JBEND J on B.JNS_BEND=J.JNS_BEND 
+where 
+B.UNITKEY= @param0 and 
+(RIGHT(B.JNS_BEND,1) = @param1 or B.JNS_BEND= @param1 ) 
+order by J.JNS_BEND,B.NIP
+@param0=N'2559_',@param1=N'2'
+
+===================== PENANDATANGAN 
+select rtrim(J.IDXTTD) as IDXTTD, J.UNITKEY, J.KDDOK, J.NIP,J.JABATAN, J.NOSKPTTD, J.TGLSKPTTD, J.NOSKSTOPTTD, J.TGLSKSTOPTTD, rtrim(U.KDUNIT) as KDUNIT, rtrim(U.NMUNIT) as NMUNIT,D.NMDOK ,P.NAMA,(rtrim(J.NIP)+'' - ''+ rtrim(P.NAMA)) as NIPNAMA, P.JABATAN from JABTTD J left outer join DAFTDOK D on J.KDDOK=D.KDDOK left outer join DAFTUNIT U on J.UNITKEY=U.UNITKEY left outer join PEGAWAI P on J.NIP=P.NIP where (J.KDDOK= @param0 or @param0 ='''') and J.UNITKEY= @param1 order by P.NIP',N'@param0 nvarchar(6),@param1 nvarchar(5)',@param0=N'04.301',@param1=N'2679_'

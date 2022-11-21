@@ -20,7 +20,7 @@
     $tgl = substr($sp2d->TGLSPM, 0,10);
     $row = array(
       array("width"=>"5","type"=>"text","id"=>"txtTanggal","label"=>"Tanggal","placeholder"=>"","value"=>$tgl),
-      array("width"=>"3","type"=>"text","id"=>"txtJenisBukti","label"=>"Jenis Bukti","readonly"=>"readonly","value"=>"UP"),
+      array("width"=>"3","type"=>"text","id"=>"txtJenisBukti","label"=>"Jenis Bukti","readonly"=>"readonly","value"=>strtoupper(session()->jns)),
       array("width"=>"4","type"=>"text","id"=>"txtNoReg","label"=>"No Reg SP2D","readonly"=>"readonly","value"=>$reg)
     );
     $form->addRow($row);

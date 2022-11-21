@@ -2,15 +2,17 @@
   $form = new Form_render;
   $form->addTitle("Detil SPM No ".session()->nospm);
   $form->addClear("10");
-  if(session()->jnsSpm != "up"){
-    //$form->addButton(array("id"=>"btnTambahSPM","icon"=>"plus","title"=>"Tambah Rincian","color"=>"primary"));
-  }
+  $form->addButton(array("id"=>"btnPotongan","icon"=>"remove-sign","title"=>"Potongan","color"=>"primary"));
+  $form->addButton(array("id"=>"btnPajak","icon"=>"usd","title"=>"Pajak","color"=>"primary"));
 
+/*
+<a class='detilKegiatanLS' data-elm='<?php echo$h->KDKEGUNIT ?>'>
+*/
   $tabel = array("tblSPMGiat",array("KODE","URAIAN","JUMLAH"));
   $form->addTable($tabel);
   foreach($rinci as $h){ ?>
     <tr class=''>
-      <td align='left'><a class='detilKegiatanGU' data-elm='<?php echo$h->KDKEGUNIT ?>'><?php echo$h->KDPER ?></a></td>
+      <td align='left'><?php echo$h->KDPER ?></td>
       <td align='left'><?php echo $h->NMPER ?></td>
       <td align='right'><?php echo number_format($h->NILAI,2) ?></td>
     </tr>
@@ -30,7 +32,15 @@
     "fixedColumns": true
   });
 
-  $('#tblSPMGiat').on("click",".detilKegiatanGU",function(){
+  $("#btnPotongan").click(function(){
+    post_to_tab("3","listLsPotongan","a=a","Potongan SPM");
+  });
+
+  $("#btnPajak").click(function(){
+    post_to_tab("3","listLsPajak","a=a","Potongan Pajak");
+  });
+
+  $('#tblSPMGiat').on("click",".detilKegiatanLS",function(){
     elm = $(this).data("elm");
     post_to_content("detilKegiatanGU","detilKegiatanGU","idSub="+elm)
   });

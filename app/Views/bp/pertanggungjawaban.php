@@ -49,7 +49,7 @@
   $("#kdSatker,#namaUnit").click(function(){
     $("#listSPJ").html('');
     $("#nipBend,#namaBend,#jns,#keybend,#jabBend").val('');
-    post_to_modal("../utama/satkerList","a=","Data Satuan Kerja");
+    post_to_modal("../utama/satkerListBend","a=","Data Satuan Kerja");
   })
 
   $("#keybend").keyup(function(){

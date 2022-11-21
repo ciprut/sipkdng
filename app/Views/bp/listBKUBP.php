@@ -19,7 +19,7 @@
       <td align='right'><?php echo number_format($h->DIBAYAR,2) ?></td>
       <td align='center'>
         <?php
-        $elm = $h->NOBKUSKPD."__".trim($h->KDSTATUS);
+        $elm = $h->NOBKUSKPD."__".trim($h->KDSTATUS)."__".trim($h->JENIS);
 
         if($h->TGLVALID == NULL){
           $act = array(

@@ -24,9 +24,27 @@
 			return $builder->get()->getRow();
 		}
 		public function listSP2D(){
-			$builder = $this->db->table('SP2D')->where('UNITKEY',session()->kdUnit);
-			$builder->select('NOSP2D,KETOTOR,KEPERLUAN,PENOLAKAN,convert(char(10), TGLVALID, 101) AS TGLVALID,convert(char(10), TGLSP2D, 101) AS TGLSP2D,TGLSPM,NOSPM,NOREG');
-			return $builder->get()->getResult();
+			//$builder->select('NOSP2D,KETOTOR,KEPERLUAN,PENOLAKAN,convert(char(10), TGLVALID, 101) AS TGLVALID,convert(char(10), TGLSP2D, 101) AS TGLSP2D,TGLSPM,NOSPM,NOREG');
+			if(session()->jns == 'up'){
+				$builder = $this->db->table('SP2D')->where('UNITKEY',session()->kdUnit)->where('IDXKODE',session()->Idxkode);
+			}else if(session()->jns == 'gu'){
+				$builder = $this->db->table('SP2D A')->distinct()->orderBy('A.NOSP2D');
+				$builder->select("'0' as ALLOWSUPERUSER,A.IDXKODE,A.IDXSKO,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,");
+				$builder->select("isnull((A.KEPERLUAN),'')KEPERLUAN,isnull((A.NOKONTRAK),'')NOKONTRAK, A.KDP3, isnull((DP3.NMP3),'')NMP3, A.KETOTOR,");
+				$builder->select('rtrim(A.KEYBEND) as KEYBEND,A.NOREG,A.NOSP2D, A.NOSPM,A.PENOLAKAN,A.TGLSP2D,A.TGLSPM,A.TGLVALID,A.UNITKEY,');
+				$builder->select("SK.NOSKO,SK.TGLSKO, '0' as KDKEGUNIT, A.NOBBANTU,C.NMBKAS,K.TGLKON");
+				$builder->join('SP2DDETR D','A.NOSP2D = D.NOSP2D and A.UNITKEY = D.UNITKEY','LEFT OUTER');
+				$builder->join('SKO SK','A.IDXSKO = SK.IDXSKO and A.UNITKEY = SK.UNITKEY','LEFT OUTER');
+				$builder->join('DAFTPHK3 DP3','A.KDP3 = DP3.KDP3','LEFT OUTER');
+				$builder->join('BKBKAS C','A.NOBBANTU = C.NOBBANTU','LEFT OUTER');
+				$builder->join('BEND B','A.KEYBEND=B.KEYBEND','LEFT OUTER');
+				$builder->join('JBEND J','J.JNS_BEND=B.JNS_BEND','LEFT OUTER');
+				$builder->join('KONTRAK K','A.NOKONTRAK = K.NOKON AND a.UNITKEY = k.UNITKEY','LEFT OUTER');
+				$builder->where("A.UNITKEY",session()->kdUnit)->where('A.IDXKODE',session()->Idxkode);
+				$builder->where("('".session()->Idxkode."' not in ('2') or ( '".session()->Idxkode."' ='2' and A.KDSTATUS in ('21','22','23')))");				
+			}
+			$rs = $builder->get()->getResult();
+			return $rs;
 		}
     public function rincianSP2D(){
       $builderD = $this->db->table('SP2DDETD A')->select('\'\' AS KDKEGUNIT,A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSP2D,A.UNITKEY,\'\' AS KDDANA');
@@ -95,9 +113,9 @@
 			$builder->orderBy('S.NOSPM');
 			return $builder;
 		}
-		public function spmList($tgl= null){
+		public function spmList____________($tgl= null){
 			if(session()->jnsSp2d == "up"){
-				$builder = $this->db->table('SPMDETB A');
+				$builder = $this->db->table('SPMDETB A'); //21 - 6
 				$builder->select('A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPM,A.UNITKEY,B.TGLVALID,B.KETOTOR,B.TGLSPM,B.KEYBEND,');
 				$builder->select('rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER,C.NIP,E.NAMA');
 	
@@ -106,7 +124,7 @@
 				$builder->join('PEGAWAI E','C.NIP = E.NIP', 'LEFT OUTER');
 				$builder->join('MATANGB D','A.MTGKEY = D.MTGKEY', 'LEFT OUTER')->orderBy('D.KDPER');
 			}
-			if(session()->jnsSpm == "gu"){
+			if(session()->jnsSp2d == "gu"){ // 22 - 2
 				$builder->where('S.UNITKEY',session()->kdUnit)->where('S.IDXKODE',session()->Idxkode)->where('RIGHT(J.JNS_BEND,1)','2');
 				$builder->where('(isnull(D.KDKEGUNIT,\'\')=isnull(\'\',\'\') or isnull(\'\',\'\')=\'\' or D.KDKEGUNIT is null)');
 				$builder->where('S.KEYBEND',session()->keybend);
@@ -116,6 +134,37 @@
 				$whereDate = 'Convert(char(10), B.TGLVALID, 101) <= Convert(datetime, \''.$tgl.'\')';
 				$builder->where($whereDate)->where('A.UNITKEY',session()->kdUnit)->where('B.TGLSPM !=',NULL);
 			}
+			//echo nl2br($builder->getCompiledSelect());die();
+			return $builder->get()->getResult();
+		}
+		public function spmList($tgl= null){
+			if(session()->jnsSp2d == "up"){
+				$builder = $this->db->table('ANTARBYR A'); //21 - 6
+				$builder->select('rtrim(A.NOSPM) as NOSPM ,convert(char(10), A.TGLSPM, 103) as TGLSPM ,rtrim(A.KEPERLUAN) as URAIAN,convert(char(10), A.TGLVALID, 103) as TGLVALID');
+	
+				$builder->like('A.NOSPM','')->like("isnull(A.KEPERLUAN,'')","")->where('A.UNITKEY',session()->kdUnit);
+				$builder->like('convert(char(10), A.TGLSPM, 103)','')->where("isnull(A.PENOLAKAN,1)","1");
+				$builder->where('A.IDXKODE',session()->Idxkode)->where('A.KDSTATUS','21');
+				$builder->where("A.NOSPM NOT IN (select NOSPM from SP2D WHERE UNITKEY = '".session()->kdUnit."')");
+				$builder->where('TGLVALID !=',null)->orderBy('rtrim(A.NOSPM)');
+			}
+			if(session()->jnsSp2d == "gu"){ // 22 - 2
+				$builder = $this->db->table('ANTARBYR A'); //21 - 6
+				$builder->select('rtrim(A.NOSPM) as NOSPM ,convert(char(10), A.TGLSPM, 103) as TGLSPM ,rtrim(A.KEPERLUAN) as URAIAN,');
+				$builder->select("convert(char(10), A.TGLVALID, 103) as TGLVALID,A.KETOTOR,(rtrim(B.NIP)+' - '+ rtrim(P.NAMA)) as NIPNAMA");
+				$builder->join('BEND B','A.KEYBEND = B.KEYBEND', 'LEFT OUTER');
+				$builder->join('PEGAWAI P','B.NIP = P.NIP', 'LEFT OUTER');
+
+				$builder->where('A.UNITKEY',session()->kdUnit)->where('isnull(A.PENOLAKAN,1)','1')->where('A.IDXKODE',session()->Idxkode);
+				$builder->where('A.KDSTATUS','22');
+				$builder->where("A.NOSPM NOT IN (select NOSPM from SP2D WHERE UNITKEY = '".session()->kdUnit."')");
+				$builder->where('TGLVALID !=',null)->orderBy('rtrim(A.NOSPM)');
+			}
+			if($tgl != NULL){
+				$whereDate = 'Convert(char(10), TGLVALID, 101) <= Convert(datetime, \''.$tgl.'\')';
+				$builder->where($whereDate);
+			}
+			//echo nl2br($builder->getCompiledSelect());die();
 			return $builder->get()->getResult();
 		}
 		public function simpanSP2D($post){

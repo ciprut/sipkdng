@@ -1,11 +1,11 @@
 <?php
   $form = new Form_render;
   $form->addClear("10");
-  $form->addButton(array("id"=>"btnTambahRincianSDTBP","icon"=>"plus","title"=>"Tambah Sumber Dana","color"=>"primary"));
+  $form->addButton(array("id"=>"btnTambahRincianSDLS","icon"=>"plus","title"=>"Tambah Sumber Dana","color"=>"primary"));
 
   getFlashData();
 
-  $tabel = array("tblRinciSDTBP",array("KODE","NAMA JENIS TRANSAKSI","NILAI",""));
+  $tabel = array("tblRinciSDLS",array("KODE","NAMA JETRA","NILAI",""));
   $form->addTable($tabel);
   $idx = time();$total = 0;
   foreach($sd as $h){ ?>
@@ -38,12 +38,12 @@
     </tr>
   <?php
   } ?>
-  <tr class='bold'><td></td><td align="right">TOTAL TBP</td><td align="right"><?php echo number_format($total,2) ?></td><td></td></tr>
+  <tr class='bold'><td></td><td align="right">JUMLAH</td><td align="right"><?php echo number_format($total,2) ?></td><td></td></tr>
   <?php
   $form->closeTable($tabel);
 ?>
 <script>
-  $('#tblRinciSDTBP').removeAttr('width').DataTable({
+  $('#tblRinciSDLS').removeAttr('width').DataTable({
     "ordering":false,
     "pageLength":50,
     "columnDefs": [
@@ -55,18 +55,18 @@
     "autoWidth" : false
   });
 
-  $("#btnTambahRincianSDTBP").click(function(){
-    post_to_modal('listSDSub','a=','Sub Rincian Obyek');
+  $("#btnTambahRincianSDLS").click(function(){
+    post_to_modal('listSDLS','a=','Sub Rincian Obyek');
   });
-  $('#tblRinciSDTBP').on("click",".nilai",function(){
+  $('#tblRinciSDLS').on("click",".nilai",function(){
     elm = $(this).data("elm");
-    post_to_tab("2","listSDBPK","kdper="+elm,$(this).data("placeholder"));
+    post_to_tab("3","listSDBPK","kdper="+elm,$(this).data("placeholder"));
   });
 
   $(".btnCancel").hide();
   $(".btnSimpan").hide();
 
-  $('#tblRinciSDTBP').on("click",".btnEdit",function(){
+  $('#tblRinciSDLS').on("click",".btnEdit",function(){
     $(".btnCancel[data-elm='"+$(this).data('elm')+"']").show();
     $(".btnSimpan[data-elm='"+$(this).data('elm')+"']").show();
     $(this).hide();
@@ -77,7 +77,7 @@
     $(".inputAwal"+$(this).data('elm')).show().focus().select();
   });
 
-  $('#tblRinciSDTBP').on("click",".btnCancel",function(){
+  $('#tblRinciSDLS').on("click",".btnCancel",function(){
     $(".btnEdit[data-elm='"+$(this).data('elm')+"']").show();
     $(".btnSimpan[data-elm='"+$(this).data('elm')+"']").hide();
     $(this).hide();
@@ -85,7 +85,7 @@
     $(".inputAwal").hide();
   });
 
-   $('#tblRinciSDTBP').on("click",".btnSimpan",function(){
+   $('#tblRinciSDLS').on("click",".btnSimpan",function(){
     $(".btnEdit[data-elm='"+$(this).data('elm')+"']").show();
     $(".btnCancel[data-elm='"+$(this).data('elm')+"']").hide();
     $(".Total"+$(this).data('elm')).html('<marquee>...menyimpan data...</marquee>');
@@ -101,8 +101,19 @@
     $(this).hide();
     $(".awal, .btnHapus").show();
     $(".inputAwal").hide();
-    post_to_tab("2","updateRinciTBP","nilai="+nilai+"&kdDana="+$(this).data('elm'));
+    post_to_tab("3","updateRinciLS","nilai="+nilai+"&kdDana="+$(this).data('elm'));
   });
-  post_to_content("tab-1","rinciTBP","a=a");
+
+  $('#tblRinciSDLS').on("click",".btnHapus",function(){
+    elm = $(this).data('elm');
+    modal = {
+      color:"danger",
+      icon:"minus-circle"
+    };
+    showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
+      post_to_tab("3","hapusRinciLS","kdDana="+elm);
+    });
+  });
+  post_to_content("tab-2","rincianSPP","a=a");
 
 </script>

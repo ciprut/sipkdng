@@ -653,5 +653,21 @@ class Form_render{
 			echo $html;
 			return;
 		}
+		function addSingleTabs($judul,$id=null){
+			if(is_null($id)){$id='myTabs';}
+
+			$html = "<div id='".$id."'><ul>";
+			$html .= "<li><a href='#content-".$id."' class='fa fa-map' onclick='return false'>&nbsp;</a></li>";
+			for($i=0;$i<sizeof($judul);$i++){
+				$e = explode("__",$judul[$i]);
+				$html .= "<li><a href='#content-".$id."' id='".$e[0]."'>".$e[1]."</a></li>";
+			}
+			$html .= "</ul>";
+			$html .= "<div id='content-".$id."'></div>";
+			$html .= "</div>";
+			$html .= '<script>$( "#'.$id.'" ).tabs();</script>';
+			echo $html;
+			return;
+		}
 }
 ?>

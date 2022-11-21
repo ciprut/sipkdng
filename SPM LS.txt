@@ -1,0 +1,107 @@
+=== Rincian SPM LS 
+==> REKENING
+select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPM,A.UNITKEY,A.KDKEGUNIT ,B.IDXKODE ,C.KDPERS, D.TYPE ,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER 
+from SPMDETR A
+left outer join ANTARBYR B on A.NOSPM = B.NOSPM and A.UNITKEY = B.UNITKEY 
+left outer join JTRNLKAS C on A.NOJETRA = C.NOJETRA 
+left outer join MATANGR D on A.MTGKEY = D.MTGKEY 
+where 
+B.UNITKEY= @param0 and B.NOSPM= @param1 and A.NOJETRA= @param2 and A.KDKEGUNIT= @param3
+order by D.KDPER
+@param0=N'2560_',@param1=N'00004/SPM-LS/1.02.0.00.0.00.01/B02/2021',@param2=N'21',@param3=N'8765_',@param4=N'1',@param5=N''
+
+==> POTONGAN
+select * from (
+	select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPM,A.UNITKEY ,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER 
+	from SPMDETB A 
+	left outer join MATANGB D on A.MTGKEY = D.MTGKEY 
+	where 
+	A.UNITKEY= @param0 and A.NOSPM= @param1 and A.NOJETRA in (''23'') 
+	
+	union 
+	
+	select A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPM,A.UNITKEY ,rtrim(D.KDPER) as KDPER, rtrim(D.NMPER) as NMPER 
+	from SPMDETR A 
+	left outer join MATANGR D on A.MTGKEY = D.MTGKEY 
+	where 
+	A.UNITKEY= @param0 and A.NOSPM= @param1 and A.NOJETRA in (''23'') 
+)A 
+order by KDPER
+@param0=N'2560_',@param1=N'00004/SPM-LS/1.02.0.00.0.00.01/B02/2021',@param2=N'1',@param3=N''
+
+==> PAJAK
+select 
+A.KETERANGAN,A.NILAI,A.NOSPM,A.PJKKEY,A.UNITKEY ,B.IDXKODE,B.IDXSKO,rtrim(B.IDXTTD) as IDXTTD,B.KDP3,
+rtrim(B.KDSTATUS) as KDSTATUS,B.KEPERLUAN,B.KETOTOR,rtrim(B.KEYBEND) as KEYBEND, B.NOKONTRAK,B.NOREG,
+B.PENOLAKAN,B.TGLSPM,B.TGLVALID ,C.KDPAJAK,C.NMPAJAK,C.RUMUSPJK 
+from SPMPJK A 
+left outer join ANTARBYR B on A.NOSPM = B.NOSPM and A.UNITKEY=B.UNITKEY 
+left outer join JPAJAK C on A.PJKKEY = C.PJKKEY 
+where 
+A.UNITKEY= @param0 and A.NOSPM= @param1 
+order by C.KDPAJAK
+@param0=N'2560_',@param1=N'00004/SPM-LS/1.02.0.00.0.00.01/B02/2021',@param2=N'1',@param3=N''
+
+=== LIST PAJAK
+SELECT 
+JP.PJKKEY, JP.KDPAJAK, JP.NMPAJAK, JP.RUMUSPJK 
+FROM JPAJAK JP 
+where 
+JP.PJKKEY not in (select PJKKEY from SPMPJK where UNITKEY= @param0 and NOSPM= @param1 ) and case @param2 when ''1'' then JP.KDPAJAK when ''2'' then JP.NMPAJAK when ''3'' then JP.PJKKEY when ''4'' then JP.RUMUSPJK end like @param3 + ''%'' order by JP.KDPAJAK',N'@param0 nvarchar(10),@param1 nvarchar(39),@param2 nvarchar(1),@param3 nvarchar(4000)',@param0=N'2560_ ',@param1=N'00004/SPM-LS/1.02.0.00.0.00.01/B02/2021',@param2=N'1',@param3=N''
+
+=== LIST POTONGAN
+select 
+A.MTGKEY,A.KDPER,A.NMPER,A.TYPE from MATANGB A where left(A.KDPER,3) = ''7.1'' and A.TYPE=''D'' and
+A.MTGKEY not in (select MTGKEY from SPMDETR S where S.UNITKEY= @param2 and S.NOSPM= @param3 and S.NOJETRA= @param4 ) and 
+A.MTGKEY not in (select MTGKEY from SPMDETB S where S.UNITKEY= @param2 and S.NOSPM= @param3 and S.NOJETRA= @param4 )
+@param0=N'1',@param1=N'',@param2=N'2560_',@param3=N'00004/SPM-LS/1.02.0.00.0.00.01/B02/2021',@param4=N'23'
+
+=== SPM LS
+select distinct 
+@param0 as ALLOWSUPERUSER,A.IDXKODE,A.IDXSKO,rtrim(A.IDXTTD) as IDXTTD,rtrim(A.KDSTATUS) as KDSTATUS,isnull((A.KEPERLUAN),'''')KEPERLUAN,
+isnull((A.NOKONTRAK),'''')NOKONTRAK, A.KDP3, isnull((DP3.NMP3),'''')NMP3,A.KETOTOR,rtrim(A.KEYBEND) as KEYBEND,A.NOREG,A.NOSPM,A.NOSPP, 
+A.PENOLAKAN,A.TGLSPM,A.TGLVALID,
+A.TGSPP,A.UNITKEY, SK.TGLSKO,SK.NOSKO,isnull(D.KDKEGUNIT, @param1 ) as KDKEGUNIT, rtrim(MK.NUKEG) as NUKEG, 
+rtrim(MK.NMKEGUNIT) as NMKEGUNIT,A.KDDANA,A.KDKABKOT 
+from ANTARBYR A 
+LEFT OUTER JOIN SPMDETR D ON A.NOSPM = D.NOSPM and A.UNITKEY = D.UNITKEY 
+LEFT OUTER JOIN SKO SK ON A.IDXSKO = SK.IDXSKO and A.UNITKEY = SK.UNITKEY 
+LEFT OUTER JOIN DAFTPHK3 DP3 ON A.KDP3 = DP3.KDP3 
+LEFT OUTER JOIN MKEGIATAN MK ON D.KDKEGUNIT = MK.KDKEGUNIT 
+where 
+A.UNITKEY= @param2 and A.IDXKODE= @param3 and KDSTATUS in (''24'',''25'') and D.KDKEGUNIT = @param1 and A.KEYBEND = @param4
+order by A.NOSPM
+
+@param0=0,@param1=N'8765_',@param2=N'2560_',@param3=2,@param4=N'189222_',@param5=N'1',@param6=N
+
+=== SPP List untuk LS
+IF ( @param0 =''2'' and @param1 =''24'') 
+
+select distinct
+rtrim(A.NOSPP) "01,No. SPP,30,C,C,X" ,convert(char(10), A.TGSPP, 103) "02,Tgl. SPP,10,C,C,X" ,rtrim(A.KEPERLUAN) "03,Uraian,50,L,C,X" ,rtrim(A.NOSPP) "PK_1"
+from SPP A
+INNER JOIN SPPDETR s ON s.UNITKEY = A.UNITKEY AND s.NOSPP = A.NOSPP
+INNER JOIN MKEGIATAN m ON m.KDKEGUNIT = s.KDKEGUNIT
+where
+A.NOSPP like ''%'' + @param2 + ''%'' and convert(char(10), A.TGSPP, 103) like ''%'' + @param3 + ''%'' and
+isnull(A.KEPERLUAN,'''') like ''%'' + @param4 + ''%'' and
+A.UNITKEY = @param5 and isnull(A.PENOLAKAN,1)=1 and A.IDXKODE = @param0 AND A.KDSTATUS = @param1 AND
+s.KDKEGUNIT= @param6 and
+A.NOSPP NOT in (select isnull(NOSPP,'''') from ANTARBYR where UNITKEY = @param5 ) and A.TGLVALID is not null 
+order by rtrim(A.NOSPP)
+
+ELSE
+
+select 
+rtrim(A.NOSPP) "01,No. SPP,30,C,C,X" ,convert(char(10), A.TGSPP, 103) "02,Tgl. SPP,10,C,C,X" ,rtrim(A.KEPERLUAN) "03,Uraian,50,L,C,X" ,rtrim(A.NOSPP) "PK_1" 
+from SPP A 
+where 
+A.NOSPP like ''%'' + @param2 + ''%'' and convert(char(10), A.TGSPP, 103) like ''%'' + @param3 + ''%'' and isnull(A.KEPERLUAN,'''') like ''%'' + @param4 + ''%'' and 
+A.UNITKEY = @param5 and 
+isnull(A.PENOLAKAN,1)=1 and A.IDXKODE = @param0 AND 
+A.KDSTATUS = @param1 and 
+A.NOSPP NOT in (select isnull(NOSPP,'''') from ANTARBYR where UNITKEY = @param5 ) and 
+A.TGLVALID is not null 
+order by rtrim(A.NOSPP)
+
+@param0=N'2',@param1=N'24',@param2=N'',@param3=N'',@param4=N'',@param5=N'2560_',@param6=N'8765_'

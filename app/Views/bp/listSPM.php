@@ -9,12 +9,12 @@
   $form->addTable($tabel);
   foreach($spm as $h){ ?>
     <tr class=''>
-      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOSPM ?>"><?php echo $h->NOSPM." ".session()->Idxkode ?></a></td>
+      <td align='left'><a class="rinci" data-elm="<?php echo $h->NOSPM ?>"><?php echo $h->NOSPM ?></a></td>
       <td align='center'><?php echo ngSQLTanggal($h->TGLSPM,"ddmmmyyyy") ?></td>
       <td align='center'><?php echo ngSQLTanggal($h->TGLVALID,"ddmmmyyyy") ?></td>
-      <td align='center'><?php echo $h->NOSPP ?></td>
-      <td align='center'><?php echo $h->KETOTOR ?></td>
-      <td align='center'><?php echo $h->KEPERLUAN ?></td>
+      <td align='left'><?php echo $h->NOSPP ?></td>
+      <td align='left'><?php echo $h->KETOTOR ?></td>
+      <td align='left'><?php echo $h->KEPERLUAN ?></td>
       <td align='center'>
         <?php
         $elm = $h->NOSPM;
@@ -50,11 +50,12 @@
     "ordering":false,
     "pageLength":10,
     "columnDefs": [
+      { "width": 230, "targets": 0 },
       { "width": 100, "targets": 1 },
       { "width": 100, "targets": 2 },
       { "width": 250, "targets": 3 },
       { "width": 100, "targets": 4 },
-      { "width": 50, "targets": 5 }
+      { "width": 50, "targets": 6 }
     ],
     "fixedColumns": true
   });
@@ -70,7 +71,7 @@
       icon:"minus-circle"
     };
     showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
-      post_to_content("listSPM","hapusSPM","nospm="+elm)
+      post_to_tab("1","hapusSPM","nospm="+elm)
     });
   });
   $('#tblSPM').on("click",".ubah",function(){
@@ -80,7 +81,7 @@
   $('#tblSPM').on("click",".rinci",function(){
     elm = $(this).data("elm");
     //$("#tabsSPM").fadeIn();
-    post_to_tab("1","rincianSPM","nospm="+elm,"Rincian Kegiatan");
+    post_to_tab("2","rincianSPM","nospm="+elm,"Rincian Kegiatan");
     //post_to_content("tabsSPM-1","rincianSPM","nospm="+elm,$(this).data("placeholder"));
     //$("#header-tabsSPM-1").click();
   });

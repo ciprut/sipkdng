@@ -48,6 +48,44 @@ class Bp extends BaseController
 		return view('bp/formSKUP',$data);
 	}
 
+	/* ------------------------ */
+	public function jenisSPPSPM(){
+		session()->set('pengajuan',$this->request->getPost('pengajuan'));
+		session()->set('jnsSpp',$this->request->getPost('jn'));
+		session()->set('title',$this->request->getPost('title'));
+
+		$jns = session()->jnsSpp;
+		if(session()->pengajuan == 'spp'){
+			$params = array(
+				"up"=>array("Idxkode"=>"6","jnsSpp"=>"up","kdStatus"=>"21","keperluan"=>"uraisppup","jnsBend"=>"02","format"=>"frmtspp"),
+				"gu"=>array("Idxkode"=>"2","jnsSpp"=>"gu","kdStatus"=>"22","keperluan"=>"uraisppgu","jnsBend"=>"02","format"=>"frmtspp"),
+				"tu"=>array("Idxkode"=>"6","jnsSpp"=>"tu","kdStatus"=>"23","keperluan"=>"uraispptu","jnsBend"=>"02","format"=>"frmtspp"),
+				"ls"=>array("Idxkode"=>"2","jnsSpp"=>"ls","kdStatus"=>"24","keperluan"=>"uraisppls","jnsBend"=>"02","format"=>"frmtspp")
+			);
+			session()->set('jnsSpp',$params[$jns]['jnsSpp']);
+			session()->set('Idxkode',$params[$jns]['Idxkode']);
+			session()->set('kdStatus',$params[$jns]['kdStatus']);
+			session()->set('keperluan',$params[$jns]['keperluan']);
+			session()->set('jnsBend',$params[$jns]['jnsBend']);
+			session()->set('format',$params[$jns]['format']);
+		}else if(session()->pengajuan == 'spm'){
+			$params = array(
+				"up"=>array("Idxkode"=>"6","jnsSpm"=>"up","kdStatus"=>"21","keperluan"=>"uraispmup","jnsBend"=>"02","format"=>"frmtspm"),
+				"gu"=>array("Idxkode"=>"2","jnsSpm"=>"gu","kdStatus"=>"22","keperluan"=>"uraispmgu","jnsBend"=>"02","format"=>"frmtspm"),
+				"tu"=>array("Idxkode"=>"6","jnsSpm"=>"tu","kdStatus"=>"23","keperluan"=>"uraispmtu","jnsBend"=>"02","format"=>"frmtspm"),
+				"ls"=>array("Idxkode"=>"2","jnsSpm"=>"ls","kdStatus"=>"24","keperluan"=>"uraispmls","jnsBend"=>"02","format"=>"frmtspm")
+			);
+			session()->set('jnsSpm',$params[$jns]['jnsSpm']);
+			session()->set('Idxkode',$params[$jns]['Idxkode']);
+			session()->set('kdStatus',$params[$jns]['kdStatus']);
+			session()->set('keperluan',$params[$jns]['keperluan']);
+			session()->set('jnsBend',$params[$jns]['jnsBend']);
+			session()->set('format',$params[$jns]['format']);
+		}
+
+		return view('bp/headerSpp');
+	}
+
 	/* --------------- SPP ------------------- */
   public function spp(){
 		$data["title"] = "SPP - Surat Permintaan Pembayaran";
@@ -72,7 +110,10 @@ class Bp extends BaseController
 			session()->set('keybend',$this->request->getPost('keybend'));
 			session()->set('jnsSpp',$this->request->getPost('jn'));
 			session()->set('st',$this->request->getPost('st'));
+			session()->set('idSub',$this->request->getPost('idSub'));
+			session()->set('kdSatker',$this->request->getPost('kdSatker'));
 		}
+		/*
 		$jns = session()->jnsSpp;
 		if(session()->pengajuan == 'spp'){
 			$params = array(
@@ -101,7 +142,7 @@ class Bp extends BaseController
 			session()->set('jnsBend',$params[$jns]['jnsBend']);
 			session()->set('format',$params[$jns]['format']);
 		}
-
+		*/
 		$data["spp"] = $this->model->listSPP(session()->jnsBend);
 		return view('bp/listSPP',$data);
 	}
@@ -117,7 +158,6 @@ class Bp extends BaseController
 
 		$jns = session()->jnsSpp;
 		
-
     $data['bendahara'] = $this->model->getBendahara();
     $data['noreg'] = $this->utama->getNoReg("SPP","NOREG");
     $data['unit'] = $this->utama->getUnit();
@@ -151,13 +191,21 @@ class Bp extends BaseController
         "KEYBEND"=>session()->keybend,
         "IDXSKO"=>$this->request->getPost('idxsko'),
         "IDXKODE"=>session()->Idxkode,
-        "NOREG"=>pjg((session()->noreg)+1,3),
+        "NOREG"=>pjg((session()->noreg),5),
 
 				"KETOTOR"=>$this->request->getPost('txtDasar'),
         "KEPERLUAN"=>$this->request->getPost('txtUntuk'),
         "PENOLAKAN"=>$this->request->getPost('txtPenolakan'),
         "TGSPP"=>$this->request->getPost('txtTanggal')
       );
+			if(session()->jnsSpp == 'ls'){
+				if($this->request->getPost('kp3') != ''){
+					$data['KDP3'] = $this->request->getPost('kp3');
+				}
+				if($this->request->getPost('txtNoKontrak') != ''){
+					$data['NOKONTRAK'] = $this->request->getPost('txtNoKontrak');
+				}
+			}
       $this->model->simpanSPP($data);
     }else{
       $data = array(
@@ -174,6 +222,10 @@ class Bp extends BaseController
       $this->model->simpanSPP($data);
     }
 		return redirect()->to(site_url('/bp/listSPP'));
+	}
+	public function RekLSList(){
+		$data['rek'] = $this->model->RekLSList();
+		return view('bp/RekLSList',$data);
 	}
 	public function setujuSPP(){
 		$data = array(
@@ -192,13 +244,59 @@ class Bp extends BaseController
 		$this->model->hapusSPP();
 		return redirect()->to(site_url('/bp/listSPP'));
 	}
+	public function hapusRinciSPP(){
+    session()->set('nospj','');
+    if($this->request->getPost('nospj') != ''){
+			session()->set('nospj',$this->request->getPost('nospj'));
+		}
+		$this->model->hapusRinciSPP();
+		return redirect()->to(site_url('/bp/rincianSPP'));
+	}
+	public function hapusRinciSPPLS(){
+    session()->set('nospj','');
+    if($this->request->getPost('mtgkey') != ''){
+			session()->set('mtgkey',$this->request->getPost('mtgkey'));
+		}
+		$this->model->hapusRinciSPPLS();
+		return redirect()->to(site_url('/bp/rincianSPP'));
+	}
 	public function rincianSPP(){
     if($this->request->getPost('nospp') != ''){
 			session()->set('nospp',$this->request->getPost('nospp'));
 		}
-
 		$data["rinci"] = $this->model->rincianSPP();
 		return view('bp/rincianSPP',$data);
+	}
+	public function rinciSDLS(){
+    if($this->request->getPost('mtgkey') != ''){
+			session()->set('mtgkey',$this->request->getPost('mtgkey'));
+		}
+		$data["sd"] = $this->model->rinciSDLS();
+		return view('bp/rinciSDLS',$data);
+	}
+	public function inputSDLS(){
+		$post = array(
+			'NILAI'=>'0',
+			'KDDANA'=>$this->request->getPost('kdDana'),
+			'NOSPP'=>session()->nospp,
+			'UNITKEY'=>session()->kdUnit,
+			'KDKEGUNIT'=>session()->idSub,
+			'MTGKEY'=>session()->mtgkey
+		);
+		$this->model->inputSDLS($post);
+		return redirect()->to(site_url('/bp/rinciSDLS'));
+	}
+	public function updateRinciLS(){		
+		$this->model->updateRinciLS($this->request->getPost('kdDana'),$this->request->getPost('nilai'));
+		return redirect()->to(site_url('/bp/rinciSDLS'));
+	}
+	public function hapusRinciLS(){		
+		$this->model->hapusRinciLS($this->request->getPost('kdDana'));
+		return redirect()->to(site_url('/bp/rinciSDLS'));
+	}
+	public function listSDLS(){
+		$data["sd"] = $this->model->listSDLS();
+		return view('bp/listSDLS',$data);
 	}
 	public function tambahSPJSPP(){
 		$post = array(
@@ -218,6 +316,10 @@ class Bp extends BaseController
 		return view('bp/rincianSPJSPP',$data);
 
 	}
+	public function tambahROLS(){
+		$this->model->tambahROLS($this->request->getPost('mtgkey'));
+		return redirect()->to(site_url('/bp/rincianSPP'));
+	}
 
 	/* --------------- SPM ------------------- */
 	public function spm(){
@@ -231,7 +333,51 @@ class Bp extends BaseController
 		$data["satker"] = $this->utama->listBidang();
 		return view('bp/spm',$data);
 	}
+	public function jenisSPM(){
+		session()->set('pengajuan',$this->request->getPost('pengajuan'));
+		session()->set('jnsSpm',$this->request->getPost('jn'));
+		session()->set('title',$this->request->getPost('title'));
+
+		$jns = session()->jnsSpm;
+		if(session()->pengajuan == 'spp'){
+			$params = array(
+				"up"=>array("Idxkode"=>"6","jnsSpp"=>"up","kdStatus"=>"21","keperluan"=>"uraisppup","jnsBend"=>"02","format"=>"frmtspp"),
+				"gu"=>array("Idxkode"=>"2","jnsSpp"=>"gu","kdStatus"=>"22","keperluan"=>"uraisppgu","jnsBend"=>"02","format"=>"frmtspp"),
+				"tu"=>array("Idxkode"=>"6","jnsSpp"=>"tu","kdStatus"=>"23","keperluan"=>"uraispptu","jnsBend"=>"02","format"=>"frmtspp"),
+				"ls"=>array("Idxkode"=>"2","jnsSpp"=>"ls","kdStatus"=>"24","keperluan"=>"uraisppls","jnsBend"=>"02","format"=>"frmtspp")
+			);
+			session()->set('jnsSpp',$params[$jns]['jnsSpp']);
+			session()->set('Idxkode',$params[$jns]['Idxkode']);
+			session()->set('kdStatus',$params[$jns]['kdStatus']);
+			session()->set('keperluan',$params[$jns]['keperluan']);
+			session()->set('jnsBend',$params[$jns]['jnsBend']);
+			session()->set('format',$params[$jns]['format']);
+		}else if(session()->pengajuan == 'spm'){
+			$params = array(
+				"up"=>array("Idxkode"=>"6","jnsSpm"=>"up","kdStatus"=>"21","keperluan"=>"uraispmup","jnsBend"=>"02","format"=>"frmtspm"),
+				"gu"=>array("Idxkode"=>"2","jnsSpm"=>"gu","kdStatus"=>"22","keperluan"=>"uraispmgu","jnsBend"=>"02","format"=>"frmtspm"),
+				"tu"=>array("Idxkode"=>"6","jnsSpm"=>"tu","kdStatus"=>"23","keperluan"=>"uraispmtu","jnsBend"=>"02","format"=>"frmtspm"),
+				"ls"=>array("Idxkode"=>"2","jnsSpm"=>"ls","kdStatus"=>"24","keperluan"=>"uraispmls","jnsBend"=>"02","format"=>"frmtspm")
+			);
+			session()->set('jnsSpm',$params[$jns]['jnsSpm']);
+			session()->set('Idxkode',$params[$jns]['Idxkode']);
+			session()->set('kdStatus',$params[$jns]['kdStatus']);
+			session()->set('keperluan',$params[$jns]['keperluan']);
+			session()->set('jnsBend',$params[$jns]['jnsBend']);
+			session()->set('format',$params[$jns]['format']);
+		}
+
+		return view('bp/headerSpm');
+	}
 	public function listSPM(){
+		if($this->request->getPost('keybend') != ''){
+			session()->set('keybend',$this->request->getPost('keybend'));
+			session()->set('jnsSpm',$this->request->getPost('jn'));
+			session()->set('st',$this->request->getPost('st'));
+			session()->set('idSub',$this->request->getPost('idSub'));
+			session()->set('kdSatker',$this->request->getPost('kdSatker'));
+		}
+/*
 		if($this->request->getPost('keybend') != ''){
 			session()->set('keybend',$this->request->getPost('keybend'));
 			session()->set('jnsSpm',$this->request->getPost('jns'));
@@ -250,7 +396,7 @@ class Bp extends BaseController
 		session()->set('keperluan',$params[$jns]['keperluan']);
 		session()->set('jnsBend',$params[$jns]['jnsBend']);
 		session()->set('format',$params[$jns]['format']);
-
+*/
 		$data["spm"] = $this->model->listSPM(session()->jnsBend);
 		return view('bp/listSPM',$data);
 	}
@@ -261,13 +407,63 @@ class Bp extends BaseController
 
 		$data["rinci"] = $this->model->rincianSPM();
 		if(session()->jnsSpm == "up"){
-			return view('bp/rincianSPM',$data);
+			return view('bp/rincianSPMUP',$data);
 		}
 		if(session()->jnsSpm == "gu"){
 			return view('bp/rincianSPMGU',$data);
+		}if(session()->jnsSpm == "ls"){
+			return view('bp/rincianSPMLS',$data);
 		}
 	}
-
+	public function detilKegiatanGU(){
+		if($this->request->getPost('idSub') != ''){
+			session()->set('idSub',$this->request->getPost('idSub'));
+		}
+		$data['detil'] = $this->model->detilKegiatanGU();
+		return view('bp/detilKegiatanGU',$data);
+	}
+	public function listLsPotongan(){
+		$data['spm'] = $this->model->getSPM(session()->jnsSpm);
+		$data['potongan'] = $this->model->listLsPotongan();
+		return view('bp/listLsPotongan',$data);
+	}
+	public function hapusPotonganLS(){
+		$this->model->hapusPotonganLS($this->request->getPost('id'));
+		return redirect()->to(site_url('/bp/listLsPotongan'));
+	}
+	public function tambahPotonganLS(){
+		$this->model->tambahPotonganLS($this->request->getPost('mtgkey'));
+		return redirect()->to(site_url('/bp/listLsPotongan'));
+	}
+	public function potonganLSList(){
+		$data["rek"] = $this->model->potonganLSList();
+		return view('bp/potonganLSList',$data);
+	}
+	public function updatePotongan(){
+		$this->model->updatePotongan($this->request->getPost('pot'),$this->request->getPost('nilai'));
+		return redirect()->to(site_url('/bp/listLsPotongan'));
+	}
+	public function pajakLSList(){
+		$data["rek"] = $this->model->pajakLSList();
+		return view('bp/pajakLSList',$data);
+	}
+	public function hapusPajakLS(){
+		$this->model->hapusPajakLS($this->request->getPost('id'));
+		return redirect()->to(site_url('/bp/listLsPajak'));
+	}
+	public function tambahPajakLS(){
+		$this->model->tambahPajakLS($this->request->getPost('mtgkey'));
+		return redirect()->to(site_url('/bp/listLsPajak'));
+	}
+	public function listLsPajak(){
+		$data['spm'] = $this->model->getSPM(session()->jnsSpm);
+		$data['pajak'] = $this->model->listLsPajak();
+		return view('bp/listLsPajak',$data);
+	}
+	public function updatePajakLS(){
+		$this->model->updatePajakLS($this->request->getPost('pjk'),$this->request->getPost('nilai'));
+		return redirect()->to(site_url('/bp/listLsPajak'));
+	}
 	public function formSPM(){
 		session()->set('nospm','');
 		if($this->request->getPost('nospm') != ''){
@@ -284,7 +480,11 @@ class Bp extends BaseController
 	}
 	public function sppList(){
 		$data["spp"] = $this->model->sppList($this->request->getPost('tanggal'));
-		return view('bp/sppList',$data);
+		if(session()->jnsSpm == "ls"){
+			return view('bp/sppListLS',$data);
+		}else{
+			return view('bp/sppList',$data);
+		}
 	}
 	public function simpanSPM(){
     if($this->request->getPost('id') == ''){
@@ -321,6 +521,34 @@ class Bp extends BaseController
 	}
 	public function simpanSPMGU(){
 		session()->set("nospp",trim($this->request->getPost('txtNoSPP')));
+		$spp = $this->model->getSPP();
+
+		$data = array(
+			"KDKABKOT"=>'',
+			"KDDANA"=>'',
+			"IDXKODE"=>session()->Idxkode,
+			"IDXSKO"=>$spp->IDXSKO,
+			"IDXTTD"=>$spp->IDXTTD,
+			"KDP3"=>$spp->KDP3,
+			"KDSTATUS"=>session()->kdStatus,
+			"KETOTOR"=>$spp->KETOTOR,
+			"KEYBEND"=>session()->keybend,
+			"NOKONTRAK"=>$spp->NOKONTRAK,
+			"NOREG"=>pjg((session()->noreg),5),
+			"NOSPP"=>$spp->NOSPP,
+			"PENOLAKAN"=>"0",
+			"KEPERLUAN"=>$this->request->getPost('txtUntuk'),
+			"TGLSPM"=>$this->request->getPost('txtTanggal'),
+			"TGSPP"=>$spp->TGSPP,
+			"UNITKEY"=>session()->kdUnit,
+			"NOSPM"=>$this->request->getPost('txtNoSPM')
+		);
+		$this->model->simpanSPMGU($data);
+
+		return redirect()->to(site_url('/bp/listSPM'));
+	}
+	public function simpanSPMLS(){
+		session()->set("nospp",trim($this->request->getPost('txtDasar')));
 		$spp = $this->model->getSPP();
 
 		$data = array(
@@ -554,6 +782,30 @@ class Bp extends BaseController
 		}
 		return view('bp/formTBP',$data);
 	}
+	public function hapusRinciTBP(){
+		session()->set('mtgkey','');
+		if($this->request->getPost('mtgkey') != ''){
+			session()->set('mtgkey',$this->request->getPost('mtgkey'));
+		}
+		$this->model->hapusRinciTBP($data);
+		return redirect()->to(site_url('/bp/rinciTBP'));
+	}
+	public function hapusRinciTBPSD(){
+		session()->set('kdper','');
+		if($this->request->getPost('kdper') != ''){
+			session()->set('kdper',$this->request->getPost('kdper'));
+		}
+		$this->model->hapusRinciTBP($data);
+		return redirect()->to(site_url('/bp/rinciTBP'));
+	}
+	public function hapusTBP(){
+		session()->set('nobpk','');
+		if($this->request->getPost('nobpk') != ''){
+			session()->set('nobpk',$this->request->getPost('nobpk'));
+		}
+		$this->model->hapusTBP();
+		return redirect()->to(site_url('/bp/listTBP'));
+	}
 	public function simpanTBP(){
 		$stpanjar = $sttunai = $stbank = '0';
 		if($this->request->getPost('txtSbr') == 'tunai'){
@@ -581,6 +833,7 @@ class Bp extends BaseController
     }else{
       $data = array(
         "NOSP2D"=>$this->request->getPost('txtNoSP2D'),
+				"PENERIMA"=>$this->request->getPost('txtPenerima'),
 				"TGLBKUSKPD"=>$this->request->getPost('txtTanggal'),
         "URAIAN"=>$this->request->getPost('txtUntuk'),
         "NOBKUSKPD"=>$this->request->getPost('txtNoBKU')."-B02"

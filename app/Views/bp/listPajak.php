@@ -1,6 +1,6 @@
 <?php
   $form = new Form_render;
-  $form->AddTitle('Pemungutan Pajak');
+//  $form->AddTitle('Pemungutan Pajak');
   $form->addClear("10");
   $form->addButton(array("id"=>"btnTambahPajak","icon"=>"plus","title"=>"Tambah Pajak","color"=>"primary"));
   $tabel = array("tblListPajak",array("NO BUKTI PAJAK","TANGGAL PAJAK","TGL BUKU SPJ","NO BPK/TBP","URAIAN",""));

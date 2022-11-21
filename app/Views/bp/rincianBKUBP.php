@@ -7,7 +7,7 @@
   $form->addTable($tabel);
   foreach($rinci as $h){ ?>
     <tr class=''>
-      <td align='left'><?php echo$h->MTGKEY ?></td>
+      <td align='left'><?php echo$h->KDPER ?></td>
       <td align='left'><?php echo $h->NMPER ?></td>
       <td align='right'><?php echo number_format($h->NILAI,2) ?></td>
     </tr>

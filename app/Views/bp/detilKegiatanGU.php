@@ -6,21 +6,30 @@
     //$form->addButton(array("id"=>"btnTambahSPM","icon"=>"plus","title"=>"Tambah Rincian","color"=>"primary"));
   }
 
-  $tabel = array("tblSPMGiat",array("KODE","URAIAN","JUMLAH"));
+  $tabel = array("tblSPMGiatRInci",array("KODE","URAIAN","JUMLAH"));
   $form->addTable($tabel);
-  foreach($rinci as $h){ ?>
+  $total = 0;
+  foreach($detil as $h){ ?>
     <tr class=''>
-      <td align='left'><a class='detilKegiatanGU' data-elm='<?php echo$h->KDKEGUNIT ?>'><?php echo$h->KDPER ?></a></td>
+      <td align='left'><?php echo$h->KDPER ?></td>
       <td align='left'><?php echo $h->NMPER ?></td>
       <td align='right'><?php echo number_format($h->NILAI,2) ?></td>
+      <?php $total += $h->NILAI ?>
     </tr>
   <?php
   }
+  ?>
+    <tr class='bold'>
+      <td align='left'></td>
+      <td align='right'>TOTAL</td>
+      <td align='right'><?php echo number_format($total,2) ?></td>
+    </tr>
+  <?php
   $form->closeTable($tabel);
 ?>
 <div id='detilKegiatanGU'></div>
 <script>
-  $('#tblSPMGiat').removeAttr('width').DataTable({
+  $('#tblSPMGiatRInci').removeAttr('width').DataTable({
     "ordering":false,
     "pageLength":10,
     "columnDefs": [
@@ -28,11 +37,6 @@
       { "width": 150, "targets": 2 }
     ],
     "fixedColumns": true
-  });
-
-  $('#tblSPMGiat').on("click",".detilKegiatanGU",function(){
-    elm = $(this).data("elm");
-    post_to_content("detilKegiatanGU","detilKegiatanGU","idSub="+elm)
   });
 
 </script>

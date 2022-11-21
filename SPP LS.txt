@@ -1,0 +1,97 @@
+=== detil SD RO LS
+select 
+B.NOSPP,B.KDDANA,B.MTGKEY,B.UNITKEY,C.NMDANA,B.NILAI,b.KDKEGUNIT
+from Sppdetrdana B
+INNER JOIN JDANA C ON B.KDDANA=C.KDDANA
+where B.UNITKEY= @param0 and B.NOSPP= @param1 and B.MTGKEY= @param2 and B.KDKEGUNIT= @param3
+order by B.KDDANA
+@param0=N'2560_',@param1=N'00004/SPP-LS/1.02.0.00.0.00.01./B02/2022',@param2=N'4895_',@param3=N'8765_',@param4=N'1',@param5=N''
+
+=== LISR SD SPP LS
+select 
+rtrim(A.KDDANA) as KDDANA,A.KDKEGUNIT,A.KDTAHAP,A.MTGKEY,A.NILAI,A.UNITKEY , B.NMDANA
+from SBDANAR A
+LEFT OUTER JOIN JDANA B ON A.KDDANA = B.KDDANA
+where
+A.UNITKEY= @param0 and A.MTGKEY= @param1 and A.KDTAHAP= @param2 and A.KDKEGUNIT= @param3 and
+A.KDDANA not in (select KDDANA from Sppdetrdana where MTGKEY= @param1 and NOSPP= @param4 and A.KDKEGUNIT= @param3 )
+order by A.KDDANA
+
+=== SIMPAN SD LS
+INSERT INTO Sppdetrdana (NILAI,KDDANA,NOSPP,UNITKEY,KDKEGUNIT,MTGKEY) VALUES (	 @param0,	 @param1,	 @param2,	 @param3,	 @param4,	 @param5)',N'@param0 decimal(1,0),@param1 nvarchar(2),@param2 nvarchar(39),@param3 nvarchar(5),@param4 nvarchar(5),@param5 nvarchar(5)',@param0=0,@param1=N'48',@param2=N'00003/SPP-LS/1.01.0.00.0.00.01/B02/2022',@param3=N'2559_',@param4=N'8765_',@param5=N'4901_'
+
+Update SPPDETR SET NILAI=isnull((select sum(nilai) from Sppdetrdana where UNITKEY= @param0 and NOSPP= @param1 and MTGKEY= @param2 and KDKEGUNIT= @param3 ),0) where UNITKEY= @param0 and NOSPP= @param1 and MTGKEY= @param2 and KDKEGUNIT= @param3',N'@param0 nvarchar(5),@param1 nvarchar(39),@param2 nvarchar(5),@param3 nvarchar(5)',@param0=N'2559_',@param1=N'00003/SPP-LS/1.01.0.00.0.00.01/B02/2022',@param2=N'4901_',@param3=N'8765_'
+
+@param0=N'2559_',@param1=N'4901_',@param2=N'2',@param3=N'8765_',@param4=N'00003/SPP-LS/1.01.0.00.0.00.01/B02/2022',@param5=N'1',@param6=N''
+
+=== Tambah RO LS 
+INSERT INTO SPPDETR (	NILAI,	NOJETRA,	MTGKEY,	KDKEGUNIT,	UNITKEY,	NOSPP) VALUES (	 @param0,	 @param1,	 @param2,	 @param3,	 @param4,	 @param5)
+@param0=0,@param1=N'21',@param2=N'4895_',@param3=N'8765_',@param4=N'2560_',@param5=N'00004/SPP-LS/1.02.0.00.0.00.01./B02/2022'
+
+=== SPP LS
+SELECT distinct 
+@param0 as ALLOWSUPERUSER,
+S.UNITKEY, rtrim(S.KDSTATUS) as KDSTATUS, S.NOSPP, S.TGSPP, S.IDXSKO, S.KETOTOR , 
+S.NOREG, S.NOKONTRAK, isnull((S.KEPERLUAN),'''') KEPERLUAN , rtrim(S.KEYBEND) as KEYBEND, rtrim(B.JNS_BEND) as JNS_BEND, 
+S.KDP3, S.KD_BULAN, S.PENOLAKAN, S.TGLVALID, S.IDXKODE,rtrim(S.IDXTTD) as IDXTTD,SK.TGLSKO,SK.NOSKO,
+isnull(D.KDKEGUNIT, @param1 ) as KDKEGUNIT, DP3.NMP3,K.TGLKON,S.STATUS,BR.NOBA 
+FROM SPP S 
+LEFT OUTER JOIN SPPDETR D ON S.NOSPP = D.NOSPP and S.UNITKEY = D.UNITKEY 
+LEFT OUTER JOIN BEND B on S.KEYBEND=B.KEYBEND 
+LEFT OUTER JOIN DAFTPHK3 DP3 ON S.KDP3 = DP3.KDP3 
+LEFT OUTER JOIN SKO SK ON S.IDXSKO = SK.IDXSKO and S.UNITKEY = SK.UNITKEY 
+LEFT OUTER JOIN KONTRAK K ON S.NOKONTRAK = K.NOKON 
+left join SPPBA sp on sp.NOSPP=s.NOSPP and sp.UNITKEY=s.UNITKEY 
+LEFT OUTER JOIN BERITA BR ON br.NOBA = sp.NOBA 
+where 
+S.UNITKEY= @param2 and S.IDXKODE= @param3 and S.KDSTATUS in (''24'',''25'') and 
+(isnull(D.KDKEGUNIT,'''')=isnull( @param1 ,'''') or isnull( @param1 ,'''')='''' or ((D.KDKEGUNIT is null) and @param1 is not null)) and 
+S.KEYBEND = @param4 
+order by S.NOSPP
+
+@param0=0,@param1=N'8765_',@param2=N'2559_',@param3=2,@param4=N'189018_',@param5=N'1',@param6=N
+
+=== Rincian SPP LS ===
+select 
+A.KDKEGUNIT,A.MTGKEY,A.NILAI,A.NOJETRA,A.NOSPP,A.UNITKEY ,B.IDXKODE ,
+rtrim(C.KDPER) as KDPER, rtrim(C.NMPER) as NMPER, C.TYPE ,D.KDPERS 
+from SPPDETR A 
+left outer join SPP B on A.NOSPP = B.NOSPP and A.UNITKEY = B.UNITKEY 
+left outer join MATANGR C on A.MTGKEY = C.MTGKEY 
+left outer join JTRNLKAS D on A.NOJETRA = D.NOJETRA 
+where 
+B.UNITKEY= @param0 and B.NOSPP= @param1 and A.NOJETRA= @param2 and A.KDKEGUNIT= @param3
+order by C.KDPER
+@param0=N'2559_',@param1=N'00003/SPP-LS/1.01.0.00.0.00.01/B02/2022',@param2=N'21',@param3=N'8765_',@param4=N'1',@param5=N''
+
+=== Tambah Rekening LS ===
+select distinct 
+B.KDPER, B.NMPER,B.MTGKEY,B.TYPE 
+from DASKR A 
+left join MATANGR B on A.mtgkey = B.mtgkey 
+where 
+A.UNITKEY in (select UNITKEY from DAFTUNIT where KDUNIT= @param0 ) and 
+A.KDKEGUNIT= @param1 and 
+A.IDXDASK in (select IDXDASK from SKDASK where UNITKEY in (select UNITKEY from DAFTUNIT where KDUNIT= @param0 ) and 
+(IDXKODE= @param2 or IDXKODE=''6'') and 
+KDTAHAP= @param3 and TGLVALID is not NULL) and 
+A.MTGKEY not in (select MTGKEY from SPPDETR S where S.UNITKEY= @param4 and S.NOSPP= @param5 and S.KDKEGUNIT= @param1 and S.NOJETRA= @param6 ) 
+order by KDPER
+@param0=N'1.01.0.00.0.00.01.',@param1=N'8765_',@param2=2,@param3=N'2',@param4=N'2559_',@param5=N'00003/SPP-LS/1.01.0.00.0.00.01/B02/2022',@param6=N'21'
+
+
+== INSERT SPP LS 
+INSERT INTO SPP (	
+STATUS,IDXKODE,IDXTTD,	IDXSKO,KD_BULAN,KDP3,	
+KDSTATUS,KEPERLUAN,KETOTOR,KEYBEND,NOKONTRAK,
+NOREG,	PENOLAKAN,TGSPP,UNITKEY,NOSPP
+) VALUES (
+@param0,@param1,@param2,@param3,@param4,@param5,
+@param6,@param7,@param8,@param9,@param10,
+@param11,@param12,@param13,@param14,@param15
+)
+@param0=N'',@param1=2,@param2=NULL,@param3=N'433_',@param4=1,@param5=NULL,
+@param6=N'24',@param7=N'SPP LS Gaji',@param8=N'08.00/01.0/000001/1.01.0.00.0.00.01.0000/M/1/2022',@param9=N'189018_',@param10=NULL,
+@param11=N'001',@param12=N'1',@param13='2022-01-14 00:00:00',@param14=N'2559_',@param15=N'00003/SPP-LS/1.01.0.00.0.00.01/B02/2022'
+
+INSERT INTO "V@LID49V6_2021"."dbo"."SPP" ("UNITKEY","NOSPP","KDSTATUS","KD_BULAN","KEYBEND","IDXSKO","IDXKODE","NOREG","KETOTOR","KEPERLUAN","PENOLAKAN","TGSPP","KDP3","NOKONTRAK") VALUES ('2560_', '00004/SPP-LS/1.02.0.00.0.00.01./B02/2022', '25', '1', '189222_', '404_', '2', '00004', '08.00/01.0/000001/1.02.0.00.0.00.01.0000/M/1/2022', 'Belanja LS Gaji', '1', '01/14/2022', '', '-')

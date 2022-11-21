@@ -44,22 +44,23 @@
     echo "</div>";
 
     $row = array(
-      array("width"=>"12","type"=>"text","id"=>"txtPenerima","label"=>"Penerima","readonly"=>$ro,"value"=>$tbp->PENERIMA)
+      array("width"=>"12","type"=>"text","id"=>"txtPenerima","label"=>"Penerima","readonly"=>"0","value"=>$tbp->PENERIMA)
     );
     $form->addRow($row);
     $form->addGroup(array("type"=>"textarea","id"=>"txtUntuk","label"=>"Uraian","readonly"=>"0","placeholder"=>"","value"=>$tbp->URAIBPK));
 
     $sbr = array(
-      "tunai__Kas Tunai",
-      "bank__Kas di Bank",
-      "panjar__Pengajuan Panjar Kegiatan"
+      "tunai__Tunai",
+      "bank__Bank",
+      "panjar__Panjar Kegiatan"
     );
     $s = "bank";
-    if($h->STPANJAR == '1'){ $s = 'panjar'; }
-    if($h->STTUNAI == '1'){ $s = 'tunai'; }
+    if($tbp->STPANJAR == '1'){ $s = 'panjar'; }
+    if($tbp->STTUNAI == '1'){ $s = 'tunai'; }
     $row = array(
-      array("width"=>"12","type"=>"select","id"=>"txtSbr","label"=>"Sumber","placeholder"=>"","default"=>$s,"readonly"=>"0","option"=>$sbr)
+      array("width"=>"6","type"=>"select","id"=>"txtSbr","label"=>"Sumber","placeholder"=>"","default"=>$s,"readonly"=>$ro,"option"=>$sbr)
     );
+    $form->addRow($row);
 
     $form->addClear(10);
     $form->addButton(array("id"=>"btnSimpan","icon"=>"save","title"=>"Simpan","color"=>"primary"));

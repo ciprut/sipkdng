@@ -20,7 +20,7 @@
         );
         //$form->addIconGroup($btt);
         $act = array(
-          array("id"=>"detil","elm"=>$elm,"color"=>"primary","title"=>"Detil Tagihan","placeholder"=>$h->NOSPJ),
+          array("id"=>"detil","elm"=>$elm,"color"=>"primary","title"=>"Detil TBP/Kuitansi","placeholder"=>$h->NOSPJ),
           array("id"=>"subkeg","elm"=>$elm,"color"=>"primary","title"=>"Detil Sub Kegiatan","placeholder"=>$h->NOSPJ)
         );
         if($h->NOSAH == ''){

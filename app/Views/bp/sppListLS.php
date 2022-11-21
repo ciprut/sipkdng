@@ -1,6 +1,6 @@
 <?php
   $form = new Form_render;
-  $tabel = array("tblspdList",array("TGL SPP","TGL VALIDASI","NO SPP","NO SPD",""));
+  $tabel = array("tblspdList",array("TGL SPP","TGL VALIDASI","NO SPP LS","NO SPD",""));
   $form->addTable($tabel);
   foreach($spp as $h){ ?>
     <tr class=''>
@@ -11,7 +11,7 @@
       <td align='center' width='50px'>
         <?php
         $elm = $h->NOSPP;
-        $ph = $h->TGSPP."__".$h->NOSPP."__".$h->NOSKO."__".$h->TGLSKO;
+        $ph = $h->TGSPP."__".$h->NOSPP."__".$h->NOSKO."__".$h->TGLSKO."__".$h->URAIAN;
         $btt = array(
           array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning","title"=>"Ambil Data Pegawai","placeholder"=>$ph)
         );
@@ -46,6 +46,7 @@
     $("#txtNoSPP").val(dats[1]);
     $("#txtNoSPD").val(dats[2]);
     $("#txtTanggalSPD").val(dats[3]);
+    $("#txtUntuk").val(dats[4]);
     closeModal();
   });
 

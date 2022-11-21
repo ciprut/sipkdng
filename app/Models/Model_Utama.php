@@ -65,13 +65,33 @@
 			$builder->select('A.*')->orderBy('A.KDBUKTI','ASC');
 			return $builder->get()->getResult();
 		}
-		public function bendList($jb='%'){
-			$builder = $this->db->table('BEND A')->where('A.UNITKEY',session()->kdUnit)->like('A.JAB_BEND',$jb);
-			$builder->select('A.*,P.NAMA')->orderBy('A.JNS_BEND','ASC')->join('PEGAWAI P','A.NIP = P.NIP','LEFT OUTER');
-			return $builder->get()->getResult();
+		public function bendList(){
+//			$builder = $this->db->table('BEND A')->where('A.UNITKEY',session()->kdUnit)->like('A.JAB_BEND',$jb);
+//			$builder->select('A.*,P.NAMA')->orderBy('A.JNS_BEND','ASC')->join('PEGAWAI P','A.NIP = P.NIP','LEFT OUTER');
+
+			$builder = $this->db->table('BEND B');
+			$builder->select("rtrim(B.NIP) as NIP, rtrim(P.NAMA)+' - '+ rtrim(B.JNS_BEND)+ '.'+J.URAI_BEND AS NAMA, rtrim(B.KEYBEND) as KEYBEND");
+      $builder->join('JBEND J','B.JNS_BEND = J.JNS_BEND','INNER');
+      $builder->join('PEGAWAI P','B.NIP = P.NIP','INNER');
+      $builder->where("B.UNITKEY",session()->kdUnit)->where("(B.JNS_BEND = '02' or right(B.JNS_BEND,1)= '02')");
+      $builder->orderBy('rtrim(B.KEYBEND)','ASC');
+      $rs = $builder->get()->getResult();
+			return $rs;
 		}
 
 		public function listBendahara($jns= null){
+			$builder = $this->db->table('BEND B');
+			$builder->select("rtrim(B.NIP) as NIP, rtrim(P.NAMA)+' - '+ rtrim(B.JNS_BEND)+ '.'+J.URAI_BEND AS NAMA, rtrim(B.KEYBEND) as KEYBEND");
+      $builder->select("rtrim(b.KDUNIT) as KDUNIT, rtrim(b.NMUNIT) as NMUNIT, c.NAMA,(rtrim(a.NIP)+' - '+ rtrim(c.NAMA)) as NIPNAMA, c.JABATAN,d.URAI_BEND");
+      $builder->join('JBEND J','B.JNS_BEND = J.JNS_BEND','INNER');
+      $builder->join('PEGAWAI P','B.NIP = P.NIP','INNER');
+      $builder->where("B.UNITKEY",session()->kdUnit)->where("(B.JNS_BEND = '02' or right(B.JNS_BEND,1)= '02')");
+      $builder->orderBy('rtrim(B.KEYBEND)','ASC');
+      $rs = $builder->get()->getResult();
+			return $rs;
+		}
+
+		public function listBendaharaPembantu($jns= null){
 			$builder = $this->db->table('BEND a');
 			$builder->select('rtrim(a.KEYBEND) as KEYBEND,a.JNS_BEND, a.NIP, a.KDBANK, a.UNITKEY, a.JAB_BEND, a.REKBEND, a.SALDOBEND,a.SALDOBENDT, a.NPWPBEND, a.TGLSTOPBEND,');
       $builder->select("rtrim(b.KDUNIT) as KDUNIT, rtrim(b.NMUNIT) as NMUNIT, c.NAMA,(rtrim(a.NIP)+' - '+ rtrim(c.NAMA)) as NIPNAMA, c.JABATAN,d.URAI_BEND");
@@ -99,8 +119,8 @@
 			return $rs;
 		}
 		public function getWebset($field){
-			$builder = $this->db->table('WEBSET');
-			$rs = $builder->select('*')->where('KDSET',$field)->get()->getRow();
+			$builder = $this->db->table('WEBSET')->select('*')->where('KDSET',$field);
+			$rs = $builder->get()->getRow();
 			return $rs->VALSET;
 		}
 		public function getTahap(){
@@ -126,7 +146,7 @@
 				$unitkey = '';
 			}
 			$builder = $this->db->table($table);
-			$builder->select('top (1) ISNULL(LEFT('.$field.',5),0) as NOREG')->where('UNITKEY LIKE \'%'.$unitkey.'%\'')->orderBy($field,'DESC');
+			$builder->select('top (1) ISNULL(LEFT('.$field.',5),0) as NOREG')->where("UNITKEY LIKE '%".$unitkey."%'")->orderBy($field,'DESC');
 			//echo nl2br($builder->getCompiledSelect());die();
 			$rs = $builder->get()->getRow();
 			$nr = ((int)$rs->NOREG)+1;

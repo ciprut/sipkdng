@@ -61,18 +61,18 @@
       alert("Pilih Bendahara Pengeluaran");
     }
   });
-/*
+
   $('#tblTBP').on("click",".hapus",function(){
-    elm = "nobuku="+$(this).data("elm");
+    elm = "nobpk="+$(this).data("elm");
     modal = {
       color:"danger",
       icon:"minus-circle"
     };
     showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
-      post_to_content("listPU","hapusPU",elm);
+      post_to_content("listTBP","hapusTBP",elm);
     });
   });
-  */
+  
   $('#tblTBP').on("click",".ubah",function(){
     elm = $(this).data("elm");
     post_form("formTBP","nobpk="+$(this).data("elm"),"Tanda Bukti Pengeluaran - TBP");

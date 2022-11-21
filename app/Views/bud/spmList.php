@@ -1,20 +1,20 @@
 <?php
   $form = new Form_render;
-  $tabel = array("tblspmList",array("TGL SPM","TGL VALIDASI","NO SPM","NO SPD",""));
+  $tabel = array("tblspmList",array("TGL SPM","TGL VALIDASI","NO SPM","URAIAN",""));
   $form->addTable($tabel);
   foreach($spm as $h){ ?>
     <tr class=''>
-      <td align='center' width='120px'><?php echo ngSQLSRVTGL($h->TGLSPM) ?></td>
-      <td align='center' width='120px'><?php echo ngSQLSRVTGL($h->TGLVALID) ?></td>
+      <td align='center' width='120px'><?php echo ngSQLSERVERTGL($h->TGLSPM,"103") ?></td>
+      <td align='center' width='120px'><?php echo ngSQLSERVERTGL($h->TGLVALID,"103") ?></td>
       <td align='left'><?php echo $h->NOSPM ?></td>
-      <td align='left'><?php echo $h->KETOTOR ?></td>
+      <td align='left'><?php echo $h->URAIAN ?></td>
       <td align='center' width='50px'>
         <?php
         $elm = $h->NOSPM;
         $btt = array(
           array("id"=>"ambil","icon"=>"ok","elm"=>$elm,"color"=>"warning",
           "title"=>"Ambil Data SPM",
-          "placeholder"=>$h->KETOTOR."__".$h->NAMA."__".$h->NOSPM
+          "placeholder"=>$h->KETOTOR."__".$h->NIPNAMA."__".$h->NOSPM."__".$h->URAIAN
           )
         );
         $form->addIconGroup($btt);
@@ -46,6 +46,7 @@
     $("#txtSPM").val(elm);
     $("#txtSPD").val(dats[0]);
     $("#txtNmBendahara").val(dats[1]);
+    $("#txtUntuk").val(dats[2]);
     closeModal();
   });
 

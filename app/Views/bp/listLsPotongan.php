@@ -1,18 +1,19 @@
 <?php
   $form = new Form_render;
   $form->addClear("10");
-  $form->addButton(array("id"=>"btnTambahRincianSDTBP","icon"=>"plus","title"=>"Tambah Sumber Dana","color"=>"primary"));
-
+  if($spm->TGLVALID == ''){
+    $form->addButton(array("id"=>"btnTambahPotongan","icon"=>"plus","title"=>"Tambah","color"=>"primary"));
+  }
   getFlashData();
 
-  $tabel = array("tblRinciSDTBP",array("KODE","NAMA JENIS TRANSAKSI","NILAI",""));
+  $tabel = array("tblLSPotongan",array("KODE","URAIAN","NILAI",""));
   $form->addTable($tabel);
   $idx = time();$total = 0;
-  foreach($sd as $h){ ?>
-    <?php $idx = $h->KDDANA ?>
+  foreach($potongan as $h){ ?>
+    <?php $idx = $h->MTGKEY ?>
     <tr class=''>
-      <td align='left'><?php echo $h->KDDANA ?></a></td>
-      <td align='left'><?php echo $h->NMDANA ?></a></td>
+      <td align='left'><?php echo $h->KDPER ?></a></td>
+      <td align='left'><?php echo $h->NMPER ?></a></td>
       <td align='right'>
         <span class='awal awal<?php echo $idx ?>'><?php echo number_format($h->NILAI,2) ?></span>
         <input type='text' class='inputAwal inputAwal<?php echo $idx ?>' 
@@ -23,7 +24,7 @@
       <td align='center'>
         <?php
         $total += $h->NILAI;
-        if($h->TGLVALID == NULL){
+        if($spm->TGLVALID == NULL){
           $form->addIconGroup(
             array(
               array("id"=>'btnEdit',"icon"=>"edit","elm"=>$idx,"placeholder"=>"","color"=>'primary',"title"=>"Edit"),
@@ -43,7 +44,7 @@
   $form->closeTable($tabel);
 ?>
 <script>
-  $('#tblRinciSDTBP').removeAttr('width').DataTable({
+  $('#tblLSPotongan').removeAttr('width').DataTable({
     "ordering":false,
     "pageLength":50,
     "columnDefs": [
@@ -55,10 +56,10 @@
     "autoWidth" : false
   });
 
-  $("#btnTambahRincianSDTBP").click(function(){
-    post_to_modal('listSDSub','a=','Sub Rincian Obyek');
+  $("#btnTambahPotongan").click(function(){
+    post_to_modal('potonganLSList','a=','Rekening Potongan LS');
   });
-  $('#tblRinciSDTBP').on("click",".nilai",function(){
+  $('#tblLSPotongan').on("click",".nilai",function(){
     elm = $(this).data("elm");
     post_to_tab("2","listSDBPK","kdper="+elm,$(this).data("placeholder"));
   });
@@ -66,7 +67,17 @@
   $(".btnCancel").hide();
   $(".btnSimpan").hide();
 
-  $('#tblRinciSDTBP').on("click",".btnEdit",function(){
+  $('#tblLSPotongan').on("click",".btnHapus",function(){
+    elm = $(this).data("elm");
+    modal = {
+      color:"danger",
+      icon:"minus-circle"
+    };
+    showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
+      post_to_tab("3","hapusPotonganLS","id="+elm)
+    });
+  });
+  $('#tblLSPotongan').on("click",".btnEdit",function(){
     $(".btnCancel[data-elm='"+$(this).data('elm')+"']").show();
     $(".btnSimpan[data-elm='"+$(this).data('elm')+"']").show();
     $(this).hide();
@@ -74,10 +85,10 @@
     $(".awal").show();
     $(".inputAwal, .btnHapus"+$(this).data('elm')).hide();
     $(".awal"+$(this).data('elm')).hide();
-    $(".inputAwal"+$(this).data('elm')).show().focus().select();
+    $(".inputAwal"+$(this).data('elm')).show().focus().val();
   });
 
-  $('#tblRinciSDTBP').on("click",".btnCancel",function(){
+  $('#tblLSPotongan').on("click",".btnCancel",function(){
     $(".btnEdit[data-elm='"+$(this).data('elm')+"']").show();
     $(".btnSimpan[data-elm='"+$(this).data('elm')+"']").hide();
     $(this).hide();
@@ -85,7 +96,7 @@
     $(".inputAwal").hide();
   });
 
-   $('#tblRinciSDTBP').on("click",".btnSimpan",function(){
+   $('#tblLSPotongan').on("click",".btnSimpan",function(){
     $(".btnEdit[data-elm='"+$(this).data('elm')+"']").show();
     $(".btnCancel[data-elm='"+$(this).data('elm')+"']").hide();
     $(".Total"+$(this).data('elm')).html('<marquee>...menyimpan data...</marquee>');
@@ -101,8 +112,7 @@
     $(this).hide();
     $(".awal, .btnHapus").show();
     $(".inputAwal").hide();
-    post_to_tab("2","updateRinciTBP","nilai="+nilai+"&kdDana="+$(this).data('elm'));
+    post_to_tab("2","updatePotongan","nilai="+nilai+"&pot="+$(this).data('elm'));
   });
-  post_to_content("tab-1","rinciTBP","a=a");
 
 </script>

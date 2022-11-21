@@ -1,18 +1,19 @@
 <?php
   $form = new Form_render;
   $form->addClear("10");
-  $form->addButton(array("id"=>"btnTambahRincianSDTBP","icon"=>"plus","title"=>"Tambah Sumber Dana","color"=>"primary"));
-
+  if($spm->TGLVALID == ''){
+    $form->addButton(array("id"=>"btnTambahRincianPajak","icon"=>"plus","title"=>"Tambah","color"=>"primary"));
+  }
   getFlashData();
 
-  $tabel = array("tblRinciSDTBP",array("KODE","NAMA JENIS TRANSAKSI","NILAI",""));
+  $tabel = array("tblLSPajak",array("KODE","URAIAN","NILAI",""));
   $form->addTable($tabel);
   $idx = time();$total = 0;
-  foreach($sd as $h){ ?>
-    <?php $idx = $h->KDDANA ?>
+  foreach($pajak as $h){ ?>
+    <?php $idx = $h->PJKKEY ?>
     <tr class=''>
-      <td align='left'><?php echo $h->KDDANA ?></a></td>
-      <td align='left'><?php echo $h->NMDANA ?></a></td>
+      <td align='left'><?php echo $h->KDPAJAK ?></a></td>
+      <td align='left'><?php echo $h->NMPAJAK ?></a></td>
       <td align='right'>
         <span class='awal awal<?php echo $idx ?>'><?php echo number_format($h->NILAI,2) ?></span>
         <input type='text' class='inputAwal inputAwal<?php echo $idx ?>' 
@@ -23,7 +24,7 @@
       <td align='center'>
         <?php
         $total += $h->NILAI;
-        if($h->TGLVALID == NULL){
+        if($spm->TGLVALID == NULL){
           $form->addIconGroup(
             array(
               array("id"=>'btnEdit',"icon"=>"edit","elm"=>$idx,"placeholder"=>"","color"=>'primary',"title"=>"Edit"),
@@ -38,12 +39,12 @@
     </tr>
   <?php
   } ?>
-  <tr class='bold'><td></td><td align="right">TOTAL TBP</td><td align="right"><?php echo number_format($total,2) ?></td><td></td></tr>
+  <tr class='bold'><td></td><td align="right">TOTAL PAJAK</td><td align="right"><?php echo number_format($total,2) ?></td><td></td></tr>
   <?php
   $form->closeTable($tabel);
 ?>
 <script>
-  $('#tblRinciSDTBP').removeAttr('width').DataTable({
+  $('#tblLSPajak').removeAttr('width').DataTable({
     "ordering":false,
     "pageLength":50,
     "columnDefs": [
@@ -55,18 +56,23 @@
     "autoWidth" : false
   });
 
-  $("#btnTambahRincianSDTBP").click(function(){
-    post_to_modal('listSDSub','a=','Sub Rincian Obyek');
+  $("#btnTambahRincianPajak").click(function(){
+    post_to_modal('pajakLSList','a=','Rekening Pajak LS');
   });
-  $('#tblRinciSDTBP').on("click",".nilai",function(){
+  $('#tblLSPajak').on("click",".btnHapus",function(){
     elm = $(this).data("elm");
-    post_to_tab("2","listSDBPK","kdper="+elm,$(this).data("placeholder"));
+    modal = {
+      color:"danger",
+      icon:"minus-circle"
+    };
+    showModal({color:"danger",isi:"Yakin akan melanjutkan proses ini?"},function(){
+      post_to_tab("3","hapusPajakLS","id="+elm)
+    });
   });
-
   $(".btnCancel").hide();
   $(".btnSimpan").hide();
 
-  $('#tblRinciSDTBP').on("click",".btnEdit",function(){
+  $('#tblLSPajak').on("click",".btnEdit",function(){
     $(".btnCancel[data-elm='"+$(this).data('elm')+"']").show();
     $(".btnSimpan[data-elm='"+$(this).data('elm')+"']").show();
     $(this).hide();
@@ -74,10 +80,10 @@
     $(".awal").show();
     $(".inputAwal, .btnHapus"+$(this).data('elm')).hide();
     $(".awal"+$(this).data('elm')).hide();
-    $(".inputAwal"+$(this).data('elm')).show().focus().select();
+    $(".inputAwal"+$(this).data('elm')).show().focus().val();
   });
 
-  $('#tblRinciSDTBP').on("click",".btnCancel",function(){
+  $('#tblLSPajak').on("click",".btnCancel",function(){
     $(".btnEdit[data-elm='"+$(this).data('elm')+"']").show();
     $(".btnSimpan[data-elm='"+$(this).data('elm')+"']").hide();
     $(this).hide();
@@ -85,7 +91,7 @@
     $(".inputAwal").hide();
   });
 
-   $('#tblRinciSDTBP').on("click",".btnSimpan",function(){
+   $('#tblLSPajak').on("click",".btnSimpan",function(){
     $(".btnEdit[data-elm='"+$(this).data('elm')+"']").show();
     $(".btnCancel[data-elm='"+$(this).data('elm')+"']").hide();
     $(".Total"+$(this).data('elm')).html('<marquee>...menyimpan data...</marquee>');
@@ -101,8 +107,7 @@
     $(this).hide();
     $(".awal, .btnHapus").show();
     $(".inputAwal").hide();
-    post_to_tab("2","updateRinciTBP","nilai="+nilai+"&kdDana="+$(this).data('elm'));
+    post_to_tab("3","updatePajakLS","nilai="+nilai+"&pjk="+$(this).data('elm'));
   });
-  post_to_content("tab-1","rinciTBP","a=a");
 
 </script>
